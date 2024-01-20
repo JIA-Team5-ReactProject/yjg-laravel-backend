@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salon_reservations', function (Blueprint $table) {
+        Schema::create('stay_out_lists', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('salon_menu_id');
-            $table->foreign('salon_menu_id')->references('id')->on('salon_menu');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamp('reservation_date');
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->char('status');
+            $table->string('content');
             $table->softDeletes();
             $table->timestamps();
-            
         });
     }
 
@@ -30,6 +28,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salon_reservations');
+        Schema::table('stay_out_lists', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropIfExists();
+        });
     }
 };

@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notices', function (Blueprint $table) {
+        Schema::create('after_services', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('title');
             $table->text('content');
-            $table->string('tag');
+            $table->boolean('status')->default(false);
+            $table->timestamp('visit_date');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,7 +28,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notices', function (Blueprint $table) {
+        Schema::table('after_services', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropIfExists();
         });

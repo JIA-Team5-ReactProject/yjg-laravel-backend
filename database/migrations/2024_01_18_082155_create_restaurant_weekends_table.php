@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salon_menu', function (Blueprint $table) {
+        Schema::create('restaurant_weekends', function (Blueprint $table) {
             $table->id();
-            $table->string('service');
-            $table->unsignedMediumInteger('price');
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->char('day', 3);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -24,6 +25,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salon_menu');
+        Schema::table('restaurant_weekends', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropIfExists();
+        });
     }
 };

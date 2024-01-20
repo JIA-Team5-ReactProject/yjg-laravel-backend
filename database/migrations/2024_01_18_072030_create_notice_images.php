@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('notice_images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('notice_id');
-            $table->foreign('notice_id')->references('id')->on('notices');
+            $table->foreignId('notice_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('image');
             $table->timestamps();
         });
@@ -25,6 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notice_images');
+        Schema::table('notice_images', function (Blueprint $table) {
+            $table->dropForeign(['notice_id']);
+            $table->dropIfExists();
+        });
     }
 };

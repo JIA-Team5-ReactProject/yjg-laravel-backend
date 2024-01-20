@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notices', function (Blueprint $table) {
+        Schema::create('salon_reservations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('salon_menu_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('title');
-            $table->text('content');
-            $table->string('tag');
+            $table->timestamp('reservation_date');
+            $table->char('status');
+            $table->softDeletes();
             $table->timestamps();
+
         });
     }
 
@@ -26,8 +28,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notices', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+        Schema::table('salon_reservations', function (Blueprint $table) {
+            $table->dropForeign(['user_id', 'salon_menu_id']);
             $table->dropIfExists();
         });
     }
