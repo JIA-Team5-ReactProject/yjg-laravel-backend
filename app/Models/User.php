@@ -30,7 +30,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -42,4 +41,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function afterServices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AfterService::class);
+    }
+
+    public function restaurantSemesters(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RestaurantSemester::class);
+    }
+
+    public function afterServiceComments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AfterServiceComment::class);
+    }
+
+    public function restaurantWeekends(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RestaurantWeekend::class);
+    }
 }
