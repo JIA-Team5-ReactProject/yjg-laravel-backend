@@ -7,16 +7,6 @@ use Exception;
 class DestroyException extends Exception
 {
     /**
-     * Report the exception.
-     *
-     * @return bool|null
-     */
-    public function report()
-    {
-        //
-    }
-
-    /**
      * Render the exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
