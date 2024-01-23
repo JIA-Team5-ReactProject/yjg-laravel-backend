@@ -1,0 +1,89 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Example",
+        "description": "Example API Documentation",
+        "contact": {
+            "name": "Example",
+            "email": "example@test.com"
+        },
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "유저"
+                ],
+                "summary": "회원가입",
+                "description": "회원가입 시 유저 정보 저장",
+                "operationId": "953cbd71099d3540e7e8ca0f408851d8",
+                "requestBody": {
+                    "description": "유저 회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "umjinsik@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "umjunsik123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/unregister/{id}": {
+            "delete": {
+                "tags": [
+                    "유저"
+                ],
+                "summary": "회원탈퇴",
+                "description": "회원탈퇴",
+                "operationId": "5574376721fa7955ce91aa808cfda184",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "탈퇴할 유저의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        }
+    }
+}
