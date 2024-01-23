@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sleepover_lists', function (Blueprint $table) {
+        Schema::create('restaurant_semesters', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->char('status');
-            $table->string('content');
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->char('menu_type',1);
+            $table->boolean('payment')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,6 +26,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sleepover_lists');
+        Schema::table('restaurant_semesters', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropIfExists();
+        });
     }
 };

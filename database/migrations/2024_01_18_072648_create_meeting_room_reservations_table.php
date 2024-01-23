@@ -13,12 +13,8 @@ return new class extends Migration
     {
         Schema::create('meeting_room_reservations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            
-            $table->unsignedBigInteger('meeting_room_id');
-            $table->foreign('meeting_room_id')->references('id')->on('meeting_rooms');
-
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('meeting_room_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->char('status');
             $table->timestamp('reservation_date');
             $table->softDeletes();
@@ -31,6 +27,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('meeting_room_reservations');
+        Schema::table('meeting_room_reservations', function (Blueprint $table) {
+            $table->dropForeign(['user_id', 'meeting_room_id']);
+            $table->dropIfExists();
+        });
     }
 };

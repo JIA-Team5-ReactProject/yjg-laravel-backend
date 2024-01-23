@@ -24,8 +24,8 @@ return new class extends Migration
             $table->time('g_campus');
             $table->time('en');
             $table->time('munyang');
-            $table->boolean('start_end');
-            $table->boolean('week_end');
+            $table->boolean('start_end'); // 출발, 도착
+            $table->boolean('week_end'); // 주말, 평일
             $table->timestamps();
         });
     }
