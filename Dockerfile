@@ -42,6 +42,8 @@ RUN php artisan route:cache
 
 RUN php artisan view:cache
 
+RUN php artisan l5-swagger:generate
+
 RUN rm -rf .env
 
 ### run php-fpm
