@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name',20);
-            $table->string('email',50)->unique();
+            $table->char('student_id', 7);
+            $table->string('name', 20);
+            $table->string('phone_number', 15);
+            $table->string('email', 50)->unique();
             $table->string('password');
-            $table->boolean('manager')->default(false);
+            $table->boolean('salon_privilege')->default(false);
+            $table->boolean('restaurant_privilege')->default(false);
+            $table->boolean('admin_privilege')->default(false);
             $table->timestamps();
         });
     }
