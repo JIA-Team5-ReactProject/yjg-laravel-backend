@@ -33,7 +33,7 @@ jobs:
       env:
         NGINX_REPO: yeungjin-global-test-nginx
       run: 
-        docker push ${{secrets.DOCKER_HUB_USERNAME}}/$NGINX_REPO${{ github.sha }}
+        docker push ${{secrets.DOCKER_HUB_USERNAME}}/$NGINX_REPO:${{ github.sha }}
   
     - name: Docker compose up in EC2
       uses: appleboy/ssh-action@v1.0.0
