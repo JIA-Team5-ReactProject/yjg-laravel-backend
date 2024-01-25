@@ -18,4 +18,10 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+
+    protected $rules = [
+        'name' => 'required|string',
+        'email' => 'required|string|unique:users',
+        'password' => 'required|string',
+    ];
 }

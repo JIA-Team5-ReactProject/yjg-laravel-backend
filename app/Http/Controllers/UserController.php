@@ -10,12 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    private $rules = [
-        'name' => 'required|string',
-        'email' => 'required|string|unique:users',
-        'password' => 'required|string',
-    ];
-
     /**
      * @OA\Post (
      *     path="/api/register",
@@ -55,20 +49,6 @@ class UserController extends Controller
         ]);
 
         return response()->json($user);
-    }
-
-
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**

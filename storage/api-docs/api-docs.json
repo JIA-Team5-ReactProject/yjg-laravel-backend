@@ -10,6 +10,47 @@
         "version": "0.1"
     },
     "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "유저"
+                ],
+                "summary": "웹 로그인",
+                "description": "웹에서 로그인할 때",
+                "operationId": "941f800f4ba8c3086b4da502258a4d10",
+                "requestBody": {
+                    "description": "로그인에 필요한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "umjinsik@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "umjunsik123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
