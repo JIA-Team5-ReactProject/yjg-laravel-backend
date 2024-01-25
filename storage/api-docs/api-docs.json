@@ -10,16 +10,96 @@
         "version": "0.1"
     },
     "paths": {
-        "/api/login": {
+        "/api/admin/register": {
             "post": {
                 "tags": [
-                    "유저"
+                    "관리자"
                 ],
-                "summary": "웹 로그인",
-                "description": "웹에서 로그인할 때",
-                "operationId": "941f800f4ba8c3086b4da502258a4d10",
+                "summary": "관리자 회원가입",
+                "description": "관리자 회원가입",
+                "operationId": "3ce4673756aca1f9d7cfd2db0b4151d7",
                 "requestBody": {
-                    "description": "로그인에 필요한 정보",
+                    "description": "관리자 회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "관리자"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/unregister/{id}": {
+            "delete": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 탈퇴",
+                "description": "관리자 탈퇴",
+                "operationId": "8252a23fd62fadee8b2395ed74bdc1a7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "탈퇴할 관리자의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/login": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 로그인",
+                "description": "관리자 로그인",
+                "operationId": "f3dc2e45e5fc2ee472d07f01f529af03",
+                "requestBody": {
+                    "description": "관리자 로그인",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -28,17 +108,42 @@
                                     "email": {
                                         "description": "이메일",
                                         "type": "string",
-                                        "example": "umjinsik@gmail.com"
+                                        "example": "admin@gmail.com"
                                     },
                                     "password": {
                                         "description": "비밀번호",
                                         "type": "string",
-                                        "example": "umjunsik123"
+                                        "example": "admin123"
                                     }
                                 },
                                 "type": "object"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/logout": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 로그아웃",
+                "description": "관리자 로그아웃",
+                "operationId": "e72b2aee029d0963731693494aba1b7e",
+                "requestBody": {
+                    "description": "관리자 로그아웃",
+                    "required": true,
+                    "content": {
+                        "application/json": {}
                     }
                 },
                 "responses": {
@@ -58,7 +163,7 @@
                 ],
                 "summary": "회원가입",
                 "description": "회원가입 시 유저 정보 저장",
-                "operationId": "953cbd71099d3540e7e8ca0f408851d8",
+                "operationId": "2f25885f3b6f61ca11724ec302d2e439",
                 "requestBody": {
                     "description": "유저 회원가입 정보",
                     "required": true,
@@ -66,10 +171,20 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
+                                    "student_id": {
+                                        "description": "학번",
+                                        "type": "string",
+                                        "example": "2401234"
+                                    },
                                     "name": {
                                         "description": "사용자 이름",
                                         "type": "string",
                                         "example": "엄준식"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
                                     },
                                     "email": {
                                         "description": "이메일",
@@ -104,7 +219,7 @@
                 ],
                 "summary": "회원탈퇴",
                 "description": "회원탈퇴",
-                "operationId": "5574376721fa7955ce91aa808cfda184",
+                "operationId": "8c41fb549afa6e81e1b4d2433e3dc70a",
                 "parameters": [
                     {
                         "name": "id",
