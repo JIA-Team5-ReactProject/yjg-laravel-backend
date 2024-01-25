@@ -22,7 +22,9 @@ class UserController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
+     *                 @OA\Property (property="student_id", type="string", description="학번", example="2401234"),
      *                 @OA\Property (property="name", type="string", description="사용자 이름", example="엄준식"),
+     *                 @OA\Property (property="phone_number", type="string", description="전화번호", example="01012345678"),
      *                 @OA\Property (property="email", type="string", description="이메일", example="umjinsik@gmail.com"),
      *                 @OA\Property (property="password", type="string", description="비밀번호", example="umjunsik123"),
      *             )
@@ -32,10 +34,10 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="Fail")
      * )
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         try {
-            $validated = $request->validate($this->rules);
+            $validated = $request->validate($this->userValidateRules);
         } catch(ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
@@ -43,20 +45,14 @@ class UserController extends Controller
         }
 
         $user = User::create([
-           'name' => $validated['name'],
-           'email'=>$validated['email'],
-           'password'=>Hash::make($validated['password']),
+           'student_id'   => $validated['student_id'],
+           'name'         => $validated['name'],
+           'phone_number' => $validated['phone_number'],
+           'email'        => $validated['email'],
+           'password'     => Hash::make($validated['password']),
         ]);
 
         return response()->json($user);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     /**
@@ -76,7 +72,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function unregister(string $id)
     {
         if (!User::destroy($id)) {
             throw new DestroyException('Failed to destroy user');
