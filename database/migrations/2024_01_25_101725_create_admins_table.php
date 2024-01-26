@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('salon_privilege')->default(false);
             $table->boolean('restaurant_privilege')->default(false);
             $table->boolean('admin_privilege')->default(false);
+            $table->boolean('approved')->default(false);
             $table->timestamps();
         });
     }
