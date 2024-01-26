@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\DestroyException;
 use App\Models\Admin;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -150,5 +152,61 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         return response()->json(['message' => 'logout successfully']);
+    }
+
+    /**
+     * @OA\Post (
+     *     path="/api/admin/privilege",
+     *     tags={"관리자"},
+     *     summary="관리자 권한 변경",
+     *     description="관리자 권한 변경",
+     *     @OA\RequestBody(
+     *         description="관리자 권한 변경",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *         ),
+     *         @OA\Schema (
+     *             @OA\Property (property="user_id", type="number", description="권한을 부여할 유저 아이디", example=1),
+     *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
+     *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
+     *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function privilege(Request $request) {
+        try {
+            $validated = $request->validate([
+                'user_id'               => 'required|number',
+                'salon_privilege'       => 'required|boolean',
+                'admin_privilege'       => 'required|boolean',
+                'restaurant_privilege'  => 'required|boolean',
+            ]);
+        } catch(ValidationException $validateException) {
+            $errorStatus = $validateException->status;
+            $errorMessage = $validateException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        try {
+            $user = User::firstOrFail($validated['user_id']);
+        } catch(ModelNotFoundException $modelException) {
+            $errorStatus = $modelException->status;
+            $errorMessage = $modelException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        foreach($validated as $key => $value) {
+            $user->$key = $value;
+        }
+
+        if(!$user->save()) {
+            return response()->json(['failed to update privilege'], 500);
+        }
+
+        return response()->json(['update privilege successfully']);
     }
 }

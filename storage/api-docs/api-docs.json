@@ -96,7 +96,7 @@
                     "관리자"
                 ],
                 "summary": "관리자 로그인",
-                "description": "관리자 로그인",
+                "description": "관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
                 "operationId": "f3dc2e45e5fc2ee472d07f01f529af03",
                 "requestBody": {
                     "description": "관리자 로그인",
@@ -141,6 +141,31 @@
                 "operationId": "e72b2aee029d0963731693494aba1b7e",
                 "requestBody": {
                     "description": "관리자 로그아웃",
+                    "required": true,
+                    "content": {
+                        "application/json": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/privilege": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 권한 변경",
+                "description": "관리자 권한 변경",
+                "operationId": "5db7bf00b30a116267f4c1ec729e1bbb",
+                "requestBody": {
+                    "description": "관리자 권한 변경",
                     "required": true,
                     "content": {
                         "application/json": {}
