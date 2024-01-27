@@ -27,7 +27,11 @@ Route::post('/admin/login', [AdminController::class, 'login']);
 
 Route::post('/admin/register',[AdminController::class, 'register']);
 
-Route::post('/admin/privilege', [AdminController::class, 'privilege']);
+Route::patch('/admin/privilege', [AdminController::class, 'privilege']);
+
+Route::patch('/admin/approve', [AdminController::class, 'approveRegistration']);
+
+Route::patch('/admin/update', [AdminController::class, 'updateProfile']);
 
 
 

@@ -155,7 +155,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Post (
+     * @OA\Patch (
      *     path="/api/admin/privilege",
      *     tags={"관리자"},
      *     summary="관리자 권한 변경",
@@ -180,7 +180,7 @@ class AdminController extends Controller
     public function privilege(Request $request) {
         try {
             $validated = $request->validate([
-                'user_id'               => 'required|number',
+                'admin_id'               => 'required|number',
                 'salon_privilege'       => 'required|boolean',
                 'admin_privilege'       => 'required|boolean',
                 'restaurant_privilege'  => 'required|boolean',
@@ -192,7 +192,7 @@ class AdminController extends Controller
         }
 
         try {
-            $user = User::firstOrFail($validated['user_id']);
+            $admin = Admin::firstOrFail($validated['admin_id']);
         } catch(ModelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
@@ -200,13 +200,119 @@ class AdminController extends Controller
         }
 
         foreach($validated as $key => $value) {
-            $user->$key = $value;
+            $admin->$key = $value;
         }
 
-        if(!$user->save()) {
+        if(!$admin->save()) {
             return response()->json(['failed to update privilege'], 500);
         }
 
         return response()->json(['update privilege successfully']);
+    }
+
+    /**
+     * @OA\Patch (
+     *     path="/api/admin/approve",
+     *     tags={"관리자"},
+     *     summary="관리자 회원가입 승인",
+     *     description="관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
+     *     @OA\RequestBody(
+     *         description="아이디 및 승인 여부",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *         ),
+     *         @OA\Schema (
+     *             @OA\Property (property="user_id", type="number", description="권한을 부여할 유저 아이디", example=1),
+     *             @OA\Property (property="approve", type="boolean", description="관리자 회원가입 승인 여부", example=false),
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function approveRegistration(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'admin_id' => 'required|number',
+                'approve'  => 'required|boolean|accepted', // 반드시 참을 의미하는 값을 가져야 함
+            ]);
+        } catch(ValidationException $validationException) {
+                $errorStatus = $validationException->status;
+                $errorMessage = $validationException->getMessage();
+                return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        try {
+            $admin = Admin::firstOrFail($validated['admin_id']);
+        } catch(ModelNotFoundException $modelException) {
+            $errorStatus = $modelException->status;
+            $errorMessage = $modelException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        $admin->approved = true;
+
+        if(!$admin->save()) {
+            return response()->json(['failed to update approve status'], 500);
+        }
+        return response()->json(['update approve status successfully']);
+    }
+
+    /**
+     * @OA\Patch (
+     *     path="/api/admin/update",
+     *     tags={"관리자"},
+     *     summary="관리자 개인정보 수정",
+     *     description="관리자 개인정보 수정",
+     *     @OA\RequestBody(
+     *         description="수정할 관리자 정보",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *         ),
+     *         @OA\Schema (
+     *             @OA\Property (property="user_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
+     *             @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
+     *             @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
+     *             @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'admin_id'      => 'required|number', // 수정할 유저의 아이디
+                'name'          => 'required|string',
+                'phone_number'  => 'required|string|unique:admins',
+                'password'      => 'required|string|',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        // admin_id에 해당하는 모델 검색
+        try {
+            $admin = Admin::firstOrFail($validated['admin_id']);
+        } catch(ModelNotFoundException $modelException) {
+            $errorStatus = $modelException->status;
+            $errorMessage = $modelException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        $admin->name = $validated['name'];
+        $admin->phone_number = $validated['phone_number'];
+        $admin->password = Hash::make($validated['password']);
+
+        if(!$admin->save()) return response()->json(['error' => 'Failed to update profile'], 500);
+
+        return response()->json(['message' => 'Update profile successfully']);
     }
 }
