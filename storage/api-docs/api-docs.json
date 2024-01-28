@@ -96,7 +96,7 @@
                     "관리자"
                 ],
                 "summary": "관리자 로그인",
-                "description": "관리자 로그인",
+                "description": "관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
                 "operationId": "f3dc2e45e5fc2ee472d07f01f529af03",
                 "requestBody": {
                     "description": "관리자 로그인",
@@ -141,6 +141,81 @@
                 "operationId": "e72b2aee029d0963731693494aba1b7e",
                 "requestBody": {
                     "description": "관리자 로그아웃",
+                    "required": true,
+                    "content": {
+                        "application/json": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/privilege": {
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 권한 변경",
+                "description": "관리자 권한 변경",
+                "operationId": "88190d82a8c81cb748a98166ce49fbd9",
+                "requestBody": {
+                    "description": "관리자 권한 변경",
+                    "required": true,
+                    "content": {
+                        "application/json": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/approve": {
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 회원가입 승인",
+                "description": "관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
+                "operationId": "c51cdeec75fb1e61d162fddad4f18b9a",
+                "requestBody": {
+                    "description": "아이디 및 승인 여부",
+                    "required": true,
+                    "content": {
+                        "application/json": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/update": {
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 개인정보 수정",
+                "description": "관리자 개인정보 수정",
+                "operationId": "5be038eb31ecdd2b97c2f156fb4977b5",
+                "requestBody": {
+                    "description": "수정할 관리자 정보",
                     "required": true,
                     "content": {
                         "application/json": {}
