@@ -231,6 +231,71 @@
                 }
             }
         },
+        "/api/admin/verify-email/{email}": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 이메일 중복 확인",
+                "description": "관리자 이메일 중복 확인",
+                "operationId": "df57d1791bc24fde736a807680dcac83",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "중복을 확인할 관리자의 이메일",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/verify-password": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 PW 체크",
+                "description": "관리자 회원정보 수정 페이지 접속 시 PW 체크",
+                "operationId": "d9283f2f3e665a48d264f2ae4c13c0a8",
+                "requestBody": {
+                    "description": "PW",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [

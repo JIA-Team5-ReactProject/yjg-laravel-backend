@@ -30,7 +30,7 @@ class Controller extends BaseController
     protected array $adminValidateRules = [
         'name' => 'required|string',
         'phone_number' => 'required|string',
-        'email' => 'required|string|unique:users',
+        'email' => 'required|string|unique:admins',
         'password' => 'required|string',
     ];
 }

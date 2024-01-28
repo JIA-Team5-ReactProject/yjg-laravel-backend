@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\DestroyException;
 use App\Models\Admin;
-use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -314,5 +313,67 @@ class AdminController extends Controller
         if(!$admin->save()) return response()->json(['error' => 'Failed to update profile'], 500);
 
         return response()->json(['message' => 'Update profile successfully']);
+    }
+
+    /**
+     * @OA\Get (
+     *     path="/api/admin/verify-email/{email}",
+     *     tags={"관리자"},
+     *     summary="관리자 이메일 중복 확인",
+     *     description="관리자 이메일 중복 확인",
+     *      @OA\Parameter(
+     *            name="id",
+     *            description="중복을 확인할 관리자의 이메일",
+     *            required=true,
+     *            in="path",
+     *            @OA\Schema(type="string"),
+     *        ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function verifyUniqueEmail(string $email)
+    {
+        if(Admin::where('email', $email)->first()) return false;
+
+        return true;
+    }
+
+    /**
+     * @OA\Get (
+     *     path="/api/admin/verify-password",
+     *     tags={"관리자"},
+     *     summary="관리자 PW 체크",
+     *     description="관리자 회원정보 수정 페이지 접속 시 PW 체크",
+     *     @OA\RequestBody(
+     *         description="PW",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="password", type="string", description="비밀번호", example="admin123"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function verifyPassword(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'password' => 'required|string',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+        $user = Auth::user(); // 현재 인증된 유저
+
+        if(!Hash::check($validated['password'], $user->getAuthPassword())) return false;
+
+        return true;
     }
 }
