@@ -33,5 +33,8 @@ Route::patch('/admin/approve', [AdminController::class, 'approveRegistration']);
 
 Route::patch('/admin/update', [AdminController::class, 'updateProfile']);
 
+Route::get('/admin/verify-email/{email}', [AdminController::class, 'verifyUniqueEmail']);
+
+Route::get('/admin/verify-password', [AdminController::class, 'verifyPassword']);
 
 
