@@ -18,4 +18,9 @@ class SalonReservation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function salonPrice() {
+        return $this->belongsTo('salon_prices');
+    }
+
 }

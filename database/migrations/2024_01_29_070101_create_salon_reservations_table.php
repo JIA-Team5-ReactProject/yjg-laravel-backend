@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('salon_reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('salon_menu_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-//            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreignId('salon_price_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamp('reservation_date');
             $table->char('status');
             $table->softDeletes();
