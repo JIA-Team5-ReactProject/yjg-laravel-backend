@@ -5,6 +5,8 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
+    
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -169,8 +171,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         \L5Swagger\L5SwaggerServiceProvider::class, // swagger
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ])->toArray(),
 
+    
     /*
     |--------------------------------------------------------------------------
     | Class Aliases
@@ -184,6 +188,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
     ])->toArray(),
 
 ];
