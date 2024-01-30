@@ -54,7 +54,7 @@ class AdminController extends Controller
 
         if(!$admin) return response()->json(['error' => 'Failed to register'],500);
 
-        return response()->json($admin);
+        return response()->json($admin, 201);
     }
 
     /**
