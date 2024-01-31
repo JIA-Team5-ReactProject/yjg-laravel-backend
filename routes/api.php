@@ -19,13 +19,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/admin/unregister/{id}',[AdminController::class, 'unregister']);
+
     Route::post('/admin/logout', [AdminController::class, 'logout']);
 });
+Route::delete('/admin/unregister/{id}',[AdminController::class, 'unregister'])->name('admin.unregister');
 
 Route::post('/admin/login', [AdminController::class, 'login']);
 
-Route::post('/admin/register',[AdminController::class, 'register']);
+Route::post('/admin/register',[AdminController::class, 'register'])->name('admin.register');
 
 Route::patch('/admin/privilege', [AdminController::class, 'privilege']);
 

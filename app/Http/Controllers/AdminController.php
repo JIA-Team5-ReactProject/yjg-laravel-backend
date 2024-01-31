@@ -334,9 +334,11 @@ class AdminController extends Controller
      */
     public function verifyUniqueEmail(string $email)
     {
-        if(Admin::where('email', $email)->first()) return false;
-
-        return true;
+        $admin = Admin::where('email', $email)->first();
+        if(!empty($admin)) {
+            return response()->json(['check' => false]);
+        }
+        return response()->json(['check' => true]);
     }
 
     /**
