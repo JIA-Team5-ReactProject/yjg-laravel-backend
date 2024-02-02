@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('restaurant_privilege')->default(false);
             $table->boolean('admin_privilege')->default(false);
             $table->boolean('approved')->default(false);
+            $table->boolean('master')->default(false);
             $table->timestamps();
         });
     }
