@@ -12,11 +12,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // for testing
+        if(app()->environment() === 'testing'){
+            $this->call([
+                AdminTestSeeder::class,
+            ]);
+        }
+        // for teammate
+        $this->call([
+            AdminSeeder::class,
+        ]);
     }
 }
