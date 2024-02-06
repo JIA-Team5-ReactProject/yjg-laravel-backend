@@ -12,5 +12,11 @@ class RestaurantWeekend extends Model
 
     protected $fillable = [
         'user_id',
+        'menu_type',
+        'sun',
+        'sat',
     ];
+    public function user() {
+        $this->belongsTo(User::class);
+    }
 }

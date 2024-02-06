@@ -33,7 +33,8 @@ class RestaurantWeekendController extends Controller
             ]);
         } catch (\Exception $exception) {
             // 데이터베이스 저장 실패시 애러 메세지
-            return response()->json(['error' => '데이터베이스에 저장하는 중에 오류가 발생했습니다.'], 500);
+            //return response()->json(['error' => '데이터베이스에 저장하는 중에 오류가 발생했습니다.'], 500);
+            return response()->json(['error' =>  $exception->getMessage()], 500);
         }
 
         // 완료 메시지 주기
