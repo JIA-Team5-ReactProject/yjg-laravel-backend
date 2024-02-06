@@ -168,7 +168,33 @@
                     "description": "관리자 권한 변경",
                     "required": true,
                     "content": {
-                        "application/json": {}
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "권한을 부여할 유저 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "salon_privilege": {
+                                        "description": "미용실 권한",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "admin_privilege": {
+                                        "description": "행정 권한",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "restaurant_privilege": {
+                                        "description": "식당 권한",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
                     }
                 },
                 "responses": {
@@ -193,7 +219,23 @@
                     "description": "아이디 및 승인 여부",
                     "required": true,
                     "content": {
-                        "application/json": {}
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "권한을 부여할 관리자의 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "approve": {
+                                        "description": "관리자 회원가입 승인 여부",
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
                     }
                 },
                 "responses": {
@@ -218,7 +260,33 @@
                     "description": "수정할 관리자 정보",
                     "required": true,
                     "content": {
-                        "application/json": {}
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "정보를 수정할 관리자의 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "변경할 이름",
+                                        "type": "string",
+                                        "example": "hyun"
+                                    },
+                                    "phone_number": {
+                                        "description": "변경할 휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
                     }
                 },
                 "responses": {
@@ -261,13 +329,13 @@
             }
         },
         "/api/admin/verify-password": {
-            "get": {
+            "post": {
                 "tags": [
                     "관리자"
                 ],
                 "summary": "관리자 PW 체크",
                 "description": "관리자 회원정보 수정 페이지 접속 시 PW 체크",
-                "operationId": "d9283f2f3e665a48d264f2ae4c13c0a8",
+                "operationId": "21fe94f3668e6a56d0056ec7616a29d6",
                 "requestBody": {
                     "description": "PW",
                     "required": true,
@@ -292,6 +360,50 @@
                     },
                     "500": {
                         "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/find-email": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 이메일 찾기",
+                "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
+                "operationId": "9a7785e09b8df685808cfabcc9390637",
+                "requestBody": {
+                    "description": "name & phone_number(without hyphen)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "testname"
+                                    },
+                                    "phone_number": {
+                                        "description": "휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Model Not Found(해당 하는 값이 없음)"
+                    },
+                    "422": {
+                        "description": "Unprocessable Content(Request body에 올바르게 값을 입력했는지 확인)"
                     }
                 }
             }

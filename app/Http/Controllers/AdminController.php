@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
@@ -119,8 +120,7 @@ class AdminController extends Controller
 
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            return response()->json(['message' => 'logged in successfully']);
+            return Auth::user();
         }
 
         return response()->json(['error' => 'The provided credentials do not match our records.'], 401);
@@ -144,7 +144,7 @@ class AdminController extends Controller
      * )
      */
     public function logout(Request $request) {
-        Auth::logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
@@ -164,12 +164,12 @@ class AdminController extends Controller
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
-     *         ),
-     *         @OA\Schema (
-     *             @OA\Property (property="user_id", type="number", description="권한을 부여할 유저 아이디", example=1),
+     *             @OA\Schema (
+     *             @OA\Property (property="id", type="number", description="권한을 부여할 유저 아이디", example=1),
      *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
      *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
      *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
+     *             )
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
@@ -179,7 +179,7 @@ class AdminController extends Controller
     public function privilege(Request $request) {
         try {
             $validated = $request->validate([
-                'admin_id'               => 'required|number',
+                'id'               => 'required|numeric',
                 'salon_privilege'       => 'required|boolean',
                 'admin_privilege'       => 'required|boolean',
                 'restaurant_privilege'  => 'required|boolean',
@@ -191,7 +191,7 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::firstOrFail($validated['admin_id']);
+            $admin = Admin::findOrFail($validated['id']);
         } catch(ModelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
@@ -206,7 +206,7 @@ class AdminController extends Controller
             return response()->json(['failed to update privilege'], 500);
         }
 
-        return response()->json(['update privilege successfully']);
+        return response()->json(['message' => 'update privilege successfully']);
     }
 
     /**
@@ -220,11 +220,11 @@ class AdminController extends Controller
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *            @OA\Schema (
+     *              @OA\Property (property="admin_id", type="number", description="권한을 부여할 관리자의 아이디", example=1),
+     *              @OA\Property (property="approve", type="boolean", description="관리자 회원가입 승인 여부", example=false),
+     *            )
      *         ),
-     *         @OA\Schema (
-     *             @OA\Property (property="user_id", type="number", description="권한을 부여할 유저 아이디", example=1),
-     *             @OA\Property (property="approve", type="boolean", description="관리자 회원가입 승인 여부", example=false),
-     *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -234,8 +234,8 @@ class AdminController extends Controller
     {
         try {
             $validated = $request->validate([
-                'admin_id' => 'required|number',
-                'approve'  => 'required|boolean|accepted', // 반드시 참을 의미하는 값을 가져야 함
+                'admin_id' => 'required|numeric',
+                'approve'  => 'required|boolean',
             ]);
         } catch(ValidationException $validationException) {
                 $errorStatus = $validationException->status;
@@ -244,7 +244,7 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::firstOrFail($validated['admin_id']);
+            $admin = Admin::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
@@ -254,9 +254,9 @@ class AdminController extends Controller
         $admin->approved = true;
 
         if(!$admin->save()) {
-            return response()->json(['failed to update approve status'], 500);
+            return response()->json(['error' => 'failed to update approve status'], 500);
         }
-        return response()->json(['update approve status successfully']);
+        return response()->json(['message' => 'update approve status successfully']);
     }
 
     /**
@@ -270,13 +270,13 @@ class AdminController extends Controller
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="admin_id", type="number", description="정보를 수정할 관리자의 아이디", example=1),
+     *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
+     *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
+     *                  @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
+     *             )
      *         ),
-     *         @OA\Schema (
-     *             @OA\Property (property="user_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
-     *             @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
-     *             @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
-     *             @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
-     *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -286,7 +286,7 @@ class AdminController extends Controller
     {
         try {
             $validated = $request->validate([
-                'admin_id'      => 'required|number', // 수정할 유저의 아이디
+                'admin_id'      => 'required|numeric', // 수정할 유저의 아이디
                 'name'          => 'required|string',
                 'phone_number'  => 'required|string|unique:admins',
                 'password'      => 'required|string|',
@@ -299,7 +299,7 @@ class AdminController extends Controller
 
         // admin_id에 해당하는 모델 검색
         try {
-            $admin = Admin::firstOrFail($validated['admin_id']);
+            $admin = Admin::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
@@ -334,13 +334,27 @@ class AdminController extends Controller
      */
     public function verifyUniqueEmail(string $email)
     {
-        if(Admin::where('email', $email)->first()) return false;
+        $validator = Validator::make(['email' => $email], [
+            'email' => 'required|email',
+        ]);
+        try {
+            $validator->validate();
+        } catch(ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
 
-        return true;
+        $admin = Admin::where('email', $email)->first();
+
+        if(!empty($admin)) {
+            return response()->json(['check' => false]);
+        }
+        return response()->json(['check' => true]);
     }
 
     /**
-     * @OA\Get (
+     * @OA\Post (
      *     path="/api/admin/verify-password",
      *     tags={"관리자"},
      *     summary="관리자 PW 체크",
@@ -375,5 +389,53 @@ class AdminController extends Controller
         if(!Hash::check($validated['password'], $user->getAuthPassword())) return false;
 
         return true;
+    }
+    /**
+     * @OA\Post (
+     *     path="/api/admin/find-email",
+     *     tags={"관리자"},
+     *     summary="관리자 이메일 찾기",
+     *     description="회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
+     *     @OA\RequestBody(
+     *         description="name & phone_number(without hyphen)",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
+     *                 @OA\Property (property="phone_number", type="string", description="휴대폰 번호", example="01012345678"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="Model Not Found(해당 하는 값이 없음)"),
+     *     @OA\Response(response="422", description="Unprocessable Content(Request body에 올바르게 값을 입력했는지 확인)"),
+     * )
+     */
+    public function findEmail(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string',
+                'phone_number' => 'required|string',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        try {
+            $admin = Admin::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $errorMessage = $modelNotFoundException->getMessage();
+            return response()->json(['error'=>$errorMessage], 404);
+        }
+        return response()->json(['admin' => $admin]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+
     }
 }
