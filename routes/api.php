@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\QRController;
+use App\Http\Controllers\RestaurantSemesterController;
+use App\Http\Controllers\RestaurantWeekendController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +41,9 @@ Route::get('/admin/verify-email/{email}', [AdminController::class, 'verifyUnique
 
 Route::get('/admin/verify-password', [AdminController::class, 'verifyPassword']);
 
+//
 Route::get('/admin/qr', [QRController::class, 'generator']);
+Route::get('/admin/qr-data', [QRController::class, 'getQrData']);
 
-
+Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
+Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
