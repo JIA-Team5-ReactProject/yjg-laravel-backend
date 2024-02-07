@@ -35,7 +35,9 @@ Route::prefix('admin')->group(function() {
     Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueEmail'])->name('admin.verify.email');
     Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
-    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
+//    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
+    Route::get('/unapproved', [AdminController::class, 'unapprovedAdmins'])->name('admin.unapproved');
+    Route::get('/approved', [AdminController::class, 'approvedAdmins'])->name('admin.approved');
 });
 // for testing login
 Route::get('/logintest', function() {

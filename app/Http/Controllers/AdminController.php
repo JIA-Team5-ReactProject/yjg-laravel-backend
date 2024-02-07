@@ -435,19 +435,14 @@ class AdminController extends Controller
         return response()->json(['admin' => $admin]);
     }
 
-//    public function forgotPassword(Request $request)
-//    {
-//        $request->validate([
-//            'email' => 'required|email',
-//            'name'  => 'required|string',
-//        ]);
-//
-//        $status = Password::sendResetLink(
-//            $request->only('email')
-//        );
-//
-//        return $status === Password::RESET_LINK_SENT
-//            ? back()->with(['status' => __($status)])
-//            : back()->withErrors(['email' => __($status)]);
-//    }
+    public function unapprovedAdmins(Request $request)
+    {
+        return response()->json(['admins' => Admin::where('approved', false)->get()]);
+    }
+
+    public function approvedAdmins(Request $request)
+    {
+        return response()->json(['admins' => Admin::where('approved', true)->get()]);
+    }
+
 }
