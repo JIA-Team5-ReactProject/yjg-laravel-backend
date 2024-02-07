@@ -2,82 +2,115 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\DestroyException;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
 {
     /**
-     * @OA\Post (
-     *     path="/api/register",
+     * @OA\Get (
+     *     path="/api/user/login",
      *     tags={"유저"},
-     *     summary="회원가입",
-     *     description="회원가입 시 유저 정보 저장",
-     *     @OA\RequestBody(
-     *         description="유저 회원가입 정보",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="student_id", type="string", description="학번", example="2401234"),
-     *                 @OA\Property (property="name", type="string", description="사용자 이름", example="엄준식"),
-     *                 @OA\Property (property="phone_number", type="string", description="전화번호", example="01012345678"),
-     *                 @OA\Property (property="email", type="string", description="이메일", example="umjinsik@gmail.com"),
-     *                 @OA\Property (property="password", type="string", description="비밀번호", example="umjunsik123"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail")
-     * )
-     */
-    public function register(Request $request)
-    {
-        try {
-            $validated = $request->validate($this->userValidateRules);
-        } catch(ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        $user = User::create([
-           'student_id'   => $validated['student_id'],
-           'name'         => $validated['name'],
-           'phone_number' => $validated['phone_number'],
-           'email'        => $validated['email'],
-           'password'     => Hash::make($validated['password']),
-        ]);
-
-        return response()->json($user);
-    }
-
-    /**
-     * @OA\Delete (
-     *     path="/api/unregister/{id}",
-     *     tags={"유저"},
-     *     summary="회원탈퇴",
-     *     description="회원탈퇴",
-     *      @OA\Parameter(
-     *            name="id",
-     *            description="탈퇴할 유저의 아이디",
-     *            required=true,
-     *            in="path",
-     *            @OA\Schema(type="integer"),
-     *        ),
+     *     summary="로그인",
+     *     description="유저 Google 로그인",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function unregister(string $id)
+    public function registerOrLogin(Request $request)
     {
-        if (!User::destroy($id)) {
-            throw new DestroyException('Failed to destroy user');
+        // 도메인 예외처리
+        // 승인여부 확인하기
+        $gUser = Socialite::driver('google')->stateless()->user();
+
+        $user = User::updateOrCreate([
+            'email' => $gUser->email,
+        ], [
+            'name' => $gUser->name,
+        ]);
+        $data = [
+            'token' => $user->createToken(env('TOKEN_NAME'))->plainTextToken,
+            'user' => $user,
+        ];
+
+        return response()->json(['data' => $data]);
+    }
+
+
+    /**
+     * @OA\Get (
+     *     path="/api/user/logout",
+     *     tags={"유저"},
+     *     summary="로그아웃",
+     *     description="유저 Google 로그아웃",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function logout(Request $request)
+    {
+        $response = $request->user()->currentAccessToken()->delete();
+
+        if(!$response) return response()->json(['error' => 'Failed to logout'], 500);
+
+        return response()->json(['message' => $response]);
+    }
+
+
+    /**
+     * @OA\Patch (
+     *     path="/api/user/update",
+     *     tags={"유저"},
+     *     summary="유저 개인정보 수정",
+     *     description="유저 개인정보 수정",
+     *     @OA\RequestBody(
+     *         description="수정할 유저의 정보",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="admin_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
+     *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
+     *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
+     *             )
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function update(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'user_id'      => 'required|numeric', // 수정할 유저의 아이디
+                'name'          => 'required|string',
+                'phone_number'  => 'required|string|unique:admins',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        return response()->json(['message'=>'Destroy user successfully']);
+        // user_id에 해당하는 모델 검색
+        try {
+            $user = User::findOrFail($validated['user_id']);
+        } catch(ModelNotFoundException $modelException) {
+            $errorStatus = $modelException->status;
+            $errorMessage = $modelException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        $user->name = $validated['name'];
+        $user->phone_number = $validated['phone_number'];
+
+        if(!$user->save()) return response()->json(['error' => 'Failed to update profile'], 500);
+
+        return response()->json(['message' => 'Update profile successfully']);
     }
+
 }

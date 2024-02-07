@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    Route::post('/user/logout', [UserController::class, 'logout'])->name('user.logout');
 });
 
 Route::prefix('admin')->group(function() {
@@ -32,8 +35,19 @@ Route::prefix('admin')->group(function() {
     Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueEmail'])->name('admin.verify.email');
     Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
-    Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
+//    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
+    Route::get('/unapproved', [AdminController::class, 'unapprovedAdmins'])->name('admin.unapproved');
+    Route::get('/approved', [AdminController::class, 'approvedAdmins'])->name('admin.approved');
+});
+// for testing login
+Route::get('/logintest', function() {
+    return 'test';
 });
 
 
 
+Route::prefix('user')->group(function () {
+    Route::get('/login', AuthController::class);
+    Route::get('/auth/callback', [UserController::class, 'registerOrLogin'])->name('user.register.login');
+    Route::patch('/update' , [UserController::class, 'update'])->name('user.update');
+});

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -386,7 +387,7 @@ class AdminController extends Controller
         }
         $user = Auth::user(); // 현재 인증된 유저
 
-        if(!Hash::check($validated['password'], $user->getAuthPassword())) return false;
+        if(!Hash::check($validated['password'], $request->user()->password)) return false;
 
         return true;
     }
@@ -433,9 +434,33 @@ class AdminController extends Controller
         }
         return response()->json(['admin' => $admin]);
     }
-
-    public function resetPassword(Request $request)
+    /**
+     * @OA\Get (
+     *     path="/api/admin/unapproved",
+     *     tags={"관리자"},
+     *     summary="미승인 관리자 목록",
+     *     description="승인되지 않은 관리자를 admins 배열에 반환",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function unapprovedAdmins(Request $request)
     {
-
+        return response()->json(['admins' => Admin::where('approved', false)->get()]);
     }
+    /**
+     * @OA\Get (
+     *     path="/api/admin/approved",
+     *     tags={"관리자"},
+     *     summary="승인된 관리자 목록",
+     *     description="승인된 관리자를 admins 배열에 반환",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function approvedAdmins(Request $request)
+    {
+        return response()->json(['admins' => Admin::where('approved', true)->get()]);
+    }
+
 }

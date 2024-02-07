@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('sat')->default(false);
             $table->boolean('sun')->default(false);
-            $table->char('meal_type',1);
+            $table->char('menu_type',1);
             $table->softDeletes();
             $table->timestamps();
         });

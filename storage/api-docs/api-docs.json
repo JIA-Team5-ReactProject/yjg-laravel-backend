@@ -1,12 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Example",
-        "description": "Example API Documentation",
-        "contact": {
-            "name": "Example",
-            "email": "example@test.com"
-        },
+        "title": "Yeungjin-Global",
+        "description": "YJG API Documentation",
         "version": "0.1"
     },
     "paths": {
@@ -408,52 +404,50 @@
                 }
             }
         },
-        "/api/register": {
-            "post": {
+        "/api/admin/unapproved": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "미승인 관리자 목록",
+                "description": "승인되지 않은 관리자를 admins 배열에 반환",
+                "operationId": "6b9ab353d41e7f4cb8f82b51f38976ea",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/admin/approved": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "승인된 관리자 목록",
+                "description": "승인된 관리자를 admins 배열에 반환",
+                "operationId": "0b8563f19942991eb28b4829dc444e2a",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "get": {
                 "tags": [
                     "유저"
                 ],
-                "summary": "회원가입",
-                "description": "회원가입 시 유저 정보 저장",
-                "operationId": "2f25885f3b6f61ca11724ec302d2e439",
-                "requestBody": {
-                    "description": "유저 회원가입 정보",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "student_id": {
-                                        "description": "학번",
-                                        "type": "string",
-                                        "example": "2401234"
-                                    },
-                                    "name": {
-                                        "description": "사용자 이름",
-                                        "type": "string",
-                                        "example": "엄준식"
-                                    },
-                                    "phone_number": {
-                                        "description": "전화번호",
-                                        "type": "string",
-                                        "example": "01012345678"
-                                    },
-                                    "email": {
-                                        "description": "이메일",
-                                        "type": "string",
-                                        "example": "umjinsik@gmail.com"
-                                    },
-                                    "password": {
-                                        "description": "비밀번호",
-                                        "type": "string",
-                                        "example": "umjunsik123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
+                "summary": "로그인",
+                "description": "유저 Google 로그인",
+                "operationId": "3828b2d2429cb36b282f39af907400fd",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -464,25 +458,60 @@
                 }
             }
         },
-        "/api/unregister/{id}": {
-            "delete": {
+        "/api/user/logout": {
+            "get": {
                 "tags": [
                     "유저"
                 ],
-                "summary": "회원탈퇴",
-                "description": "회원탈퇴",
-                "operationId": "8c41fb549afa6e81e1b4d2433e3dc70a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "탈퇴할 유저의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "summary": "로그아웃",
+                "description": "유저 Google 로그아웃",
+                "operationId": "ce1198b25bfa5128b32a934266cb9f01",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user/update": {
+            "patch": {
+                "tags": [
+                    "유저"
+                ],
+                "summary": "유저 개인정보 수정",
+                "description": "유저 개인정보 수정",
+                "operationId": "409b26ebbd6fa8b5b5118e67d9c715cb",
+                "requestBody": {
+                    "description": "수정할 유저의 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "정보를 수정할 유저의 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "변경할 이름",
+                                        "type": "string",
+                                        "example": "hyun"
+                                    },
+                                    "phone_number": {
+                                        "description": "변경할 휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
