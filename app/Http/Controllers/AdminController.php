@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -386,7 +387,7 @@ class AdminController extends Controller
         }
         $user = Auth::user(); // 현재 인증된 유저
 
-        if(!Hash::check($validated['password'], $user->getAuthPassword())) return false;
+        if(!Hash::check($validated['password'], $request->user()->password)) return false;
 
         return true;
     }
@@ -434,8 +435,19 @@ class AdminController extends Controller
         return response()->json(['admin' => $admin]);
     }
 
-    public function resetPassword(Request $request)
-    {
-
-    }
+//    public function forgotPassword(Request $request)
+//    {
+//        $request->validate([
+//            'email' => 'required|email',
+//            'name'  => 'required|string',
+//        ]);
+//
+//        $status = Password::sendResetLink(
+//            $request->only('email')
+//        );
+//
+//        return $status === Password::RESET_LINK_SENT
+//            ? back()->with(['status' => __($status)])
+//            : back()->withErrors(['email' => __($status)]);
+//    }
 }
