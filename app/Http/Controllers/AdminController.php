@@ -434,12 +434,30 @@ class AdminController extends Controller
         }
         return response()->json(['admin' => $admin]);
     }
-
+    /**
+     * @OA\Get (
+     *     path="/api/admin/unapproved",
+     *     tags={"관리자"},
+     *     summary="미승인 관리자 목록",
+     *     description="승인되지 않은 관리자를 admins 배열에 반환",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
     public function unapprovedAdmins(Request $request)
     {
         return response()->json(['admins' => Admin::where('approved', false)->get()]);
     }
-
+    /**
+     * @OA\Get (
+     *     path="/api/admin/approved",
+     *     tags={"관리자"},
+     *     summary="승인된 관리자 목록",
+     *     description="승인된 관리자를 admins 배열에 반환",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
     public function approvedAdmins(Request $request)
     {
         return response()->json(['admins' => Admin::where('approved', true)->get()]);

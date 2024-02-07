@@ -404,6 +404,42 @@
                 }
             }
         },
+        "/api/admin/unapproved": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "미승인 관리자 목록",
+                "description": "승인되지 않은 관리자를 admins 배열에 반환",
+                "operationId": "6b9ab353d41e7f4cb8f82b51f38976ea",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/admin/approved": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "승인된 관리자 목록",
+                "description": "승인된 관리자를 admins 배열에 반환",
+                "operationId": "0b8563f19942991eb28b4829dc444e2a",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
         "/api/user/login": {
             "get": {
                 "tags": [
