@@ -25,7 +25,6 @@ class UserController extends Controller
         // 도메인 예외처리
         // 승인여부 확인하기
         $gUser = Socialite::driver('google')->stateless()->user();
-
         $user = User::updateOrCreate([
             'email' => $gUser->email,
         ], [
