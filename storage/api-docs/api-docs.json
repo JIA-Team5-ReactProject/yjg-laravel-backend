@@ -11,7 +11,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 회원가입",
+                "summary": "회원가입",
                 "description": "관리자 회원가입",
                 "operationId": "3ce4673756aca1f9d7cfd2db0b4151d7",
                 "requestBody": {
@@ -62,7 +62,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 탈퇴",
+                "summary": "탈퇴",
                 "description": "관리자 탈퇴",
                 "operationId": "8252a23fd62fadee8b2395ed74bdc1a7",
                 "parameters": [
@@ -91,11 +91,11 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 로그인",
+                "summary": "로그인",
                 "description": "관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
                 "operationId": "f3dc2e45e5fc2ee472d07f01f529af03",
                 "requestBody": {
-                    "description": "관리자 로그인",
+                    "description": "관리자 로그인을 위한 정보",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -132,16 +132,9 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 로그아웃",
+                "summary": "로그아웃",
                 "description": "관리자 로그아웃",
                 "operationId": "e72b2aee029d0963731693494aba1b7e",
-                "requestBody": {
-                    "description": "관리자 로그아웃",
-                    "required": true,
-                    "content": {
-                        "application/json": {}
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -157,11 +150,11 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 권한 변경",
+                "summary": "권한 변경",
                 "description": "관리자 권한 변경",
                 "operationId": "88190d82a8c81cb748a98166ce49fbd9",
                 "requestBody": {
-                    "description": "관리자 권한 변경",
+                    "description": "관리자 권한 변경을 위한 값 및 아이디",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -208,7 +201,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 회원가입 승인",
+                "summary": "회원가입 승인",
                 "description": "관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
                 "operationId": "c51cdeec75fb1e61d162fddad4f18b9a",
                 "requestBody": {
@@ -249,7 +242,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 개인정보 수정",
+                "summary": "개인정보 수정",
                 "description": "관리자 개인정보 수정",
                 "operationId": "5be038eb31ecdd2b97c2f156fb4977b5",
                 "requestBody": {
@@ -300,7 +293,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 이메일 중복 확인",
+                "summary": "이메일 중복 확인",
                 "description": "관리자 이메일 중복 확인",
                 "operationId": "df57d1791bc24fde736a807680dcac83",
                 "parameters": [
@@ -329,7 +322,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 PW 체크",
+                "summary": "PW 체크",
                 "description": "관리자 회원정보 수정 페이지 접속 시 PW 체크",
                 "operationId": "21fe94f3668e6a56d0056ec7616a29d6",
                 "requestBody": {
@@ -365,7 +358,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "관리자 이메일 찾기",
+                "summary": "이메일 찾기",
                 "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
                 "operationId": "9a7785e09b8df685808cfabcc9390637",
                 "requestBody": {
@@ -447,7 +440,7 @@
                 ],
                 "summary": "로그인",
                 "description": "유저 Google 로그인",
-                "operationId": "3828b2d2429cb36b282f39af907400fd",
+                "operationId": "cf18b8e6c92271c036a266cc11807aba",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -465,7 +458,7 @@
                 ],
                 "summary": "로그아웃",
                 "description": "유저 Google 로그아웃",
-                "operationId": "ce1198b25bfa5128b32a934266cb9f01",
+                "operationId": "fb6c74f127514f2061272d190bb3d605",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -479,9 +472,10 @@
         "/api/user/update": {
             "patch": {
                 "tags": [
-                    "유저"
+                    "유저",
+                    "외국인"
                 ],
-                "summary": "유저 개인정보 수정",
+                "summary": "개인정보 수정",
                 "description": "유저 개인정보 수정",
                 "operationId": "409b26ebbd6fa8b5b5118e67d9c715cb",
                 "requestBody": {
@@ -505,6 +499,57 @@
                                         "description": "변경할 휴대폰 번호",
                                         "type": "string",
                                         "example": "01012345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user/foreigner/register": {
+            "post": {
+                "tags": [
+                    "외국인"
+                ],
+                "summary": "회원가입",
+                "description": "외국인 유저 회원가입",
+                "operationId": "f57b40633f4cb39709a6ffb07fedeb0b",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "관리자"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
                                     }
                                 },
                                 "type": "object"
