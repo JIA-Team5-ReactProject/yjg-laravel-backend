@@ -45,9 +45,15 @@ Route::get('/logintest', function() {
 });
 
 
-
 Route::prefix('user')->group(function () {
     Route::get('/login', AuthController::class);
-    Route::get('/auth/callback', [UserController::class, 'registerOrLogin'])->name('user.register.login');
+    Route::get('/auth/callback', [UserController::class, 'googleRegisterOrLogin'])->name('user.login');
     Route::patch('/update' , [UserController::class, 'update'])->name('user.update');
+    Route::prefix('foreigner')->group(function () {
+        Route::post('/register', [UserController::class, 'foreignerRegister'])->name('foreigner.register');
+        Route::post('/login', [UserController::class, 'foreignerLogin'])->name('foreigner.login');
+    });
 });
+
+
+
