@@ -39,15 +39,21 @@ Route::prefix('admin')->group(function() {
     Route::get('/unapproved', [AdminController::class, 'unapprovedAdmins'])->name('admin.unapproved');
     Route::get('/approved', [AdminController::class, 'approvedAdmins'])->name('admin.approved');
 });
-// for testing login
-Route::get('/logintest', function() {
-    return 'test';
-});
-
 
 
 Route::prefix('user')->group(function () {
     Route::get('/login', AuthController::class);
-    Route::get('/auth/callback', [UserController::class, 'registerOrLogin'])->name('user.register.login');
+    Route::get('/auth/callback', [UserController::class, 'googleRegisterOrLogin'])->name('user.login');
     Route::patch('/update' , [UserController::class, 'update'])->name('user.update');
+    Route::delete('/unregister/{id}',[UserController::class, 'unregister'])->name('user.unregister');
+    Route::prefix('foreigner')->group(function () {
+        Route::post('/register', [UserController::class, 'foreignerRegister'])->name('foreigner.register');
+        Route::post('/login', [UserController::class, 'foreignerLogin'])->name('foreigner.login');
+        Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('foreigner.approve');
+        Route::get('/unapproved', [UserController::class, 'unapprovedForeigners'])->name('foreigner.unapproved');
+        Route::get('/approved', [UserController::class, 'approvedForeigners'])->name('foreigner.approved');
+    });
 });
+
+
+

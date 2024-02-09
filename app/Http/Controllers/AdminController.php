@@ -18,7 +18,7 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/register",
      *     tags={"관리자"},
-     *     summary="관리자 회원가입",
+     *     summary="회원가입",
      *     description="관리자 회원가입",
      *     @OA\RequestBody(
      *         description="관리자 회원가입 정보",
@@ -63,7 +63,7 @@ class AdminController extends Controller
      * @OA\Delete (
      *     path="/api/admin/unregister/{id}",
      *     tags={"관리자"},
-     *     summary="관리자 탈퇴",
+     *     summary="탈퇴",
      *     description="관리자 탈퇴",
      *      @OA\Parameter(
      *            name="id",
@@ -89,10 +89,10 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/login",
      *     tags={"관리자"},
-     *     summary="관리자 로그인",
+     *     summary="로그인",
      *     description="관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
      *     @OA\RequestBody(
-     *         description="관리자 로그인",
+     *         description="관리자 로그인을 위한 정보",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -131,15 +131,8 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/logout",
      *     tags={"관리자"},
-     *     summary="관리자 로그아웃",
+     *     summary="로그아웃",
      *     description="관리자 로그아웃",
-     *     @OA\RequestBody(
-     *         description="관리자 로그아웃",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *         )
-     *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
@@ -158,10 +151,10 @@ class AdminController extends Controller
      * @OA\Patch (
      *     path="/api/admin/privilege",
      *     tags={"관리자"},
-     *     summary="관리자 권한 변경",
+     *     summary="권한 변경",
      *     description="관리자 권한 변경",
      *     @OA\RequestBody(
-     *         description="관리자 권한 변경",
+     *         description="관리자 권한 변경을 위한 값 및 아이디",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -214,7 +207,7 @@ class AdminController extends Controller
      * @OA\Patch (
      *     path="/api/admin/approve",
      *     tags={"관리자"},
-     *     summary="관리자 회원가입 승인",
+     *     summary="회원가입 승인",
      *     description="관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
      *     @OA\RequestBody(
      *         description="아이디 및 승인 여부",
@@ -264,7 +257,7 @@ class AdminController extends Controller
      * @OA\Patch (
      *     path="/api/admin/update",
      *     tags={"관리자"},
-     *     summary="관리자 개인정보 수정",
+     *     summary="개인정보 수정",
      *     description="관리자 개인정보 수정",
      *     @OA\RequestBody(
      *         description="수정할 관리자 정보",
@@ -320,7 +313,7 @@ class AdminController extends Controller
      * @OA\Get (
      *     path="/api/admin/verify-email/{email}",
      *     tags={"관리자"},
-     *     summary="관리자 이메일 중복 확인",
+     *     summary="이메일 중복 확인",
      *     description="관리자 이메일 중복 확인",
      *      @OA\Parameter(
      *            name="id",
@@ -358,7 +351,7 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/verify-password",
      *     tags={"관리자"},
-     *     summary="관리자 PW 체크",
+     *     summary="PW 체크",
      *     description="관리자 회원정보 수정 페이지 접속 시 PW 체크",
      *     @OA\RequestBody(
      *         description="PW",
@@ -395,7 +388,7 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/find-email",
      *     tags={"관리자"},
-     *     summary="관리자 이메일 찾기",
+     *     summary="이메일 찾기",
      *     description="회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
      *     @OA\RequestBody(
      *         description="name & phone_number(without hyphen)",
