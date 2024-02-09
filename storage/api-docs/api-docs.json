@@ -454,11 +454,12 @@
         "/api/user/logout": {
             "get": {
                 "tags": [
-                    "유저"
+                    "유저",
+                    "유학생"
                 ],
                 "summary": "로그아웃",
                 "description": "유저 Google 로그아웃",
-                "operationId": "fb6c74f127514f2061272d190bb3d605",
+                "operationId": "ce1198b25bfa5128b32a934266cb9f01",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -473,7 +474,7 @@
             "patch": {
                 "tags": [
                     "유저",
-                    "외국인"
+                    "유학생"
                 ],
                 "summary": "개인정보 수정",
                 "description": "유저 개인정보 수정",
@@ -519,10 +520,10 @@
         "/api/user/foreigner/register": {
             "post": {
                 "tags": [
-                    "외국인"
+                    "유학생"
                 ],
                 "summary": "회원가입",
-                "description": "외국인 유저 회원가입",
+                "description": "유학생 회원가입",
                 "operationId": "f57b40633f4cb39709a6ffb07fedeb0b",
                 "requestBody": {
                     "description": "회원가입 정보",
@@ -557,6 +558,154 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user/foreigner/login": {
+            "post": {
+                "tags": [
+                    "유학생"
+                ],
+                "summary": "로그인",
+                "description": "유학생 로그인",
+                "operationId": "b4d3681ac1bcc877b51214b976937c6a",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user/approve": {
+            "patch": {
+                "tags": [
+                    "유학생"
+                ],
+                "summary": "회원가입 승인",
+                "description": "유학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
+                "operationId": "b9008e7773c9380471942d61111ce488",
+                "requestBody": {
+                    "description": "아이디 및 승인 여부",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "권한을 부여할 유학생의 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "approve": {
+                                        "description": "유학생 회원가입 승인 여부",
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user/unapproved": {
+            "get": {
+                "tags": [
+                    "유학생"
+                ],
+                "summary": "미승인 유학생 목록",
+                "description": "승인되지 않은 유학생을 admins 배열에 반환",
+                "operationId": "0c91efaa0c080a9f9f97d4155b30dff8",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/user/approved": {
+            "get": {
+                "tags": [
+                    "유학생"
+                ],
+                "summary": "승인된 유학생 목록",
+                "description": "승인된 유학생을 admins 배열에 반환",
+                "operationId": "9f64f32991a522bb530b9d87fc66e4b1",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/user/unregister/{id}": {
+            "delete": {
+                "tags": [
+                    "유저",
+                    "유학생"
+                ],
+                "summary": "탈퇴",
+                "description": "일반 학생 및 유학생 탈퇴",
+                "operationId": "9d7774c683224381d0383c471ec82c6b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "탈퇴할 학생, 유학생의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
