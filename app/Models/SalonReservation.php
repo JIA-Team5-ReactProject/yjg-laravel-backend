@@ -20,7 +20,7 @@ class SalonReservation extends Model
     }
 
     public function salonPrice() {
-        return $this->belongsTo('salon_prices');
+        return $this->belongsTo(SalonPrice::class);
     }
 
 }
