@@ -433,6 +433,261 @@
                 }
             }
         },
+        "/api/admin/salon-category/store": {
+            "post": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "카테고리 생성",
+                "description": "미용실 카테고리 생성",
+                "operationId": "5c92668a2ef90bbbc3d44730e3fca9f4",
+                "requestBody": {
+                    "description": "카테고리 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_name": {
+                                        "description": "카테고리 명",
+                                        "type": "string",
+                                        "example": "커트"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-category/update": {
+            "patch": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "카테고리 수정",
+                "description": "카테고리 이름 수정",
+                "operationId": "4657c0a483ba6b4d79d6a1247aa01223",
+                "requestBody": {
+                    "description": "카테고리 수정을 위한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "description": "카테고리 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_name": {
+                                        "description": "카테고리 명",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "404": {
+                        "description": "Model Not Found Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-category/destroy/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "카테고리 삭제",
+                "description": "미용실 카테고리 삭제",
+                "operationId": "c28fb577ad5fb509516e549a0301c3e3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 카테고리의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-service/store": {
+            "post": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "서비스 생성",
+                "description": "미용실 서비스 생성",
+                "operationId": "46789a23c7bc3c307c5674c4764b4fcd",
+                "requestBody": {
+                    "description": "서비스 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "description": "카테고리 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "service_name": {
+                                        "description": "서비스 명",
+                                        "type": "string",
+                                        "example": "커트"
+                                    },
+                                    "price_male": {
+                                        "description": "남성 가격",
+                                        "type": "string",
+                                        "example": "12345"
+                                    },
+                                    "price_female": {
+                                        "description": "여성 가격",
+                                        "type": "string",
+                                        "example": "54321"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-service/update": {
+            "patch": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "서비스 수정",
+                "description": "미용실 서비스 수정",
+                "operationId": "15105a64312fe1108fd3c4bd0de2dfff",
+                "requestBody": {
+                    "description": "서비스 수정을 위한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "service_id": {
+                                        "description": "카테고리 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "service_name": {
+                                        "description": "카테고리 명",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    },
+                                    "price_male": {
+                                        "description": "남성 가격",
+                                        "type": "string",
+                                        "example": "54321"
+                                    },
+                                    "price_female": {
+                                        "description": "여성 가격",
+                                        "type": "string",
+                                        "example": "12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "404": {
+                        "description": "Model Not Found Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-service/destroy/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "서비스 삭제",
+                "description": "미용실 서비스 삭제",
+                "operationId": "7fe8d91ac68b6bc6bc6ba92f486b08b4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/user/login": {
             "get": {
                 "tags": [

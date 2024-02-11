@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SalonCategoryController;
+use App\Http\Controllers\SalonServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,8 +40,21 @@ Route::prefix('admin')->group(function() {
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
     Route::get('/unapproved', [AdminController::class, 'unapprovedAdmins'])->name('admin.unapproved');
     Route::get('/approved', [AdminController::class, 'approvedAdmins'])->name('admin.approved');
+    Route::prefix('salon-category')->group(function() {
+       Route::post('/store', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
+       Route::patch('/update', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
+       Route::delete('/destroy', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
+    });
+    Route::prefix('salon-service')->group(function () {
+        Route::post('/store', [SalonServiceController::class, 'store'])->name('admin.salon.service.store');
+        Route::patch('/update', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
+        Route::delete('/destroy/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
+    });
+    Route::prefix('salon-reservation')->group(function () {
+       Route::get('/index', [SalonServiceController::class, 'index'])->name('admin.salon.reservation.index');
+       Route::patch('/status', [SalonServiceController::class, 'updateStatus'])->name('admin.salon.reservation.status');
+    });
 });
-
 
 Route::prefix('user')->group(function () {
     Route::get('/login', AuthController::class);

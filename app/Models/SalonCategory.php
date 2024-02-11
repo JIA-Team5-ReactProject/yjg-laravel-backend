@@ -15,6 +15,6 @@ class SalonCategory extends Model
 
     public function salonServices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany('salon_services');
+        return $this->hasMany(SalonService::class);
     }
 }
