@@ -52,8 +52,7 @@ Route::prefix('admin')->group(function() {
     });
     Route::prefix('salon-reservation')->group(function () {
        Route::get('/index', [SalonServiceController::class, 'index'])->name('admin.salon.reservation.index');
-       Route::patch('/confirm/{id}', [SalonServiceController::class, 'updateConfirm'])->name('admin.salon.reservation.confirm');
-       Route::patch('/refuse/{id}', [SalonServiceController::class, 'updateRefuse'])->name('admin.salon.reservation.refuse');
+       Route::patch('/status', [SalonServiceController::class, 'updateStatus'])->name('admin.salon.reservation.status');
     });
 });
 
