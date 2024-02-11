@@ -50,6 +50,11 @@ Route::prefix('admin')->group(function() {
         Route::patch('/update', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
         Route::delete('/destroy/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
     });
+    Route::prefix('salon-reservation')->group(function () {
+       Route::get('/index', [SalonServiceController::class, 'index'])->name('admin.salon.reservation.index');
+       Route::patch('/confirm/{id}', [SalonServiceController::class, 'updateConfirm'])->name('admin.salon.reservation.confirm');
+       Route::patch('/refuse/{id}', [SalonServiceController::class, 'updateRefuse'])->name('admin.salon.reservation.refuse');
+    });
 });
 
 Route::prefix('user')->group(function () {

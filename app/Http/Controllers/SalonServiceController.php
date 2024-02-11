@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class SalonServiceController extends Controller
 {
+    // For Admin
     /**
      * @OA\Post (
      *     path="/api/admin/salon-service/store",
@@ -161,4 +162,6 @@ class SalonServiceController extends Controller
         }
         return response()->json(['success' => 'Service deleted successfully']);
     }
+
+    // For Student
 }
