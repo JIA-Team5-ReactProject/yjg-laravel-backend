@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
-use App\Models\SalonPrice;
+use App\Http\Controllers\Controller;
 use App\Models\SalonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class SalonServiceController extends Controller
+class AdminSalonServiceController extends Controller
 {
     // For Admin
     /**
      * @OA\Post (
-     *     path="/api/admin/salon-service/store",
+     *     path="/api/admin/salon-service",
      *     tags={"미용실"},
      *     summary="서비스 생성",
      *     description="미용실 서비스 생성",
@@ -76,7 +76,7 @@ class SalonServiceController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/salon-service/update",
+     *     path="/api/admin/salon-service",
      *     tags={"미용실"},
      *     summary="서비스 수정",
      *     description="미용실 서비스 수정",
@@ -140,7 +140,7 @@ class SalonServiceController extends Controller
     }
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-service/destroy/{id}",
+     *     path="/api/admin/salon-service/{id}",
      *     tags={"미용실"},
      *     summary="서비스 삭제",
      *     description="미용실 서비스 삭제",

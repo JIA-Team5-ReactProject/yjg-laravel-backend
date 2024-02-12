@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SalonCategoryController;
-use App\Http\Controllers\SalonServiceController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminSalonCategoryController;
+use App\Http\Controllers\Admin\AdminSalonReservationController;
+use App\Http\Controllers\Admin\AdminSalonServiceController;
+use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,46 +29,44 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('admin')->group(function() {
-    Route::delete('/unregister/{id}',[AdminController::class, 'unregister'])->name('admin.unregister');
+    Route::post('/',[AdminController::class, 'register'])->name('admin.register');
     Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
-    Route::post('/register',[AdminController::class, 'register'])->name('admin.register');
-    Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
-    Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
-    Route::patch('/update', [AdminController::class, 'updateProfile'])->name('admin.update');
-    Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueEmail'])->name('admin.verify.email');
     Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
+    Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
+    Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
+    Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
+    Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueEmail'])->name('admin.verify.email');
+    Route::get('/', [AdminController::class, 'adminList'])->name('admin.list');
+    Route::delete('/{id}',[AdminController::class, 'unregister'])->name('admin.unregister');
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
-    Route::get('/unapproved', [AdminController::class, 'unapprovedAdmins'])->name('admin.unapproved');
-    Route::get('/approved', [AdminController::class, 'approvedAdmins'])->name('admin.approved');
     Route::prefix('salon-category')->group(function() {
-       Route::post('/store', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
-       Route::patch('/update', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
-       Route::delete('/destroy', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
+       Route::post('/', [AdminSalonCategoryController::class, 'store'])->name('admin.salon.category.store');
+       Route::patch('/', [AdminSalonCategoryController::class, 'update'])->name('admin.salon.category.update');
+       Route::delete('/', [AdminSalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
     });
     Route::prefix('salon-service')->group(function () {
-        Route::post('/store', [SalonServiceController::class, 'store'])->name('admin.salon.service.store');
-        Route::patch('/update', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
-        Route::delete('/destroy/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
+        Route::post('/', [AdminSalonServiceController::class, 'store'])->name('admin.salon.service.store');
+        Route::patch('/', [AdminSalonServiceController::class, 'update'])->name('admin.salon.service.update');
+        Route::delete('/{id}', [AdminSalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
     });
     Route::prefix('salon-reservation')->group(function () {
-       Route::get('/index', [SalonServiceController::class, 'index'])->name('admin.salon.reservation.index');
-       Route::patch('/status', [SalonServiceController::class, 'updateStatus'])->name('admin.salon.reservation.status');
+       Route::get('/', [AdminSalonReservationController::class, 'index'])->name('admin.salon.reservation.index');
+       Route::patch('/', [AdminSalonReservationController::class, 'update'])->name('admin.salon.reservation.status');
     });
 });
 
 Route::prefix('user')->group(function () {
     Route::get('/login', AuthController::class);
     Route::get('/auth/callback', [UserController::class, 'googleRegisterOrLogin'])->name('user.login');
-    Route::patch('/update' , [UserController::class, 'update'])->name('user.update');
-    Route::delete('/unregister/{id}',[UserController::class, 'unregister'])->name('user.unregister');
+    Route::patch('/' , [UserController::class, 'update'])->name('user.update');
+    Route::delete('/{id}',[UserController::class, 'unregister'])->name('user.unregister');
     Route::prefix('foreigner')->group(function () {
-        Route::post('/register', [UserController::class, 'foreignerRegister'])->name('foreigner.register');
+        Route::post('/', [UserController::class, 'foreignerRegister'])->name('foreigner.register');
         Route::post('/login', [UserController::class, 'foreignerLogin'])->name('foreigner.login');
         Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('foreigner.approve');
-        Route::get('/unapproved', [UserController::class, 'unapprovedForeigners'])->name('foreigner.unapproved');
-        Route::get('/approved', [UserController::class, 'approvedForeigners'])->name('foreigner.approved');
     });
+    Route::get('/', [UserController::class, 'userList'])->name('user.list');
 });
 
 

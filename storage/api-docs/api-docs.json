@@ -6,14 +6,48 @@
         "version": "0.1"
     },
     "paths": {
-        "/api/admin/register": {
+        "/api/admin": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "승인 혹은 미승인 관리자 목록",
+                "description": "파라미터 값에 맞는 관리자를 admins 배열에 반환",
+                "operationId": "b394f29447b7b843675678e339c06a46",
+                "requestBody": {
+                    "description": "승인 관리자 조회의 경우 true, 미승인 관리자 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "승인 미승인 여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "관리자"
                 ],
                 "summary": "회원가입",
                 "description": "관리자 회원가입",
-                "operationId": "3ce4673756aca1f9d7cfd2db0b4151d7",
+                "operationId": "330bf4b4c2d26b6cc5dccc4ee9b5d85b",
                 "requestBody": {
                     "description": "관리자 회원가입 정보",
                     "required": true,
@@ -55,16 +89,65 @@
                         "description": "Fail"
                     }
                 }
+            },
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "개인정보 수정",
+                "description": "관리자 개인정보 수정",
+                "operationId": "840c6bfc1212262b3c4bc4346b5eb49b",
+                "requestBody": {
+                    "description": "수정할 관리자 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "정보를 수정할 관리자의 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "변경할 이름",
+                                        "type": "string",
+                                        "example": "hyun"
+                                    },
+                                    "phone_number": {
+                                        "description": "변경할 휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
             }
         },
-        "/api/admin/unregister/{id}": {
+        "/api/admin/{id}": {
             "delete": {
                 "tags": [
                     "관리자"
                 ],
                 "summary": "탈퇴",
                 "description": "관리자 탈퇴",
-                "operationId": "8252a23fd62fadee8b2395ed74bdc1a7",
+                "operationId": "038b8c5ef16a324eea76080ed8f8b5c0",
                 "parameters": [
                     {
                         "name": "id",
@@ -237,65 +320,14 @@
                 }
             }
         },
-        "/api/admin/update": {
-            "patch": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "개인정보 수정",
-                "description": "관리자 개인정보 수정",
-                "operationId": "5be038eb31ecdd2b97c2f156fb4977b5",
-                "requestBody": {
-                    "description": "수정할 관리자 정보",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "admin_id": {
-                                        "description": "정보를 수정할 관리자의 아이디",
-                                        "type": "number",
-                                        "example": 1
-                                    },
-                                    "name": {
-                                        "description": "변경할 이름",
-                                        "type": "string",
-                                        "example": "hyun"
-                                    },
-                                    "phone_number": {
-                                        "description": "변경할 휴대폰 번호",
-                                        "type": "string",
-                                        "example": "01012345678"
-                                    },
-                                    "password": {
-                                        "description": "변경할 비밀번호",
-                                        "type": "string",
-                                        "example": "asdf123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/admin/verify-email/{email}": {
-            "get": {
+            "post": {
                 "tags": [
                     "관리자"
                 ],
                 "summary": "이메일 중복 확인",
                 "description": "관리자 이메일 중복 확인",
-                "operationId": "df57d1791bc24fde736a807680dcac83",
+                "operationId": "e899018c145df74cfbb84816c9d34ee1",
                 "parameters": [
                     {
                         "name": "id",
@@ -397,50 +429,14 @@
                 }
             }
         },
-        "/api/admin/unapproved": {
-            "get": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "미승인 관리자 목록",
-                "description": "승인되지 않은 관리자를 admins 배열에 반환",
-                "operationId": "6b9ab353d41e7f4cb8f82b51f38976ea",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/admin/approved": {
-            "get": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "승인된 관리자 목록",
-                "description": "승인된 관리자를 admins 배열에 반환",
-                "operationId": "0b8563f19942991eb28b4829dc444e2a",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/admin/salon-category/store": {
+        "/api/admin/salon-category": {
             "post": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "카테고리 생성",
                 "description": "미용실 카테고리 생성",
-                "operationId": "5c92668a2ef90bbbc3d44730e3fca9f4",
+                "operationId": "1623c74f12b1d643bd93fbff37190405",
                 "requestBody": {
                     "description": "카테고리 관련 정보",
                     "required": true,
@@ -470,16 +466,14 @@
                         "description": "Fail"
                     }
                 }
-            }
-        },
-        "/api/admin/salon-category/update": {
+            },
             "patch": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "카테고리 수정",
                 "description": "카테고리 이름 수정",
-                "operationId": "4657c0a483ba6b4d79d6a1247aa01223",
+                "operationId": "ca82a30ef062dad96f146e2638908588",
                 "requestBody": {
                     "description": "카테고리 수정을 위한 정보",
                     "required": true,
@@ -519,14 +513,14 @@
                 }
             }
         },
-        "/api/admin/salon-category/destroy/{id}": {
+        "/api/admin/salon-category/{id}": {
             "delete": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "카테고리 삭제",
                 "description": "미용실 카테고리 삭제",
-                "operationId": "c28fb577ad5fb509516e549a0301c3e3",
+                "operationId": "4a6e673bc39f29ddfde5ba8a26dd6073",
                 "parameters": [
                     {
                         "name": "id",
@@ -548,14 +542,14 @@
                 }
             }
         },
-        "/api/admin/salon-service/store": {
+        "/api/admin/salon-service": {
             "post": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "서비스 생성",
                 "description": "미용실 서비스 생성",
-                "operationId": "46789a23c7bc3c307c5674c4764b4fcd",
+                "operationId": "b6666da7e288b316e8d8541adb656de7",
                 "requestBody": {
                     "description": "서비스 관련 정보",
                     "required": true,
@@ -600,16 +594,14 @@
                         "description": "Fail"
                     }
                 }
-            }
-        },
-        "/api/admin/salon-service/update": {
+            },
             "patch": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "서비스 수정",
                 "description": "미용실 서비스 수정",
-                "operationId": "15105a64312fe1108fd3c4bd0de2dfff",
+                "operationId": "2c33a18b4a05c556c387b0508938e3bb",
                 "requestBody": {
                     "description": "서비스 수정을 위한 정보",
                     "required": true,
@@ -659,14 +651,14 @@
                 }
             }
         },
-        "/api/admin/salon-service/destroy/{id}": {
+        "/api/admin/salon-service/{id}": {
             "delete": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "서비스 삭제",
                 "description": "미용실 서비스 삭제",
-                "operationId": "7fe8d91ac68b6bc6bc6ba92f486b08b4",
+                "operationId": "81fe0de408ea901ee6c1e40d48f5960b",
                 "parameters": [
                     {
                         "name": "id",
@@ -691,7 +683,7 @@
         "/api/user/login": {
             "get": {
                 "tags": [
-                    "유저"
+                    "학생"
                 ],
                 "summary": "로그인",
                 "description": "유저 Google 로그인",
@@ -709,7 +701,7 @@
         "/api/user/logout": {
             "get": {
                 "tags": [
-                    "유저",
+                    "학생",
                     "유학생"
                 ],
                 "summary": "로그아웃",
@@ -725,15 +717,49 @@
                 }
             }
         },
-        "/api/user/update": {
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "학생, 유학생"
+                ],
+                "summary": "승인 혹은 미승인 학생 목록",
+                "description": "파라미터 값에 맞는 학생을 users 배열에 반환",
+                "operationId": "9a33a7991dd631537edb2e2a3be7380e",
+                "requestBody": {
+                    "description": "승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "승인 미승인 여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
             "patch": {
                 "tags": [
-                    "유저",
+                    "학생",
                     "유학생"
                 ],
                 "summary": "개인정보 수정",
                 "description": "유저 개인정보 수정",
-                "operationId": "409b26ebbd6fa8b5b5118e67d9c715cb",
+                "operationId": "ea88adacb890b864b59bcce5aff2473d",
                 "requestBody": {
                     "description": "수정할 유저의 정보",
                     "required": true,
@@ -772,14 +798,14 @@
                 }
             }
         },
-        "/api/user/foreigner/register": {
+        "/api/user/foreigner": {
             "post": {
                 "tags": [
                     "유학생"
                 ],
                 "summary": "회원가입",
                 "description": "유학생 회원가입",
-                "operationId": "f57b40633f4cb39709a6ffb07fedeb0b",
+                "operationId": "e3c59f50fd3cf9453ba68f2119b64008",
                 "requestBody": {
                     "description": "회원가입 정보",
                     "required": true,
@@ -905,43 +931,7 @@
                 }
             }
         },
-        "/api/user/unapproved": {
-            "get": {
-                "tags": [
-                    "유학생"
-                ],
-                "summary": "미승인 유학생 목록",
-                "description": "승인되지 않은 유학생을 admins 배열에 반환",
-                "operationId": "0c91efaa0c080a9f9f97d4155b30dff8",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/user/approved": {
-            "get": {
-                "tags": [
-                    "유학생"
-                ],
-                "summary": "승인된 유학생 목록",
-                "description": "승인된 유학생을 admins 배열에 반환",
-                "operationId": "9f64f32991a522bb530b9d87fc66e4b1",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/user/unregister/{id}": {
+        "/api/user/{id}": {
             "delete": {
                 "tags": [
                     "유저",
@@ -949,7 +939,7 @@
                 ],
                 "summary": "탈퇴",
                 "description": "일반 학생 및 유학생 탈퇴",
-                "operationId": "9d7774c683224381d0383c471ec82c6b",
+                "operationId": "0da2c76df478e3b3a461c612f0e4030e",
                 "parameters": [
                     {
                         "name": "id",

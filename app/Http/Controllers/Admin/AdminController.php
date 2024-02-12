@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
+use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
     /**
      * @OA\Post (
-     *     path="/api/admin/register",
+     *     path="/api/admin",
      *     tags={"관리자"},
      *     summary="회원가입",
      *     description="관리자 회원가입",
@@ -61,7 +60,7 @@ class AdminController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/unregister/{id}",
+     *     path="/api/admin/{id}",
      *     tags={"관리자"},
      *     summary="탈퇴",
      *     description="관리자 탈퇴",
@@ -255,7 +254,7 @@ class AdminController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/update",
+     *     path="/api/admin",
      *     tags={"관리자"},
      *     summary="개인정보 수정",
      *     description="관리자 개인정보 수정",
@@ -310,7 +309,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Get (
+     * @OA\POST (
      *     path="/api/admin/verify-email/{email}",
      *     tags={"관리자"},
      *     summary="이메일 중복 확인",
@@ -326,20 +325,19 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function verifyUniqueEmail(string $email)
+    public function verifyUniqueEmail(Request $request)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email',
-        ]);
         try {
-            $validator->validate();
+            $validated = $request->validate([
+                'required|email',
+            ]);
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admin = Admin::where('email', $email)->first();
+        $admin = Admin::where('email', $validated['email'])->first();
 
         if(!empty($admin)) {
             return response()->json(['check' => false]);
@@ -429,31 +427,38 @@ class AdminController extends Controller
     }
     /**
      * @OA\Get (
-     *     path="/api/admin/unapproved",
+     *     path="/api/admin",
      *     tags={"관리자"},
-     *     summary="미승인 관리자 목록",
-     *     description="승인되지 않은 관리자를 admins 배열에 반환",
+     *     summary="승인 혹은 미승인 관리자 목록",
+     *     description="파라미터 값에 맞는 관리자를 admins 배열에 반환",
+     *     @OA\RequestBody(
+     *     description="승인 관리자 조회의 경우 true, 미승인 관리자 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+     *     required=false,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="type", type="boolean", description="승인 미승인 여부", example=true),
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function unapprovedAdmins(Request $request)
+    public function adminList(Request $request)
     {
-        return response()->json(['admins' => Admin::where('approved', false)->get()]);
-    }
-    /**
-     * @OA\Get (
-     *     path="/api/admin/approved",
-     *     tags={"관리자"},
-     *     summary="승인된 관리자 목록",
-     *     description="승인된 관리자를 admins 배열에 반환",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function approvedAdmins(Request $request)
-    {
-        return response()->json(['admins' => Admin::where('approved', true)->get()]);
-    }
+        try {
+            $validated = $request->validate([
+                'type' => 'boolean',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
 
+        if(!isset($validated['type'])) return response()->json(['admins' => Admin::all()]);
+
+        return response()->json(['admins' => Admin::where('approved', $validated['type'])->get()]);
+    }
 }
