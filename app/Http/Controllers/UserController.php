@@ -16,7 +16,7 @@ class UserController extends Controller
     /**
      * @OA\Get (
      *     path="/api/user/login",
-     *     tags={"유저"},
+     *     tags={"학생"},
      *     summary="로그인",
      *     description="유저 Google 로그인",
      *     @OA\Response(response="200", description="Success"),
@@ -44,7 +44,7 @@ class UserController extends Controller
     /**
      * @OA\Get (
      *     path="/api/user/logout",
-     *     tags={"유저", "유학생"},
+     *     tags={"학생", "유학생"},
      *     summary="로그아웃",
      *     description="유저 Google 로그아웃",
      *     @OA\Response(response="200", description="Success"),
@@ -63,8 +63,8 @@ class UserController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/user/update",
-     *     tags={"유저", "유학생"},
+     *     path="/api/user",
+     *     tags={"학생", "유학생"},
      *     summary="개인정보 수정",
      *     description="유저 개인정보 수정",
      *     @OA\RequestBody(
@@ -116,7 +116,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/user/foreigner/register",
+     *     path="/api/user/foreigner",
      *     tags={"유학생"},
      *     summary="회원가입",
      *     description="유학생 회원가입",
@@ -264,37 +264,45 @@ class UserController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/user/unapproved",
-     *     tags={"유학생"},
-     *     summary="미승인 유학생 목록",
-     *     description="승인되지 않은 유학생을 admins 배열에 반환",
+     *     path="/api/user",
+     *     tags={"학생, 유학생"},
+     *     summary="승인 혹은 미승인 학생 목록",
+     *     description="파라미터 값에 맞는 학생을 users 배열에 반환",
+     *     @OA\RequestBody(
+     *     description="승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+     *     required=false,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="type", type="boolean", description="승인 미승인 여부", example=true),
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function unapprovedForeigners(Request $request)
+    public function userList(Request $request)
     {
-        return response()->json(['users' => User::where('approved', false)->get()]);
-    }
+        try {
+            $validated = $request->validate([
+                'type' => 'boolean',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
 
-    /**
-     * @OA\Get (
-     *     path="/api/user/approved",
-     *     tags={"유학생"},
-     *     summary="승인된 유학생 목록",
-     *     description="승인된 유학생을 admins 배열에 반환",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function approvedForeigners(Request $request)
-    {
-        return response()->json(['users' => User::where('approved', true)->get()]);
+        if(!isset($validated['type'])) $users = User::all();
+        else $users = User::where('approved' , $validated['type'])->get();
+
+        return response()->json(['users' => $users]);
     }
 
     /**
      * @OA\Delete (
-     *     path="/api/user/unregister/{id}",
+     *     path="/api/user/{id}",
      *     tags={"유저", "유학생"},
      *     summary="탈퇴",
      *     description="일반 학생 및 유학생 탈퇴",
