@@ -13,7 +13,7 @@
                 ],
                 "summary": "승인 혹은 미승인 관리자 목록",
                 "description": "파라미터 값에 맞는 관리자를 admins 배열에 반환",
-                "operationId": "b394f29447b7b843675678e339c06a46",
+                "operationId": "1aa48cc3a601191997d32b65056c2b17",
                 "requestBody": {
                     "description": "승인 관리자 조회의 경우 true, 미승인 관리자 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
                     "required": false,
@@ -47,7 +47,7 @@
                 ],
                 "summary": "회원가입",
                 "description": "관리자 회원가입",
-                "operationId": "330bf4b4c2d26b6cc5dccc4ee9b5d85b",
+                "operationId": "93a50f4facd7dd356c2551cec4d799ca",
                 "requestBody": {
                     "description": "관리자 회원가입 정보",
                     "required": true,
@@ -96,7 +96,7 @@
                 ],
                 "summary": "개인정보 수정",
                 "description": "관리자 개인정보 수정",
-                "operationId": "840c6bfc1212262b3c4bc4346b5eb49b",
+                "operationId": "f0fe63e23f0955f57c772d77e62889e4",
                 "requestBody": {
                     "description": "수정할 관리자 정보",
                     "required": true,
@@ -147,7 +147,7 @@
                 ],
                 "summary": "탈퇴",
                 "description": "관리자 탈퇴",
-                "operationId": "038b8c5ef16a324eea76080ed8f8b5c0",
+                "operationId": "dd4995c3a6252650b5a00f9bf0fe0327",
                 "parameters": [
                     {
                         "name": "id",
@@ -176,7 +176,7 @@
                 ],
                 "summary": "로그인",
                 "description": "관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
-                "operationId": "f3dc2e45e5fc2ee472d07f01f529af03",
+                "operationId": "ee8b4f31d1a5652cb5942d928603e931",
                 "requestBody": {
                     "description": "관리자 로그인을 위한 정보",
                     "required": true,
@@ -217,7 +217,7 @@
                 ],
                 "summary": "로그아웃",
                 "description": "관리자 로그아웃",
-                "operationId": "e72b2aee029d0963731693494aba1b7e",
+                "operationId": "6aab0886c63cb87c77d644c8e51c3b83",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -235,7 +235,7 @@
                 ],
                 "summary": "권한 변경",
                 "description": "관리자 권한 변경",
-                "operationId": "88190d82a8c81cb748a98166ce49fbd9",
+                "operationId": "34229bc1cfc14b18a8f1838ce8db3d18",
                 "requestBody": {
                     "description": "관리자 권한 변경을 위한 값 및 아이디",
                     "required": true,
@@ -286,7 +286,7 @@
                 ],
                 "summary": "회원가입 승인",
                 "description": "관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
-                "operationId": "c51cdeec75fb1e61d162fddad4f18b9a",
+                "operationId": "53e00267ec8c72df658417c9c01ae034",
                 "requestBody": {
                     "description": "아이디 및 승인 여부",
                     "required": true,
@@ -327,7 +327,7 @@
                 ],
                 "summary": "이메일 중복 확인",
                 "description": "관리자 이메일 중복 확인",
-                "operationId": "e899018c145df74cfbb84816c9d34ee1",
+                "operationId": "7661c5bb470a4c79bcb9608495eb86ea",
                 "parameters": [
                     {
                         "name": "id",
@@ -356,7 +356,7 @@
                 ],
                 "summary": "PW 체크",
                 "description": "관리자 회원정보 수정 페이지 접속 시 PW 체크",
-                "operationId": "21fe94f3668e6a56d0056ec7616a29d6",
+                "operationId": "12bd4782914028b06286dda93a3a0d41",
                 "requestBody": {
                     "description": "PW",
                     "required": true,
@@ -392,7 +392,7 @@
                 ],
                 "summary": "이메일 찾기",
                 "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
-                "operationId": "9a7785e09b8df685808cfabcc9390637",
+                "operationId": "b443fe54d453512bf0dcfe4311ea2912",
                 "requestBody": {
                     "description": "name & phone_number(without hyphen)",
                     "required": true,
@@ -436,7 +436,7 @@
                 ],
                 "summary": "카테고리 생성",
                 "description": "미용실 카테고리 생성",
-                "operationId": "1623c74f12b1d643bd93fbff37190405",
+                "operationId": "d865d35d470595a3f189b3c0566e1643",
                 "requestBody": {
                     "description": "카테고리 관련 정보",
                     "required": true,
@@ -473,7 +473,7 @@
                 ],
                 "summary": "카테고리 수정",
                 "description": "카테고리 이름 수정",
-                "operationId": "ca82a30ef062dad96f146e2638908588",
+                "operationId": "e64f49d4a6fbd943f2aed89f4c665c2a",
                 "requestBody": {
                     "description": "카테고리 수정을 위한 정보",
                     "required": true,
@@ -520,7 +520,7 @@
                 ],
                 "summary": "카테고리 삭제",
                 "description": "미용실 카테고리 삭제",
-                "operationId": "4a6e673bc39f29ddfde5ba8a26dd6073",
+                "operationId": "87098ad73895887fd5d857419e95d009",
                 "parameters": [
                     {
                         "name": "id",
@@ -542,6 +542,99 @@
                 }
             }
         },
+        "/api/admin/salon-reservation": {
+            "get": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약 검색",
+                "description": "미용실 예약 검색",
+                "operationId": "259e551390c073313c7e33be1e6f7d86",
+                "requestBody": {
+                    "description": "검색할 옵션",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "description": "예약의 상태(SCR 중 하나로 보내면 됨, 각각 Submit, Confirm, Reject 임)",
+                                        "type": "char",
+                                        "example": "S"
+                                    },
+                                    "start_date": {
+                                        "description": "검색 시작일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2001-01-29"
+                                    },
+                                    "end_date": {
+                                        "description": "검색 종료일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-02-12"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약 정보 업데이트(관리자)",
+                "description": "미용실 예약 상태를 업데이트",
+                "operationId": "b37a047096d300cdb4f8f84849feb261",
+                "requestBody": {
+                    "description": "업데이트할 상태 및 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "예약 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "description": "예약의 상태(C,R 중 하나로 보내면 됨, 각각 Confirm, Reject 임)",
+                                        "type": "char",
+                                        "example": "R"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/admin/salon-service": {
             "post": {
                 "tags": [
@@ -549,7 +642,7 @@
                 ],
                 "summary": "서비스 생성",
                 "description": "미용실 서비스 생성",
-                "operationId": "b6666da7e288b316e8d8541adb656de7",
+                "operationId": "9a77977a5074f01866b74d17f49305ab",
                 "requestBody": {
                     "description": "서비스 관련 정보",
                     "required": true,
@@ -601,7 +694,7 @@
                 ],
                 "summary": "서비스 수정",
                 "description": "미용실 서비스 수정",
-                "operationId": "2c33a18b4a05c556c387b0508938e3bb",
+                "operationId": "63d446a88f5baccdc17e1a10954b8a92",
                 "requestBody": {
                     "description": "서비스 수정을 위한 정보",
                     "required": true,
@@ -658,7 +751,7 @@
                 ],
                 "summary": "서비스 삭제",
                 "description": "미용실 서비스 삭제",
-                "operationId": "81fe0de408ea901ee6c1e40d48f5960b",
+                "operationId": "031eff04e7d2a51fc7071e3bdb65ea5f",
                 "parameters": [
                     {
                         "name": "id",
@@ -687,7 +780,7 @@
                 ],
                 "summary": "로그인",
                 "description": "유저 Google 로그인",
-                "operationId": "cf18b8e6c92271c036a266cc11807aba",
+                "operationId": "41d97a651bbdd987dda255209cc578cd",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -706,7 +799,7 @@
                 ],
                 "summary": "로그아웃",
                 "description": "유저 Google 로그아웃",
-                "operationId": "ce1198b25bfa5128b32a934266cb9f01",
+                "operationId": "c9a0f004b340af9bd5848972fba78d08",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -724,7 +817,7 @@
                 ],
                 "summary": "승인 혹은 미승인 학생 목록",
                 "description": "파라미터 값에 맞는 학생을 users 배열에 반환",
-                "operationId": "9a33a7991dd631537edb2e2a3be7380e",
+                "operationId": "d317735745268edceff53dba390dcceb",
                 "requestBody": {
                     "description": "승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
                     "required": false,
@@ -759,7 +852,7 @@
                 ],
                 "summary": "개인정보 수정",
                 "description": "유저 개인정보 수정",
-                "operationId": "ea88adacb890b864b59bcce5aff2473d",
+                "operationId": "bb324e71bdf9f967232c58475ecbe350",
                 "requestBody": {
                     "description": "수정할 유저의 정보",
                     "required": true,
@@ -805,7 +898,7 @@
                 ],
                 "summary": "회원가입",
                 "description": "유학생 회원가입",
-                "operationId": "e3c59f50fd3cf9453ba68f2119b64008",
+                "operationId": "cbdb5292e9560ce496c12b8a0cc29f96",
                 "requestBody": {
                     "description": "회원가입 정보",
                     "required": true,
@@ -856,7 +949,7 @@
                 ],
                 "summary": "로그인",
                 "description": "유학생 로그인",
-                "operationId": "b4d3681ac1bcc877b51214b976937c6a",
+                "operationId": "39e923277f2d84a89b3171e6d98227b4",
                 "requestBody": {
                     "description": "회원가입 정보",
                     "required": true,
@@ -897,7 +990,7 @@
                 ],
                 "summary": "회원가입 승인",
                 "description": "유학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
-                "operationId": "b9008e7773c9380471942d61111ce488",
+                "operationId": "104985906292896376471e2145beb3e5",
                 "requestBody": {
                     "description": "아이디 및 승인 여부",
                     "required": true,
@@ -939,7 +1032,7 @@
                 ],
                 "summary": "탈퇴",
                 "description": "일반 학생 및 유학생 탈퇴",
-                "operationId": "0da2c76df478e3b3a461c612f0e4030e",
+                "operationId": "30e379b8383ecf7961ec3abd88fe2c70",
                 "parameters": [
                     {
                         "name": "id",
