@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
+use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use function PHPUnit\Framework\isEmpty;
 
 class AdminController extends Controller
 {

@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
+use App\Http\Controllers\Controller;
 use App\Models\SalonCategory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class SalonCategoryController extends Controller
+class AdminSalonCategoryController extends Controller
 {
     /**
      * @OA\Post (
-     *     path="/api/admin/salon-category/store",
+     *     path="/api/admin/salon-category",
      *     tags={"미용실"},
      *     summary="카테고리 생성",
      *     description="미용실 카테고리 생성",
@@ -53,7 +54,7 @@ class SalonCategoryController extends Controller
     }
     /**
      * @OA\Patch (
-     *     path="/api/admin/salon-category/update",
+     *     path="/api/admin/salon-category",
      *     tags={"미용실"},
      *     summary="카테고리 수정",
      *     description="카테고리 이름 수정",
@@ -104,7 +105,7 @@ class SalonCategoryController extends Controller
     }
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-category/destroy/{id}",
+     *     path="/api/admin/salon-category/{id}",
      *     tags={"미용실"},
      *     summary="카테고리 삭제",
      *     description="미용실 카테고리 삭제",
