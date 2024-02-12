@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    Route::post('/user/logout', [UserController::class, 'logout'])->name('user.logout');
+    Route::post('/user/logout', [UserController::class, 'logout'])  ->name('user.logout');
 });
 
 Route::prefix('admin')->group(function() {
@@ -51,7 +51,7 @@ Route::prefix('admin')->group(function() {
         Route::delete('/{id}', [AdminSalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
     });
     Route::prefix('salon-reservation')->group(function () {
-       Route::get('/', [AdminSalonReservationController::class, 'index'])->name('admin.salon.reservation.index');
+       Route::get('/', [AdminSalonReservationController::class, 'show'])->name('admin.salon.reservation.show');
        Route::patch('/', [AdminSalonReservationController::class, 'update'])->name('admin.salon.reservation.status');
     });
 });
