@@ -7,7 +7,6 @@ jobs:
   move-opened-issue:
     runs-on: ubuntu-latest
     steps:
-      - name: move issues
       - uses: alex-page/github-project-automation-plus@v0.9.0
         with:
           project: Backend
