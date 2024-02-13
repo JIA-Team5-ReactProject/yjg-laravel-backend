@@ -12,3 +12,9 @@ jobs:
           project: Backend
           column: 예정
           repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: echo
+        shell: bash
+        run: |
+          echo "GH_REPO: $GH_REPO"
+        env:
+          GH_REPO: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
