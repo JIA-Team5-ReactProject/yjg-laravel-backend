@@ -10,11 +10,5 @@ jobs:
       - uses: alex-page/github-project-automation-plus@v0.9.0
         with:
           project: Backend
-          column: 예정
+          column: Todo
           repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: echo
-        shell: bash
-        run: |
-          echo "GH_REPO: $GH_REPO"
-        env:
-          GH_REPO: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
