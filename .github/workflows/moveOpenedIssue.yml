@@ -11,4 +11,4 @@ jobs:
         with:
           project: Backend
           column: 예정
-          repo-token: ${{ secrets.TOKEN }}
+          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
