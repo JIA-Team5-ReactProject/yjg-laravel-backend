@@ -2,7 +2,8 @@ name: 'Auto Assign'
 
 on:
   pull_request_target:
-    branches: [ "develop" ]
+    branches: 
+      - develop
     
 jobs:
   add-reviews:
