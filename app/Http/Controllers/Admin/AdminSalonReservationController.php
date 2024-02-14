@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SalonReservation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AdminSalonReservationController extends Controller
@@ -22,7 +23,7 @@ class AdminSalonReservationController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="status", type="char", description="예약의 상태(SCR 중 하나로 보내면 됨, 각각 Submit, Confirm, Reject 임)", example="S"),
+     *                 @OA\Property (property="status", type="char", description="예약의 상태(submit confirm reject 중 하나로 보내면 됨)", example="submit"),
      *                 @OA\Property (property="start_date", type="date", description="검색 시작일", example="2001-01-29"),
      *                 @OA\Property (property="end_date", type="date", description="검색 종료일", example="2023-02-12"),
      *             )
@@ -35,9 +36,10 @@ class AdminSalonReservationController extends Controller
      */
     public function show(Request $request)
     {
+        $statusRule = ['S', 'C', 'R'];
         try {
             $validated = $request->validate([
-                'status' => 'size:1',
+                'status' => ['string', Rule::in($statusRule)],
                 'start_date' => 'date',
                 'end_date' => 'date',
             ]);
@@ -47,11 +49,9 @@ class AdminSalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
+        $query = SalonReservation::with(['user:id,name', 'salonPrice.salonService:id,service']);
         if(isset($validated['status'])) {
-            $query = SalonReservation::with(['user:id,name', 'salonPrice.salonService:id,service'])->where('status', $validated['status']);
-        }
-        else {
-            $query = SalonReservation::with(['user:id,name', 'salonPrice.salonService:id,service']);
+            $query = $query->where('status', $validated['status']);
         }
 
         if(isset($validated['start_date'])) {
