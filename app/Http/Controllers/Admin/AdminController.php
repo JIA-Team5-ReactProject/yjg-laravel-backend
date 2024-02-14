@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
@@ -432,12 +433,12 @@ class AdminController extends Controller
      *     summary="승인 혹은 미승인 관리자 목록",
      *     description="파라미터 값에 맞는 관리자를 admins 배열에 반환",
      *     @OA\RequestBody(
-     *     description="승인 관리자 조회의 경우 true, 미승인 관리자 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+     *     description="승인 관리자 조회의 경우 approved, 미승인 관리자 조회의 경우 unapproved, 전체 조회 시에는 body 없이 요청만",
      *     required=false,
      *         @OA\MediaType(
      *         mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="type", type="boolean", description="승인 미승인 여부", example=true),
+     *                 @OA\Property (property="type", type="string", description="승인 미승인 여부", example="approved"),
      *             )
      *         )
      *     ),
@@ -447,9 +448,11 @@ class AdminController extends Controller
      */
     public function adminList(Request $request)
     {
+        $typeRule = ['approved', 'unapproved'];
+
         try {
             $validated = $request->validate([
-                'type' => 'boolean',
+                'type' => ['string', Rule::in($typeRule)],
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -457,8 +460,17 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if(!isset($validated['type'])) return response()->json(['admins' => Admin::all()]);
+        $admins = Admin::all();
 
-        return response()->json(['admins' => Admin::where('approved', $validated['type'])->get()]);
+        if(isset($validated['type'])) {
+            if($validated['type'] == 'approved') {
+                $admins = $admins->where('approved', true);
+            } else if($validated['type'] == 'unapproved') {
+                $admins = $admins->where('approved', false);
+            }
+        }
+
+
+        return response()->json(['admins' => $admins]);
     }
 }
