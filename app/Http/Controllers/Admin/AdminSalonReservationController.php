@@ -48,21 +48,29 @@ class AdminSalonReservationController extends Controller
         }
 
         if(isset($validated['status'])) {
-            $reservations = SalonReservation::where('status', $validated['status'])->get();
+            $query = SalonReservation::with(['user:id,name', 'salonPrice.salonService:id,service'])->where('status', $validated['status']);
         }
         else {
-            $reservations = SalonReservation::all();
+            $query = SalonReservation::with(['user:id,name', 'salonPrice.salonService:id,service']);
         }
 
         if(isset($validated['start_date'])) {
             $start_date = date('Y-m-d 00:00:00', strtotime($validated['start_date']));
-            $reservations = $reservations->where('reservation_date', '>=', $start_date);
+            $query = $query->where('reservation_date', '>=', $start_date);
         }
 
         if(isset($validated['end_date'])) {
             $end_date = date('Y-m-d 23:59:59', strtotime($validated['end_date']));
-            $reservations = $reservations->where('reservation_date', '<=', $end_date);
+            $query = $query->where('reservation_date', '<=', $end_date);
         }
+
+        $reservations = $query->get();
+
+        $reservations->map(function ($item) {
+            $item['user_name'] = $item->user['name'];
+            $item['service_name'] = $item->salonPrice->salonService['service'];
+            unset($item['user'], $item['salonPrice']);
+        });
 
         return response()->json(['reservations' => $reservations]);
     }
