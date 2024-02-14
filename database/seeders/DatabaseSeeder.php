@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         // for teammate
         $this->call([
             AdminSeeder::class,
+            SalonSeeder::class,
         ]);
     }
 }
