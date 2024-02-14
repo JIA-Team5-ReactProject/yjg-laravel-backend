@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('restaurant_menus', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('date');
+            $table->date('date');
             $table->string('menu');
-            $table->char('meal_type',1);
+            $table->char('meal_type',2);
             $table->timestamps();
         });
     }
