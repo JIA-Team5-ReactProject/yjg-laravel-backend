@@ -10,6 +10,7 @@ class SalonReservation extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
+        'reservation_time',
         'reservation_date',
         'status',
     ];
