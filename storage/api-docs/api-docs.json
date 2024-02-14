@@ -15,7 +15,7 @@
                 "description": "파라미터 값에 맞는 관리자를 admins 배열에 반환",
                 "operationId": "1aa48cc3a601191997d32b65056c2b17",
                 "requestBody": {
-                    "description": "승인 관리자 조회의 경우 true, 미승인 관리자 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+                    "description": "승인 관리자 조회의 경우 approved, 미승인 관리자 조회의 경우 unapproved, 전체 조회 시에는 body 없이 요청만",
                     "required": false,
                     "content": {
                         "application/json": {
@@ -23,8 +23,8 @@
                                 "properties": {
                                     "type": {
                                         "description": "승인 미승인 여부",
-                                        "type": "boolean",
-                                        "example": true
+                                        "type": "string",
+                                        "example": "approved"
                                     }
                                 },
                                 "type": "object"
@@ -558,9 +558,9 @@
                             "schema": {
                                 "properties": {
                                     "status": {
-                                        "description": "예약의 상태(SCR 중 하나로 보내면 됨, 각각 Submit, Confirm, Reject 임)",
+                                        "description": "예약의 상태(submit confirm reject 중 하나로 보내면 됨)",
                                         "type": "char",
-                                        "example": "S"
+                                        "example": "submit"
                                     },
                                     "start_date": {
                                         "description": "검색 시작일",
