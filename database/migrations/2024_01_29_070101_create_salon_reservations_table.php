@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('salon_price_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->timestamp('reservation_date');
+            $table->date('reservation_date');
+            $table->time('reservation_time');
             $table->char('status')->default('S');
             $table->softDeletes();
             $table->timestamps();
