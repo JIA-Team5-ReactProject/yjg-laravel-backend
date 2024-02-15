@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -310,8 +311,8 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\POST (
-     *     path="/api/admin/verify-email/{email}",
+     * @OA\GET (
+     *     path="/api/admin/verify-email",
      *     tags={"관리자"},
      *     summary="이메일 중복 확인",
      *     description="관리자 이메일 중복 확인",
@@ -326,12 +327,14 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function verifyUniqueEmail(Request $request)
+    public function verifyUniqueEmail(string $email)
     {
+        $validator = Validator::make(['email' => $email], [
+            'email' => 'required|email',
+        ]);
+
         try {
-            $validated = $request->validate([
-                'required|email',
-            ]);
+            $validated = $validator->validate();
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
