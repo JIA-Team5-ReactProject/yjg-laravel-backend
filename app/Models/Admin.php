@@ -16,10 +16,6 @@ class Admin extends Authenticatable
         'phone_number',
         'email',
         'password',
-        'salon_privilege',
-        'restaurant_privilege',
-        'admin_privilege',
-        'approved',
     ];
 
     /**

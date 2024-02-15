@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
+use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
     /**
      * @OA\Post (
-     *     path="/api/admin/register",
+     *     path="/api/admin",
      *     tags={"관리자"},
-     *     summary="관리자 회원가입",
+     *     summary="회원가입",
      *     description="관리자 회원가입",
      *     @OA\RequestBody(
      *         description="관리자 회원가입 정보",
@@ -60,9 +62,9 @@ class AdminController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/unregister/{id}",
+     *     path="/api/admin/{id}",
      *     tags={"관리자"},
-     *     summary="관리자 탈퇴",
+     *     summary="탈퇴",
      *     description="관리자 탈퇴",
      *      @OA\Parameter(
      *            name="id",
@@ -88,10 +90,10 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/login",
      *     tags={"관리자"},
-     *     summary="관리자 로그인",
+     *     summary="로그인",
      *     description="관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
      *     @OA\RequestBody(
-     *         description="관리자 로그인",
+     *         description="관리자 로그인을 위한 정보",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -130,15 +132,8 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/logout",
      *     tags={"관리자"},
-     *     summary="관리자 로그아웃",
+     *     summary="로그아웃",
      *     description="관리자 로그아웃",
-     *     @OA\RequestBody(
-     *         description="관리자 로그아웃",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *         )
-     *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
@@ -157,10 +152,10 @@ class AdminController extends Controller
      * @OA\Patch (
      *     path="/api/admin/privilege",
      *     tags={"관리자"},
-     *     summary="관리자 권한 변경",
+     *     summary="권한 변경",
      *     description="관리자 권한 변경",
      *     @OA\RequestBody(
-     *         description="관리자 권한 변경",
+     *         description="관리자 권한 변경을 위한 값 및 아이디",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -213,7 +208,7 @@ class AdminController extends Controller
      * @OA\Patch (
      *     path="/api/admin/approve",
      *     tags={"관리자"},
-     *     summary="관리자 회원가입 승인",
+     *     summary="회원가입 승인",
      *     description="관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
      *     @OA\RequestBody(
      *         description="아이디 및 승인 여부",
@@ -261,9 +256,9 @@ class AdminController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/update",
+     *     path="/api/admin",
      *     tags={"관리자"},
-     *     summary="관리자 개인정보 수정",
+     *     summary="개인정보 수정",
      *     description="관리자 개인정보 수정",
      *     @OA\RequestBody(
      *         description="수정할 관리자 정보",
@@ -316,10 +311,10 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Get (
-     *     path="/api/admin/verify-email/{email}",
+     * @OA\GET (
+     *     path="/api/admin/verify-email",
      *     tags={"관리자"},
-     *     summary="관리자 이메일 중복 확인",
+     *     summary="이메일 중복 확인",
      *     description="관리자 이메일 중복 확인",
      *      @OA\Parameter(
      *            name="id",
@@ -337,15 +332,16 @@ class AdminController extends Controller
         $validator = Validator::make(['email' => $email], [
             'email' => 'required|email',
         ]);
+
         try {
-            $validator->validate();
+            $validated = $validator->validate();
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admin = Admin::where('email', $email)->first();
+        $admin = Admin::where('email', $validated['email'])->first();
 
         if(!empty($admin)) {
             return response()->json(['check' => false]);
@@ -357,7 +353,7 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/verify-password",
      *     tags={"관리자"},
-     *     summary="관리자 PW 체크",
+     *     summary="PW 체크",
      *     description="관리자 회원정보 수정 페이지 접속 시 PW 체크",
      *     @OA\RequestBody(
      *         description="PW",
@@ -386,7 +382,7 @@ class AdminController extends Controller
         }
         $user = Auth::user(); // 현재 인증된 유저
 
-        if(!Hash::check($validated['password'], $user->getAuthPassword())) return false;
+        if(!Hash::check($validated['password'], $request->user()->password)) return false;
 
         return true;
     }
@@ -394,7 +390,7 @@ class AdminController extends Controller
      * @OA\Post (
      *     path="/api/admin/find-email",
      *     tags={"관리자"},
-     *     summary="관리자 이메일 찾기",
+     *     summary="이메일 찾기",
      *     description="회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
      *     @OA\RequestBody(
      *         description="name & phone_number(without hyphen)",
@@ -433,9 +429,51 @@ class AdminController extends Controller
         }
         return response()->json(['admin' => $admin]);
     }
-
-    public function resetPassword(Request $request)
+    /**
+     * @OA\Get (
+     *     path="/api/admin",
+     *     tags={"관리자"},
+     *     summary="승인 혹은 미승인 관리자 목록",
+     *     description="파라미터 값에 맞는 관리자를 admins 배열에 반환",
+     *     @OA\RequestBody(
+     *     description="승인 관리자 조회의 경우 approved, 미승인 관리자 조회의 경우 unapproved, 전체 조회 시에는 body 없이 요청만",
+     *     required=false,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="type", type="string", description="승인 미승인 여부", example="approved"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function adminList(Request $request)
     {
+        $typeRule = ['approved', 'unapproved'];
 
+        try {
+            $validated = $request->validate([
+                'type' => ['string', Rule::in($typeRule)],
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        $admins = Admin::all();
+
+        if(isset($validated['type'])) {
+            if($validated['type'] == 'approved') {
+                $admins = $admins->where('approved', true);
+            } else if($validated['type'] == 'unapproved') {
+                $admins = $admins->where('approved', false);
+            }
+        }
+
+
+        return response()->json(['admins' => $admins]);
     }
 }

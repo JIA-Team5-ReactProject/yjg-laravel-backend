@@ -11,6 +11,7 @@ class RestaurantMenu extends Model
 
     protected $fillable = [
         'date',
+        'menu',
         'meal_type',
     ];
 }

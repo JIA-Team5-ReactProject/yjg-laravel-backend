@@ -10,6 +10,7 @@ class SalonReservation extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
+        'reservation_time',
         'reservation_date',
         'status',
     ];
@@ -20,7 +21,7 @@ class SalonReservation extends Model
     }
 
     public function salonPrice() {
-        return $this->belongsTo('salon_prices');
+        return $this->belongsTo(SalonPrice::class);
     }
 
 }

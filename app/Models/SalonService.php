@@ -10,16 +10,18 @@ class SalonService extends Model
     use HasFactory;
 
     protected $fillable = [
+        'salon_category_id',
         'service',
     ];
 
+
     public function salonCategory(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo('salon_category');
+        return $this->belongsTo(SalonCategory::class);
     }
 
     public function salonPrices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany('salon_prices');
+        return $this->hasMany(SalonPrice::class);
     }
 }

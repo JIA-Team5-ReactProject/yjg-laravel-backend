@@ -8,11 +8,7 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
 * @OA\Info(
-*     title="Example", version="0.1", description="Example API Documentation",
-*     @OA\Contact(
-*         email="example@test.com",
-*         name="Example"
-*     )
+*     title="Yeungjin-Global", version="0.1", description="YJG API Documentation",
 * )
 */
 class Controller extends BaseController

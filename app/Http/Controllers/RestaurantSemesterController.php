@@ -14,6 +14,7 @@ class RestaurantSemesterController extends Controller
             // 유효성 검사
             $validatedData = $request->validate([
                 'user_id' => 'required|exists:users,id',
+                //이름, 학번 추가
                 'menu_type' => 'required|string|in:A,B,C',
                 'payment' => 'required|boolean',
             ]);
@@ -33,7 +34,7 @@ class RestaurantSemesterController extends Controller
             // 데이터베이스 저장 실패시 애러 메세지
             return response()->json(['error' => '데이터베이스에 저장하는 중에 오류가 발생했습니다.'], 500);
         }
-
+        
         // 성공 메시지
         return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
     }
