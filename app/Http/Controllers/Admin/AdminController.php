@@ -466,13 +466,12 @@ class AdminController extends Controller
         $admins = Admin::all();
 
         if(isset($validated['type'])) {
-            if($validated['type'] == 'approved') {
-                $admins = $admins->where('approved', true);
-            } else if($validated['type'] == 'unapproved') {
-                $admins = $admins->where('approved', false);
+            if($validated['type'] == 'unapproved') {
+                $admins = $admins->where('approved', '=', false)->values();
+            } else if($validated['type'] == 'approved') {
+                $admins = $admins->where('approved','=', true)->values();
             }
         }
-
 
         return response()->json(['admins' => $admins]);
     }
