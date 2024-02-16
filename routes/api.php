@@ -4,6 +4,10 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminSalonCategoryController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\AdminSalonServiceController;
+use App\Http\Controllers\QRController;
+use App\Http\Controllers\RestaurantMenusController;
+use App\Http\Controllers\RestaurantSemesterController;
+use App\Http\Controllers\RestaurantWeekendController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
@@ -71,3 +75,9 @@ Route::prefix('user')->group(function () {
 
 
 
+//
+Route::get('/admin/qr', [QRController::class, 'generator']);
+Route::get('/admin/qr-data', [QRController::class, 'getQrData']);
+Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
+Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
+Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
