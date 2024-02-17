@@ -29,6 +29,9 @@ RUN apk add --no-cache \
         --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
+## install zip
+RUN docker-php-ext-install zip
+
 ## install composer
 RUN curl -sS https://getcomposer.org/installer | php
 
