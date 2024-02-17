@@ -320,14 +320,14 @@
                 }
             }
         },
-        "/api/admin/verify-email/{email}": {
-            "post": {
+        "/api/admin/verify-email": {
+            "get": {
                 "tags": [
                     "관리자"
                 ],
                 "summary": "이메일 중복 확인",
                 "description": "관리자 이메일 중복 확인",
-                "operationId": "7661c5bb470a4c79bcb9608495eb86ea",
+                "operationId": "685159abfaf495417d0d64923d86fb5c",
                 "parameters": [
                     {
                         "name": "id",
@@ -430,6 +430,22 @@
             }
         },
         "/api/admin/salon-category": {
+            "get": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "카테고리 목록",
+                "description": "미용실 카테고리 목록",
+                "operationId": "5ff5c37129368c5ff9bf2374d0625185",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "미용실"
@@ -635,6 +651,62 @@
                 }
             }
         },
+        "/api/admin/salon-service/{id}": {
+            "get": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "카테고리 서비스 목록",
+                "description": "미용실 특정 카테고리의 서비스 목록",
+                "operationId": "10722ff69998ea239f783e216c541079",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "찾을 카테고리의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "서비스 삭제",
+                "description": "미용실 서비스 삭제",
+                "operationId": "031eff04e7d2a51fc7071e3bdb65ea5f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/admin/salon-service": {
             "post": {
                 "tags": [
@@ -744,35 +816,6 @@
                 }
             }
         },
-        "/api/admin/salon-service/{id}": {
-            "delete": {
-                "tags": [
-                    "미용실"
-                ],
-                "summary": "서비스 삭제",
-                "description": "미용실 서비스 삭제",
-                "operationId": "031eff04e7d2a51fc7071e3bdb65ea5f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 서비스의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/user/login": {
             "get": {
                 "tags": [
@@ -794,8 +837,7 @@
         "/api/user/logout": {
             "get": {
                 "tags": [
-                    "학생",
-                    "유학생"
+                    "학생"
                 ],
                 "summary": "로그아웃",
                 "description": "유저 Google 로그아웃",
@@ -813,7 +855,7 @@
         "/api/user": {
             "get": {
                 "tags": [
-                    "학생, 유학생"
+                    "학생"
                 ],
                 "summary": "승인 혹은 미승인 학생 목록",
                 "description": "파라미터 값에 맞는 학생을 users 배열에 반환",
@@ -847,8 +889,7 @@
             },
             "patch": {
                 "tags": [
-                    "학생",
-                    "유학생"
+                    "학생"
                 ],
                 "summary": "개인정보 수정",
                 "description": "유저 개인정보 수정",
@@ -894,7 +935,7 @@
         "/api/user/foreigner": {
             "post": {
                 "tags": [
-                    "유학생"
+                    "학생"
                 ],
                 "summary": "회원가입",
                 "description": "유학생 회원가입",
@@ -945,7 +986,7 @@
         "/api/user/foreigner/login": {
             "post": {
                 "tags": [
-                    "유학생"
+                    "학생"
                 ],
                 "summary": "로그인",
                 "description": "유학생 로그인",
@@ -986,7 +1027,7 @@
         "/api/user/approve": {
             "patch": {
                 "tags": [
-                    "유학생"
+                    "학생"
                 ],
                 "summary": "회원가입 승인",
                 "description": "유학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
@@ -1027,8 +1068,7 @@
         "/api/user/{id}": {
             "delete": {
                 "tags": [
-                    "유저",
-                    "유학생"
+                    "학생"
                 ],
                 "summary": "탈퇴",
                 "description": "일반 학생 및 유학생 탈퇴",
@@ -1044,6 +1084,57 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user/salon-reservation": {
+            "post": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "회원가입",
+                "description": "유학생 회원가입",
+                "operationId": "c2d8397953aa3c0e3b8c890e2ad26b2c",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "관리자"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"

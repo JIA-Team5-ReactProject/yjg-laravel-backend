@@ -44,7 +44,7 @@ class UserController extends Controller
     /**
      * @OA\Get (
      *     path="/api/user/logout",
-     *     tags={"학생", "유학생"},
+     *     tags={"학생"},
      *     summary="로그아웃",
      *     description="유저 Google 로그아웃",
      *     @OA\Response(response="200", description="Success"),
@@ -64,7 +64,7 @@ class UserController extends Controller
     /**
      * @OA\Patch (
      *     path="/api/user",
-     *     tags={"학생", "유학생"},
+     *     tags={"학생"},
      *     summary="개인정보 수정",
      *     description="유저 개인정보 수정",
      *     @OA\RequestBody(
@@ -117,7 +117,7 @@ class UserController extends Controller
     /**
      * @OA\Post (
      *     path="/api/user/foreigner",
-     *     tags={"유학생"},
+     *     tags={"학생"},
      *     summary="회원가입",
      *     description="유학생 회원가입",
      *     @OA\RequestBody(
@@ -163,7 +163,7 @@ class UserController extends Controller
     /**
      * @OA\Post (
      *     path="/api/user/foreigner/login",
-     *     tags={"유학생"},
+     *     tags={"학생"},
      *     summary="로그인",
      *     description="유학생 로그인",
      *     @OA\RequestBody(
@@ -215,7 +215,7 @@ class UserController extends Controller
     /**
      * @OA\Patch (
      *     path="/api/user/approve",
-     *     tags={"유학생"},
+     *     tags={"학생"},
      *     summary="회원가입 승인",
      *     description="유학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
      *     @OA\RequestBody(
@@ -265,7 +265,7 @@ class UserController extends Controller
     /**
      * @OA\Get (
      *     path="/api/user",
-     *     tags={"학생, 유학생"},
+     *     tags={"학생"},
      *     summary="승인 혹은 미승인 학생 목록",
      *     description="파라미터 값에 맞는 학생을 users 배열에 반환",
      *     @OA\RequestBody(
@@ -303,7 +303,7 @@ class UserController extends Controller
     /**
      * @OA\Delete (
      *     path="/api/user/{id}",
-     *     tags={"유저", "유학생"},
+     *     tags={"학생"},
      *     summary="탈퇴",
      *     description="일반 학생 및 유학생 탈퇴",
      *      @OA\Parameter(
