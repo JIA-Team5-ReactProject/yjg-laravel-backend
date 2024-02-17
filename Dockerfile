@@ -19,7 +19,15 @@ RUN apk add nodejs npm
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 ## install gd
-RUN docker-php-ext-install gd
+RUN apk add --no-cache \
+    zlib-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
 
 ## install composer
 RUN curl -sS https://getcomposer.org/installer | php
