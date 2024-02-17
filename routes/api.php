@@ -10,6 +10,7 @@ use App\Http\Controllers\RestaurantSemesterController;
 use App\Http\Controllers\RestaurantWeekendController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserSalonReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,11 +46,13 @@ Route::prefix('admin')->group(function() {
     Route::delete('/{id}',[AdminController::class, 'unregister'])->name('admin.unregister');
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
     Route::prefix('salon-category')->group(function() {
+       Route::get('/', [AdminSalonCategoryController::class, 'index'])->name('admin.salon.category.index');
        Route::post('/', [AdminSalonCategoryController::class, 'store'])->name('admin.salon.category.store');
        Route::patch('/', [AdminSalonCategoryController::class, 'update'])->name('admin.salon.category.update');
        Route::delete('/', [AdminSalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
     });
     Route::prefix('salon-service')->group(function () {
+        Route::get('/{id}', [AdminSalonServiceController::class, 'show'])->name('admin.salon.service.show');
         Route::post('/', [AdminSalonServiceController::class, 'store'])->name('admin.salon.service.store');
         Route::patch('/', [AdminSalonServiceController::class, 'update'])->name('admin.salon.service.update');
         Route::delete('/{id}', [AdminSalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
@@ -69,6 +72,11 @@ Route::prefix('user')->group(function () {
         Route::post('/', [UserController::class, 'foreignerRegister'])->name('foreigner.register');
         Route::post('/login', [UserController::class, 'foreignerLogin'])->name('foreigner.login');
         Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('foreigner.approve');
+    });
+    Route::prefix('salon-reservation')->group(function () {
+        Route::get('/', [UserSalonReservationController::class, 'index'])->name('user.salon.reservation.index');
+        Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
+        Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
     });
     Route::get('/', [UserController::class, 'userList'])->name('user.list');
 });

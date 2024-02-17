@@ -7,11 +7,47 @@ use App\Http\Controllers\Controller;
 use App\Models\SalonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminSalonServiceController extends Controller
 {
-    // For Admin
+    /**
+     * @OA\Get (
+     *     path="/api/admin/salon-service/{id}",
+     *     tags={"미용실"},
+     *     summary="카테고리 서비스 목록",
+     *     description="미용실 특정 카테고리의 서비스 목록",
+     *      @OA\Parameter(
+     *            name="id",
+     *            description="찾을 카테고리의 아이디",
+     *            required=true,
+     *            in="path",
+     *            @OA\Schema(type="integer"),
+     *        ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function show(string $id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:App\Models\SalonCategory,id',
+        ]);
+
+        try {
+            $validated = $validator->validate();
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        return response()->json(SalonService::with(['salonPrices:id,salon_service_id,gender,price'])
+            ->where('salon_category_id', $validated['id'])
+            ->get(['id', 'salon_category_id', 'service']));
+    }
+
     /**
      * @OA\Post (
      *     path="/api/admin/salon-service",
@@ -122,22 +158,23 @@ class AdminSalonServiceController extends Controller
 
         $salonService->service = $validated['service_name'];
 
-        if(!$salonService->save()) return response()->json(['error' => 'Failed to update service name'], 500);
+        if (!$salonService->save()) return response()->json(['error' => 'Failed to update service name'], 500);
 
         $priceMale = 1;
         $priceFemale = 1;
 
         if (!empty($validated['price_male'])) {
-            $priceMale = $salonService->salonPrices()->where('gender' , 'M')->update(['price' => $validated['price_male']]);
+            $priceMale = $salonService->salonPrices()->where('gender', 'M')->update(['price' => $validated['price_male']]);
         }
         if (!empty($validated['price_female'])) {
-            $priceFemale = $salonService->salonPrices()->where('gender' , 'F')->update(['price' => $validated['price_female']]);
+            $priceFemale = $salonService->salonPrices()->where('gender', 'F')->update(['price' => $validated['price_female']]);
         }
 
-        if(!$priceMale || !$priceFemale) return response()->json(['error' => 'Failed to update price'], 500);
+        if (!$priceMale || !$priceFemale) return response()->json(['error' => 'Failed to update price'], 500);
 
         return response()->json(['success' => 'Updated successfully']);
     }
+
     /**
      * @OA\Delete (
      *     path="/api/admin/salon-service/{id}",
@@ -155,13 +192,11 @@ class AdminSalonServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(String $id)
+    public function destroy(string $id)
     {
         if (!SalonService::destroy($id)) {
             throw new DestroyException('Failed to destroy category');
         }
         return response()->json(['success' => 'Service deleted successfully']);
     }
-
-    // For Student
 }

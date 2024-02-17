@@ -12,6 +12,21 @@ use Illuminate\Validation\ValidationException;
 class AdminSalonCategoryController extends Controller
 {
     /**
+     * @OA\Get (
+     *     path="/api/admin/salon-category",
+     *     tags={"미용실"},
+     *     summary="카테고리 목록",
+     *     description="미용실 카테고리 목록",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function index()
+    {
+        return response()->json(['categories' => SalonCategory::all()]);
+    }
+
+    /**
      * @OA\Post (
      *     path="/api/admin/salon-category",
      *     tags={"미용실"},
