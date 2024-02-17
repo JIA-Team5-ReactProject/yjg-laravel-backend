@@ -55,6 +55,9 @@ class AdminController extends Controller
             'password'     => Hash::make($validated['password']),
         ]);
 
+        $admin['admin_id'] = $admin['id'];
+        unset($admin['id']);
+
         if(!$admin) return response()->json(['error' => 'Failed to register'],500);
 
         return response()->json($admin, 201);
@@ -281,10 +284,10 @@ class AdminController extends Controller
     {
         try {
             $validated = $request->validate([
-                'admin_id'      => 'required|numeric', // 수정할 유저의 아이디
-                'name'          => 'required|string',
-                'phone_number'  => 'required|string|unique:admins',
-                'password'      => 'required|string|',
+                'admin_id'      => 'numeric', // 수정할 유저의 아이디
+                'name'          => 'string',
+                'phone_number'  => 'string|unique:admins',
+                'password'      => 'string',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
