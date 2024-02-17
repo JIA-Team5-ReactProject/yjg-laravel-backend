@@ -77,7 +77,6 @@ Route::prefix('user')->group(function () {
 
 //
 Route::get('/admin/qr', [QRController::class, 'generator']);
-Route::get('/admin/qr-data', [QRController::class, 'getQrData']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
 Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
 Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
