@@ -22,8 +22,8 @@ class UserSalonReservationController extends Controller
      */
     public function index(Request $request)
     {
-        //TODO: 현재 로그인된 유저의 아이디로 검색하도록 수정
-        return response()->json(['reservations' => SalonReservation::with(['salonPrice.salonService'])->where('id', $request->id)->get()]);
+        //TODO: 현재 로그인과 연동하여 테스트 필요
+        return response()->json(['reservations' => SalonReservation::with(['salonPrice.salonService'])->where('user_id', $request->user()->id)->get()]);
     }
     /**
      * @OA\Post (

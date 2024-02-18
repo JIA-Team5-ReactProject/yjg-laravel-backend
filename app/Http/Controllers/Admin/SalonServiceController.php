@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class AdminSalonServiceController extends Controller
+class SalonServiceController extends Controller
 {
     /**
      * @OA\Get (

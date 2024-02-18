@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\AdminSalonCategoryController;
+use App\Http\Controllers\Admin\SalonCategoryController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
-use App\Http\Controllers\Admin\AdminSalonServiceController;
+use App\Http\Controllers\Admin\SalonServiceController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\RestaurantMenusController;
 use App\Http\Controllers\RestaurantSemesterController;
@@ -46,16 +46,16 @@ Route::prefix('admin')->group(function() {
     Route::delete('/{id}',[AdminController::class, 'unregister'])->name('admin.unregister');
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
     Route::prefix('salon-category')->group(function() {
-       Route::get('/', [AdminSalonCategoryController::class, 'index'])->name('admin.salon.category.index');
-       Route::post('/', [AdminSalonCategoryController::class, 'store'])->name('admin.salon.category.store');
-       Route::patch('/', [AdminSalonCategoryController::class, 'update'])->name('admin.salon.category.update');
-       Route::delete('/', [AdminSalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
+       Route::get('/', [SalonCategoryController::class, 'index'])->name('admin.salon.category.index');
+       Route::post('/', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
+       Route::patch('/', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
+       Route::delete('/', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
     });
     Route::prefix('salon-service')->group(function () {
-        Route::get('/{id}', [AdminSalonServiceController::class, 'show'])->name('admin.salon.service.show');
-        Route::post('/', [AdminSalonServiceController::class, 'store'])->name('admin.salon.service.store');
-        Route::patch('/', [AdminSalonServiceController::class, 'update'])->name('admin.salon.service.update');
-        Route::delete('/{id}', [AdminSalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
+        Route::get('/{id}', [SalonServiceController::class, 'show'])->name('admin.salon.service.show');
+        Route::post('/', [SalonServiceController::class, 'store'])->name('admin.salon.service.store');
+        Route::patch('/', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
+        Route::delete('/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
     });
     Route::prefix('salon-reservation')->group(function () {
        Route::get('/', [AdminSalonReservationController::class, 'show'])->name('admin.salon.reservation.show');
