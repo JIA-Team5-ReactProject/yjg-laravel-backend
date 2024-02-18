@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class AdminSalonCategoryController extends Controller
+class SalonCategoryController extends Controller
 {
     /**
      * @OA\Get (
