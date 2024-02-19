@@ -73,7 +73,8 @@ class UserController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                  @OA\Property (property="admin_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
+     *                  @OA\Property (property="user_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
+     *                  @OA\Property (property="student_id", type="string", description="정보를 수정할 유저의 아이디", example=1),
      *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
      *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
      *             )
@@ -87,7 +88,8 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'user_id'      => 'required|numeric', // 수정할 유저의 아이디
+                'user_id'       => 'required|numeric', // 수정할 유저의 아이디
+                'student_id'    => 'required|numeric',
                 'name'          => 'required|string',
                 'phone_number'  => 'required|string|unique:admins',
             ]);
@@ -106,8 +108,11 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $user->name = $validated['name'];
-        $user->phone_number = $validated['phone_number'];
+        unset($validated['user_id']);
+
+        foreach($validated as $key => $value) {
+            $user->$key = $value;
+        }
 
         if(!$user->save()) return response()->json(['error' => 'Failed to update profile'], 500);
 
