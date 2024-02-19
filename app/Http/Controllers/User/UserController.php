@@ -33,7 +33,7 @@ class UserController extends Controller
             'approved' => true,
         ]);
         $data = [
-            'token' => $user->createToken(env('TOKEN_NAME'))->plainTextToken,
+            'token' => $user->createToken(env('LOGIN_TOKEN_NAME'))->plainTextToken,
             'user' => $user,
         ];
 

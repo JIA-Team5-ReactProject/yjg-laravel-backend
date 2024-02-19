@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('reservation_date');
             $table->time('reservation_time');
-            $table->char('status')->default('submit');
+            $table->string('status', 10)->default('submit');
             $table->softDeletes();
             $table->timestamps();
 
