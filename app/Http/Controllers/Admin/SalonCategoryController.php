@@ -104,18 +104,17 @@ class SalonCategoryController extends Controller
         }
 
         try {
-            $user = SalonCategory::findOrFail($validated['category_id']);
+            $category = SalonCategory::findOrFail($validated['category_id']);
         } catch(ModelNotFoundException $modelException) {
             $errorMessage = $modelException->getMessage();
             return response()->json(['error' => $errorMessage], 404);
         }
 
-        $user->name = $validated['name'];
-        $user->phone_number = $validated['phone_number'];
+        $category->name = $validated['category_name'];
 
-        if(!$user->save()) return response()->json(['error' => 'Failed to update profile'], 500);
+        if(!$category->save()) return response()->json(['error' => 'Failed to update category name'], 500);
 
-        return response()->json(['message' => 'Update profile successfully']);
+        return response()->json(['message' => 'Update category name successfully']);
 
     }
     /**
