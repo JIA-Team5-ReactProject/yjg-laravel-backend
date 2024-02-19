@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\SalonBreakTimeController;
+use App\Http\Controllers\Admin\SalonBusinessHourController;
 use App\Http\Controllers\Admin\SalonCategoryController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\SalonServiceController;
@@ -60,6 +62,15 @@ Route::prefix('admin')->group(function() {
     Route::prefix('salon-reservation')->group(function () {
        Route::get('/', [AdminSalonReservationController::class, 'show'])->name('admin.salon.reservation.show');
        Route::patch('/', [AdminSalonReservationController::class, 'update'])->name('admin.salon.reservation.status');
+    });
+    Route::prefix('salon-hour')->group(function () {
+        Route::post('/', [SalonBusinessHourController::class, 'store'])->name('admin.salon.hour.store');
+        Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('admin.salon.hour.update');
+        Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
+    });
+    Route::prefix('salon-break')->group(function () {
+        Route::post('/', [SalonBreakTimeController::class, 'store'])->name('admin.salon.break.store');
+        Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
     });
 });
 
