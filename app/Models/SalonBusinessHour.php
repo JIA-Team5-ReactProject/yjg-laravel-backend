@@ -11,6 +11,7 @@ class SalonBusinessHour extends Model
 
     protected $fillable = [
         's_time',
-        'e_time'
+        'e_time',
+        'date',
     ];
 }

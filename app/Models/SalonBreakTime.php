@@ -10,8 +10,7 @@ class SalonBreakTime extends Model
     use HasFactory;
 
     protected $fillable = [
-        's_time',
-        'e_time',
+        'break_time',
         'date',
     ];
 }
