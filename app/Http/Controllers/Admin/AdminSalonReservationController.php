@@ -24,8 +24,8 @@ class AdminSalonReservationController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="status", type="char", description="예약의 상태(submit confirm reject 중 하나로 보내면 됨)", example="submit"),
-     *                 @OA\Property (property="start_date", type="date", description="검색 시작일", example="2001-01-29"),
-     *                 @OA\Property (property="end_date", type="date", description="검색 종료일", example="2023-02-12"),
+     *                 @OA\Property (property="r_date", type="date", description="검색일", example="2001-01-29"),
+     *                 @OA\Property (property="r_time", type="time", description="검색 시간", example="12:00:00"),
      *             )
      *         )
      *     ),
@@ -36,12 +36,12 @@ class AdminSalonReservationController extends Controller
      */
     public function show(Request $request)
     {
-        $statusRule = ['S', 'C', 'R'];
+        $statusRule = ['submit', 'confirm', 'reject'];
         try {
             $validated = $request->validate([
                 'status' => ['string', Rule::in($statusRule)],
-                'start_date' => 'date',
-                'end_date' => 'date',
+                'r_date' => 'date',
+                'r_time' => 'date_format:H:i:s'
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -54,14 +54,14 @@ class AdminSalonReservationController extends Controller
             $query = $query->where('status', $validated['status']);
         }
 
-        if(isset($validated['start_date'])) {
-            $start_date = date('Y-m-d 00:00:00', strtotime($validated['start_date']));
-            $query = $query->where('reservation_date', '>=', $start_date);
+        if(isset($validated['r_date'])) {
+            $startDate = date('Y-m-d', strtotime($validated['r_date']));
+            $query = $query->where('reservation_date', $startDate);
         }
 
-        if(isset($validated['end_date'])) {
-            $end_date = date('Y-m-d 23:59:59', strtotime($validated['end_date']));
-            $query = $query->where('reservation_date', '<=', $end_date);
+        if(isset($request->r_time)) {
+            $startTime = $request->r_time;
+            $query = $query->where('reservation_time', $startTime);
         }
 
         $reservations = $query->get();
@@ -88,7 +88,7 @@ class AdminSalonReservationController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="id", type="integer", description="예약 아이디", example=1),
-     *                 @OA\Property (property="status", type="char", description="예약의 상태(C,R 중 하나로 보내면 됨, 각각 Confirm, Reject 임)", example="R"),
+     *                 @OA\Property (property="status", type="boolean", description="true로 보내면 승인, false로 보내면 거절", example=true),
      *             )
      *         )
      *     ),
@@ -117,8 +117,8 @@ class AdminSalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], 404);
         }
 
-        if($validated['status']) $reservation->status = 'C';
-        else $reservation->status = 'R';
+        if($validated['status']) $reservation->status = 'confirm';
+        else $reservation->status = 'reject';
 
         if(!$reservation->save()) return response()->json(['error' => 'Failed to update reservation status'], 500);
 
