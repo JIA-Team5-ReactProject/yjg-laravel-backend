@@ -317,7 +317,7 @@ class AdminController extends Controller
 
     /**
      * @OA\GET (
-     *     path="/api/admin/verify-email",
+     *     path="/api/admin/verify-email/{id}",
      *     tags={"관리자"},
      *     summary="이메일 중복 확인",
      *     description="관리자 이메일 중복 확인",
@@ -329,28 +329,24 @@ class AdminController extends Controller
      *            @OA\Schema(type="string"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="Validation Error"),
      * )
      */
     public function verifyUniqueEmail(string $email)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email',
-        ]);
+        $rules = [
+            'email' => 'required|email|unique:admins,email'
+        ];
+        $validator = Validator::make(['email' => $email], $rules);
 
         try {
-            $validated = $validator->validate();
+            $validator->validate();
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $admin = Admin::where('email', $validated['email'])->first();
-
-        if(!empty($admin)) {
-            return response()->json(['check' => false]);
-        }
         return response()->json(['check' => true]);
     }
 
