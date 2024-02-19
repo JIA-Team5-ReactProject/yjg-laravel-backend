@@ -75,6 +75,8 @@ Route::prefix('admin')->group(function() {
 });
 
 Route::prefix('user')->group(function () {
+    Route::get('/', [UserController::class, 'userList'])->name('user.list');
+    Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueEmail'])->name('user.verify.email');
     Route::get('/login', AuthController::class);
     Route::get('/auth/callback', [UserController::class, 'googleRegisterOrLogin'])->name('user.login');
     Route::patch('/' , [UserController::class, 'update'])->name('user.update');
@@ -89,7 +91,7 @@ Route::prefix('user')->group(function () {
         Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
         Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
     });
-    Route::get('/', [UserController::class, 'userList'])->name('user.list');
+
 });
 
 

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -329,4 +330,40 @@ class UserController extends Controller
 
         return response()->json(['message'=>'Destroy user successfully']);
     }
+
+    /**
+     * @OA\GET (
+     *     path="/api/user/verify-email/{id}",
+     *     tags={"학생"},
+     *     summary="이메일 중복 확인",
+     *     description="학생 이메일 중복 확인",
+     *      @OA\Parameter(
+     *            name="id",
+     *            description="중복을 확인할 학생의 이메일",
+     *            required=true,
+     *            in="path",
+     *            @OA\Schema(type="string"),
+     *        ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="Validation Error"),
+     * )
+     */
+    public function verifyUniqueEmail(string $email)
+    {
+        $rules = [
+            'email' => 'required|email|unique:users,email'
+        ];
+        $validator = Validator::make(['email' => $email], $rules);
+
+        try {
+            $validator->validate();
+        } catch(ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        return response()->json(['check' => true]);
+    }
+
 }
