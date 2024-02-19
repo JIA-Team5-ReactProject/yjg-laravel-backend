@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('salon_category_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('service',15);
+            $table->string('price', 10);
+            $table->string('gender', 10);
             $table->timestamps();
         });
     }

@@ -12,16 +12,13 @@ class SalonService extends Model
     protected $fillable = [
         'salon_category_id',
         'service',
+        'price',
+        'gender',
     ];
 
 
     public function salonCategory(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SalonCategory::class);
-    }
-
-    public function salonPrices(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(SalonPrice::class);
     }
 }
