@@ -24,8 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::create('after_service_image_after_service', function(Blueprint $table) {
-            $table->dropForeign(['after_service_image_id', 'after_service_id']);
+        Schema::table('after_service_image_after_service', function(Blueprint $table) {
+            $table->dropForeign(['after_service_image_id']);
+            $table->dropForeign(['after_service_id']);
             $table->dropIfExists();
         });
     }
