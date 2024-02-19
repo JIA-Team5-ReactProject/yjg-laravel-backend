@@ -148,7 +148,6 @@ class UserController extends Controller
         }
 
         $admin = User::create([
-            'student_id'   => $validated['student_id'],
             'name'         => $validated['name'],
             'phone_number' => $validated['phone_number'],
             'email'        => $validated['email'],
