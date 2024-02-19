@@ -20,8 +20,8 @@ class SalonReservation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function salonPrice() {
-        return $this->belongsTo(SalonPrice::class);
+    public function salonService() {
+        return $this->belongsTo(SalonService::class);
     }
 
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('salon_reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('salon_price_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('salon_service_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('reservation_date');
             $table->time('reservation_time');
@@ -31,7 +31,7 @@ return new class extends Migration
     {
         Schema::table('salon_reservations', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            $table->dropForeign(['salon_price_id']);
+            $table->dropForeign(['salon_service_id']);
             $table->dropIfExists();
         });
     }
