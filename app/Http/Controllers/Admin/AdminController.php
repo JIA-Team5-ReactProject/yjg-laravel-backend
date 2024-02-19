@@ -196,6 +196,8 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
+        unset($validated['id']);
+
         foreach($validated as $key => $value) {
             $admin->$key = $value;
         }
