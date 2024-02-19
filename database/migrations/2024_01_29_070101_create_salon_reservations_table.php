@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('reservation_date');
             $table->time('reservation_time');
-            $table->char('status')->default('S');
+            $table->string('status', 10)->default('submit');
             $table->softDeletes();
             $table->timestamps();
 
@@ -30,7 +30,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('salon_reservations', function (Blueprint $table) {
-            $table->dropForeign(['user_id', 'salon_menu_id']);
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['salon_price_id']);
             $table->dropIfExists();
         });
     }

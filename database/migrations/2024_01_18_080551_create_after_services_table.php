@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->boolean('status')->default(false);
+            $table->string('visit_place', 20);
             $table->timestamp('visit_date');
             $table->softDeletes();
             $table->timestamps();

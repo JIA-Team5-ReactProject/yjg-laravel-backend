@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('restaurant_menus', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('menu');
+            $table->string('menu')->nullable();
             $table->char('meal_type',2);
             $table->timestamps();
         });
