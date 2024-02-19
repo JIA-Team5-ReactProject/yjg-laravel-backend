@@ -38,7 +38,7 @@ class UserSalonReservationController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="salon_price_id", type="integer", description="미용실 가격 아이디", example="관리자"),
-     *                 @OA\Property (property="user_id", type="integer", description="전화번호", example="01012345678"),
+     *                 @OA\Property (property="user_id", type="integer", description="유저 아이디", example=1),
      *                 @OA\Property (property="r_date", type="date", description="예약 날짜", example="2024-01-01"),
      *                 @OA\Property (property="r_time", type="time", description="예약 시간", example="12:12:12"),
      *             )

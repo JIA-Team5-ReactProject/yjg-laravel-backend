@@ -429,6 +429,320 @@
                 }
             }
         },
+        "/api/admin/salon-reservation": {
+            "get": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약 검색",
+                "description": "미용실 예약 검색",
+                "operationId": "259e551390c073313c7e33be1e6f7d86",
+                "requestBody": {
+                    "description": "검색할 옵션",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "description": "예약의 상태(submit confirm reject 중 하나로 보내면 됨)",
+                                        "type": "char",
+                                        "example": "submit"
+                                    },
+                                    "r_date": {
+                                        "description": "검색일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2001-01-29"
+                                    },
+                                    "r_time": {
+                                        "description": "검색 시간",
+                                        "type": "time",
+                                        "example": "12:00:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약 정보 업데이트(관리자)",
+                "description": "미용실 예약 상태를 업데이트",
+                "operationId": "b37a047096d300cdb4f8f84849feb261",
+                "requestBody": {
+                    "description": "업데이트할 상태 및 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "예약 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "description": "true로 보내면 승인, false로 보내면 거절",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-break": {
+            "post": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약불가 시간 생성",
+                "description": "미용실 예약불가 시간 생성",
+                "operationId": "52ecb833b9a6df070383d99b22a39d2e",
+                "requestBody": {
+                    "description": "예약불가 시간 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "s_time": {
+                                        "description": "예약불가 시작",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "e_time": {
+                                        "description": "예약불가 종료",
+                                        "type": "time",
+                                        "example": "21:00:00"
+                                    },
+                                    "date": {
+                                        "description": "날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약불가 시간 삭제",
+                "description": "미용실 예약불가 시간 삭제",
+                "operationId": "48e5d6302d31c25e801f2e8689ec7a08",
+                "requestBody": {
+                    "description": "예약불가 시간 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "break_time": {
+                                        "description": "삭제할 예약불가 시간",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "date": {
+                                        "description": "삭제할 날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-hour": {
+            "post": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "영업시간 생성",
+                "description": "미용실 영업시간 생성",
+                "operationId": "c8eca7e18f01818dc7b2c55b429f3f1c",
+                "requestBody": {
+                    "description": "영업시간 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "s_time": {
+                                        "description": "영업 시작",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "e_time": {
+                                        "description": "영업 종료",
+                                        "type": "time",
+                                        "example": "21:00:00"
+                                    },
+                                    "date": {
+                                        "description": "요일(대문자, 기존 DB 내에 중복 값 없어야함)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "MON"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "영업시간 업데이트",
+                "description": "미용실 영업시간을 업데이트",
+                "operationId": "0b5f8fdf523f60db21c8583b62c2bc0b",
+                "requestBody": {
+                    "description": "업데이트할 영업시간 및 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "b_hour_id": {
+                                        "description": "영업시간 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "s_time": {
+                                        "description": "영업 시작",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "e_time": {
+                                        "description": "영업 종료",
+                                        "type": "time",
+                                        "example": "21:00:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-hour/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "영업시간 삭제",
+                "description": "미용실 영업시간 삭제",
+                "operationId": "3718f8de345a7d020f0c7c3fcb346f3d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 영업시간 값의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/admin/salon-category": {
             "get": {
                 "tags": [
@@ -436,7 +750,7 @@
                 ],
                 "summary": "카테고리 목록",
                 "description": "미용실 카테고리 목록",
-                "operationId": "5ff5c37129368c5ff9bf2374d0625185",
+                "operationId": "99a06e4d5ec40321870dabf03cfaf36d",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -452,7 +766,7 @@
                 ],
                 "summary": "카테고리 생성",
                 "description": "미용실 카테고리 생성",
-                "operationId": "d865d35d470595a3f189b3c0566e1643",
+                "operationId": "8b173f291381060088f2a1c72fc4c6ae",
                 "requestBody": {
                     "description": "카테고리 관련 정보",
                     "required": true,
@@ -489,7 +803,7 @@
                 ],
                 "summary": "카테고리 수정",
                 "description": "카테고리 이름 수정",
-                "operationId": "e64f49d4a6fbd943f2aed89f4c665c2a",
+                "operationId": "94588bf364a879d920a7a0b38c7d8209",
                 "requestBody": {
                     "description": "카테고리 수정을 위한 정보",
                     "required": true,
@@ -536,7 +850,7 @@
                 ],
                 "summary": "카테고리 삭제",
                 "description": "미용실 카테고리 삭제",
-                "operationId": "87098ad73895887fd5d857419e95d009",
+                "operationId": "54ec001bf01edbcb9f588441c5213f6a",
                 "parameters": [
                     {
                         "name": "id",
@@ -558,99 +872,6 @@
                 }
             }
         },
-        "/api/admin/salon-reservation": {
-            "get": {
-                "tags": [
-                    "미용실"
-                ],
-                "summary": "예약 검색",
-                "description": "미용실 예약 검색",
-                "operationId": "259e551390c073313c7e33be1e6f7d86",
-                "requestBody": {
-                    "description": "검색할 옵션",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "status": {
-                                        "description": "예약의 상태(submit confirm reject 중 하나로 보내면 됨)",
-                                        "type": "char",
-                                        "example": "submit"
-                                    },
-                                    "start_date": {
-                                        "description": "검색 시작일",
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2001-01-29"
-                                    },
-                                    "end_date": {
-                                        "description": "검색 종료일",
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2023-02-12"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "422": {
-                        "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "미용실"
-                ],
-                "summary": "예약 정보 업데이트(관리자)",
-                "description": "미용실 예약 상태를 업데이트",
-                "operationId": "b37a047096d300cdb4f8f84849feb261",
-                "requestBody": {
-                    "description": "업데이트할 상태 및 아이디",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "예약 아이디",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "status": {
-                                        "description": "예약의 상태(C,R 중 하나로 보내면 됨, 각각 Confirm, Reject 임)",
-                                        "type": "char",
-                                        "example": "R"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "422": {
-                        "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/admin/salon-service/{id}": {
             "get": {
                 "tags": [
@@ -658,7 +879,7 @@
                 ],
                 "summary": "카테고리 서비스 목록",
                 "description": "미용실 특정 카테고리의 서비스 목록",
-                "operationId": "10722ff69998ea239f783e216c541079",
+                "operationId": "ff42cf6264606d021eddcf79dce9e69e",
                 "parameters": [
                     {
                         "name": "id",
@@ -685,7 +906,7 @@
                 ],
                 "summary": "서비스 삭제",
                 "description": "미용실 서비스 삭제",
-                "operationId": "031eff04e7d2a51fc7071e3bdb65ea5f",
+                "operationId": "765665a1df52406f7a2430b0b5ddb2ed",
                 "parameters": [
                     {
                         "name": "id",
@@ -714,7 +935,7 @@
                 ],
                 "summary": "서비스 생성",
                 "description": "미용실 서비스 생성",
-                "operationId": "9a77977a5074f01866b74d17f49305ab",
+                "operationId": "1edceb78f24fc12d1c7d15c1331e036d",
                 "requestBody": {
                     "description": "서비스 관련 정보",
                     "required": true,
@@ -766,7 +987,7 @@
                 ],
                 "summary": "서비스 수정",
                 "description": "미용실 서비스 수정",
-                "operationId": "63d446a88f5baccdc17e1a10954b8a92",
+                "operationId": "05437688b4092e9670640a331519a89c",
                 "requestBody": {
                     "description": "서비스 수정을 위한 정보",
                     "required": true,
@@ -1095,39 +1316,56 @@
             }
         },
         "/api/user/salon-reservation": {
+            "get": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "예약 정보 가져오기",
+                "description": "현재 로그인한 유저의 예약 정보를 불러옴",
+                "operationId": "55d9748d14e02505a759ddd22951e498",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "미용실"
                 ],
-                "summary": "회원가입",
-                "description": "유학생 회원가입",
+                "summary": "예약",
+                "description": "학생 미용실 예약",
                 "operationId": "c2d8397953aa3c0e3b8c890e2ad26b2c",
                 "requestBody": {
-                    "description": "회원가입 정보",
+                    "description": "예약 관련 정보",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "description": "사용자 이름",
-                                        "type": "string",
+                                    "salon_price_id": {
+                                        "description": "미용실 가격 아이디",
+                                        "type": "integer",
                                         "example": "관리자"
                                     },
-                                    "phone_number": {
-                                        "description": "전화번호",
-                                        "type": "string",
-                                        "example": "01012345678"
+                                    "user_id": {
+                                        "description": "유저 아이디",
+                                        "type": "integer",
+                                        "example": 1
                                     },
-                                    "email": {
-                                        "description": "이메일",
+                                    "r_date": {
+                                        "description": "예약 날짜",
                                         "type": "string",
-                                        "example": "admin@gmail.com"
+                                        "format": "date",
+                                        "example": "2024-01-01"
                                     },
-                                    "password": {
-                                        "description": "비밀번호",
-                                        "type": "string",
-                                        "example": "admin123"
+                                    "r_time": {
+                                        "description": "예약 시간",
+                                        "type": "time",
+                                        "example": "12:12:12"
                                     }
                                 },
                                 "type": "object"
@@ -1136,8 +1374,43 @@
                     }
                 },
                 "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Failed to save"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-reservation/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "예약 취소",
+                "description": "미용실 예약 취소",
+                "operationId": "23e2c8be7b062c0ab82206bdf2d1cc5c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "취소할 예약의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
                     },
                     "500": {
                         "description": "Fail"
