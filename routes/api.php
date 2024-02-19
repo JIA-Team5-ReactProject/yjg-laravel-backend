@@ -51,7 +51,7 @@ Route::prefix('admin')->group(function() {
        Route::get('/', [SalonCategoryController::class, 'index'])->name('admin.salon.category.index');
        Route::post('/', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
        Route::patch('/', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
-       Route::delete('/', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
+       Route::delete('/{id}', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
     });
     Route::prefix('salon-service')->group(function () {
         Route::get('/{id}', [SalonServiceController::class, 'show'])->name('admin.salon.service.show');
