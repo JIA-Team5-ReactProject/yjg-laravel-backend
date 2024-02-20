@@ -55,12 +55,12 @@ class AdminSalonReservationController extends Controller
         }
 
         if(isset($validated['r_date'])) {
-            $startDate = date('Y-m-d', strtotime($validated['r_date']));
+            $startDate = $validated['r_date'];
             $query = $query->where('reservation_date', $startDate);
         }
 
         if(isset($request->r_time)) {
-            $startTime = $request->r_time;
+            $startTime = $validated['r_time'];
             $query = $query->where('reservation_time', $startTime);
         }
 
