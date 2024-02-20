@@ -332,7 +332,7 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\GET (
+     * @OA\Get (
      *     path="/api/user/verify-email/{id}",
      *     tags={"학생"},
      *     summary="이메일 중복 확인",
