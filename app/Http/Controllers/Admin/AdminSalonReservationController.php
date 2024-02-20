@@ -41,7 +41,7 @@ class AdminSalonReservationController extends Controller
             $validated = $request->validate([
                 'status' => ['string', Rule::in($statusRule)],
                 'r_date' => 'date',
-                'r_time' => 'date_format:H:i:s'
+                'r_time' => 'date_format:H:i'
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -49,7 +49,7 @@ class AdminSalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $query = SalonReservation::with(['user:id,name', 'salonService:id,service,price,gender']);
+        $query = SalonReservation::with(['user:id,name,phone_number', 'salonService:id,service,price,gender']);
         if(isset($validated['status'])) {
             $query = $query->where('status', $validated['status']);
         }
@@ -71,6 +71,7 @@ class AdminSalonReservationController extends Controller
             $item['service_name'] = $item->salonService['service'];
             $item['price'] = $item->salonService['price'];
             $item['gender'] = $item->salonService['gender'];
+            $item['phone_number'] = $item->user['phone_number'];
             unset($item['user'], $item['salonService']);
         });
 

@@ -37,7 +37,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::prefix('admin')->group(function() {
     Route::prefix('salon-break')->group(function () {
-        Route::get('/', [SalonBreakTimeController::class, 'index'])->name('admin.salon.break.index');
         Route::post('/', [SalonBreakTimeController::class, 'store'])->name('admin.salon.break.store');
         Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
     });
@@ -69,6 +68,8 @@ Route::prefix('admin')->group(function() {
        Route::patch('/', [AdminSalonReservationController::class, 'update'])->name('admin.salon.reservation.status');
     });
     Route::prefix('salon-hour')->group(function () {
+        Route::get('/', [SalonBusinessHourController::class, 'index'])->name('admin.salon.hour.index');
+        Route::get('/{day}', [SalonBusinessHourController::class, 'show'])->name('admin.salon.hour.show');
         Route::post('/', [SalonBusinessHourController::class, 'store'])->name('admin.salon.hour.store');
         Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('admin.salon.hour.update');
         Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
