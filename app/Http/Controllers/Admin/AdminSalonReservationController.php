@@ -49,7 +49,7 @@ class AdminSalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $query = SalonReservation::with(['user:id,name', 'salonPrice.salonService:id,service']);
+        $query = SalonReservation::with(['user:id,name', 'salonService:id,service,price,gender']);
         if(isset($validated['status'])) {
             $query = $query->where('status', $validated['status']);
         }
@@ -68,8 +68,10 @@ class AdminSalonReservationController extends Controller
 
         $reservations->map(function ($item) {
             $item['user_name'] = $item->user['name'];
-            $item['service_name'] = $item->salonPrice->salonService['service'];
-            unset($item['user'], $item['salonPrice']);
+            $item['service_name'] = $item->salonService['service'];
+            $item['price'] = $item->salonService['price'];
+            $item['gender'] = $item->salonService['gender'];
+            unset($item['user'], $item['salonService']);
         });
 
         return response()->json(['reservations' => $reservations]);

@@ -320,14 +320,14 @@
                 }
             }
         },
-        "/api/admin/verify-email": {
+        "/api/admin/verify-email/{id}": {
             "get": {
                 "tags": [
                     "관리자"
                 ],
                 "summary": "이메일 중복 확인",
                 "description": "관리자 이메일 중복 확인",
-                "operationId": "685159abfaf495417d0d64923d86fb5c",
+                "operationId": "ff82ba175e9938c7c62fa4aa514c0f2d",
                 "parameters": [
                     {
                         "name": "id",
@@ -343,8 +343,8 @@
                     "200": {
                         "description": "Success"
                     },
-                    "500": {
-                        "description": "Fail"
+                    "422": {
+                        "description": "Validation Error"
                     }
                 }
             }
@@ -1005,15 +1005,15 @@
                                         "type": "string",
                                         "example": "엄준식"
                                     },
-                                    "price_male": {
-                                        "description": "남성 가격",
+                                    "gender": {
+                                        "description": "성별",
                                         "type": "string",
-                                        "example": "54321"
+                                        "example": "male"
                                     },
-                                    "price_female": {
-                                        "description": "여성 가격",
+                                    "price": {
+                                        "description": "가격",
                                         "type": "string",
-                                        "example": "12345"
+                                        "example": "20000"
                                     }
                                 },
                                 "type": "object"
@@ -1122,9 +1122,14 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "admin_id": {
+                                    "user_id": {
                                         "description": "정보를 수정할 유저의 아이디",
                                         "type": "number",
+                                        "example": 1
+                                    },
+                                    "student_id": {
+                                        "description": "정보를 수정할 유저의 아이디",
+                                        "type": "string",
                                         "example": 1
                                     },
                                     "name": {
@@ -1315,6 +1320,35 @@
                 }
             }
         },
+        "/api/user/verify-email/{id}": {
+            "get": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "이메일 중복 확인",
+                "description": "학생 이메일 중복 확인",
+                "operationId": "c752834dbf618dbbce2ecce0c0f21b81",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "중복을 확인할 학생의 이메일",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
         "/api/user/salon-reservation": {
             "get": {
                 "tags": [
@@ -1346,10 +1380,10 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "salon_price_id": {
-                                        "description": "미용실 가격 아이디",
+                                    "salon_service_id": {
+                                        "description": "미용실 서비스 아이디",
                                         "type": "integer",
-                                        "example": "관리자"
+                                        "example": 1
                                     },
                                     "user_id": {
                                         "description": "유저 아이디",

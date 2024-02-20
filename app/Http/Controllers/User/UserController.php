@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -73,7 +74,8 @@ class UserController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                  @OA\Property (property="admin_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
+     *                  @OA\Property (property="user_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
+     *                  @OA\Property (property="student_id", type="string", description="정보를 수정할 유저의 아이디", example=1),
      *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
      *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
      *             )
@@ -87,7 +89,8 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'user_id'      => 'required|numeric', // 수정할 유저의 아이디
+                'user_id'       => 'required|numeric', // 수정할 유저의 아이디
+                'student_id'    => 'required|numeric',
                 'name'          => 'required|string',
                 'phone_number'  => 'required|string|unique:admins',
             ]);
@@ -106,8 +109,11 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $user->name = $validated['name'];
-        $user->phone_number = $validated['phone_number'];
+        unset($validated['user_id']);
+
+        foreach($validated as $key => $value) {
+            $user->$key = $value;
+        }
 
         if(!$user->save()) return response()->json(['error' => 'Failed to update profile'], 500);
 
@@ -324,4 +330,40 @@ class UserController extends Controller
 
         return response()->json(['message'=>'Destroy user successfully']);
     }
+
+    /**
+     * @OA\GET (
+     *     path="/api/user/verify-email/{id}",
+     *     tags={"학생"},
+     *     summary="이메일 중복 확인",
+     *     description="학생 이메일 중복 확인",
+     *      @OA\Parameter(
+     *            name="id",
+     *            description="중복을 확인할 학생의 이메일",
+     *            required=true,
+     *            in="path",
+     *            @OA\Schema(type="string"),
+     *        ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="Validation Error"),
+     * )
+     */
+    public function verifyUniqueEmail(string $email)
+    {
+        $rules = [
+            'email' => 'required|email|unique:users,email'
+        ];
+        $validator = Validator::make(['email' => $email], $rules);
+
+        try {
+            $validator->validate();
+        } catch(ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        return response()->json(['check' => true]);
+    }
+
 }

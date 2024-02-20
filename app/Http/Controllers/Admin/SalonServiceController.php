@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
+use App\Models\SalonCategory;
 use App\Models\SalonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -43,9 +44,7 @@ class SalonServiceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        return response()->json(SalonService::with(['salonPrices:id,salon_service_id,gender,price'])
-            ->where('salon_category_id', $validated['id'])
-            ->get(['id', 'salon_category_id', 'service']));
+        return response()->json(['services' => SalonService::where('salon_category_id', $validated['id'])->get()]);
     }
 
     /**
@@ -78,8 +77,8 @@ class SalonServiceController extends Controller
             $validated = $request->validate([
                 'category_id' => 'required|numeric',
                 'service_name' => 'required|string',
-                'price_male' => 'string',
-                'price_female' => 'string',
+                'gender' => 'required|string',
+                'price' => 'required|string',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -89,25 +88,12 @@ class SalonServiceController extends Controller
 
         $salonService = SalonService::create([
             'salon_category_id' => $validated['category_id'],
-            'service' => $validated['service_name'],
+            'service'           => $validated['service_name'],
+            'price'             => $validated['price'],
+            'gender'            => $validated['gender'],
         ]);
 
-        if (!empty($validated['price_male'])) {
-            $salonService->salonPrices()->create([
-                'gender' => 'M',
-                'price' => $validated['price_male'],
-            ]);
-        }
-        if (!empty($validated['price_female'])) {
-            $salonService->salonPrices()->create([
-                'gender' => 'F',
-                'price' => $validated['price_female'],
-            ]);
-        }
-
-        return response()->json(['service' => SalonService::with(['salonPrices' => function ($query) {
-            $query->select('salon_service_id', 'gender', 'price');
-        }])->where('id', $salonService->id)->get(['id', 'salon_category_id', 'service'])]);
+        return response()->json(['service' => $salonService]);
     }
 
     /**
@@ -124,8 +110,8 @@ class SalonServiceController extends Controller
      *             @OA\Schema (
      *             @OA\Property (property="service_id", type="integer", description="카테고리 아이디", example=1),
      *             @OA\Property (property="service_name", type="string", description="카테고리 명", example="엄준식"),
-     *             @OA\Property (property="price_male", type="string", description="남성 가격", example="54321"),
-     *             @OA\Property (property="price_female", type="string", description="여성 가격", example="12345"),
+     *             @OA\Property (property="gender", type="string", description="성별", example="male"),
+     *             @OA\Property (property="price", type="string", description="가격", example="20000"),
      *             )
      *         )
      *     ),
@@ -141,8 +127,8 @@ class SalonServiceController extends Controller
             $validated = $request->validate([
                 'service_id' => 'required|numeric',
                 'service_name' => 'string',
-                'price_male' => 'string',
-                'price_female' => 'string',
+                'gender' => 'string',
+                'price' => 'string',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -156,21 +142,13 @@ class SalonServiceController extends Controller
             return response()->json(['error' => $errorMessage], 404);
         }
 
-        $salonService->service = $validated['service_name'];
+        unset($validated['service_id']);
+
+        foreach ($validated as $key => $value) {
+            $salonService->$key = $value;
+        }
 
         if (!$salonService->save()) return response()->json(['error' => 'Failed to update service name'], 500);
-
-        $priceMale = 1;
-        $priceFemale = 1;
-
-        if (!empty($validated['price_male'])) {
-            $priceMale = $salonService->salonPrices()->where('gender', 'M')->update(['price' => $validated['price_male']]);
-        }
-        if (!empty($validated['price_female'])) {
-            $priceFemale = $salonService->salonPrices()->where('gender', 'F')->update(['price' => $validated['price_female']]);
-        }
-
-        if (!$priceMale || !$priceFemale) return response()->json(['error' => 'Failed to update price'], 500);
 
         return response()->json(['success' => 'Updated successfully']);
     }
