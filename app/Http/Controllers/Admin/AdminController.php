@@ -316,7 +316,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\GET (
+     * @OA\Get (
      *     path="/api/admin/verify-email/{id}",
      *     tags={"관리자"},
      *     summary="이메일 중복 확인",
