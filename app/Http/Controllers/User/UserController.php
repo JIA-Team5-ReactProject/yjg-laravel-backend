@@ -90,7 +90,7 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'user_id'       => 'required|numeric', // 수정할 유저의 아이디
-                'student_id'    => 'required|numeric',
+                'student_id'    => 'numeric',
                 'name'          => 'required|string',
                 'phone_number'  => 'required|string|unique:admins',
             ]);
@@ -348,7 +348,7 @@ class UserController extends Controller
      *     @OA\Response(response="422", description="Validation Error"),
      * )
      */
-    public function verifyUniqueEmail(string $email)
+    public function verifyUniqueUserEmail(string $email)
     {
         $rules = [
             'email' => 'required|email|unique:users,email'
