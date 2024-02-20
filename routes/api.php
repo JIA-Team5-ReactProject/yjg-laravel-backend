@@ -36,6 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('admin')->group(function() {
+    Route::prefix('salon-break')->group(function () {
+        Route::get('/', [SalonBreakTimeController::class, 'index'])->name('admin.salon.break.index');
+        Route::post('/', [SalonBreakTimeController::class, 'store'])->name('admin.salon.break.store');
+        Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
+    });
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
     Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
@@ -43,7 +48,7 @@ Route::prefix('admin')->group(function() {
     Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
     Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
     Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
-    Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueEmail'])->name('admin.verify.email');
+    Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueAdminEmail'])->name('admin.verify.email');
     Route::get('/', [AdminController::class, 'adminList'])->name('admin.list');
     Route::delete('/{id}',[AdminController::class, 'unregister'])->name('admin.unregister');
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
@@ -68,15 +73,11 @@ Route::prefix('admin')->group(function() {
         Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('admin.salon.hour.update');
         Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
     });
-    Route::prefix('salon-break')->group(function () {
-        Route::post('/', [SalonBreakTimeController::class, 'store'])->name('admin.salon.break.store');
-        Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
-    });
 });
 
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'userList'])->name('user.list');
-    Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueEmail'])->name('user.verify.email');
+    Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::get('/login', AuthController::class);
     Route::get('/auth/callback', [UserController::class, 'googleRegisterOrLogin'])->name('user.login');
     Route::patch('/' , [UserController::class, 'update'])->name('user.update');

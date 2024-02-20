@@ -16,7 +16,6 @@ class Controller extends BaseController
     use AuthorizesRequests, ValidatesRequests;
 
     protected array $userValidateRules = [
-        'student_id' => 'required|string|unique:users|size:7',
         'name' => 'required|string',
         'phone_number' => 'required|string',
         'email' => 'required|string|unique:users',
