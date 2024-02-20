@@ -23,7 +23,7 @@ class UserSalonReservationController extends Controller
     public function index(Request $request)
     {
         //TODO: 현재 로그인과 연동하여 테스트 필요
-        return response()->json(['reservations' => SalonReservation::with(['salonPrice.salonService'])->where('user_id', $request->user()->id)->get()]);
+        return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', $request->user()->id)->get()]);
     }
     /**
      * @OA\Post (
@@ -37,7 +37,7 @@ class UserSalonReservationController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="salon_price_id", type="integer", description="미용실 가격 아이디", example="관리자"),
+     *                 @OA\Property (property="salon_service_id", type="integer", description="미용실 서비스 아이디", example=1),
      *                 @OA\Property (property="user_id", type="integer", description="유저 아이디", example=1),
      *                 @OA\Property (property="r_date", type="date", description="예약 날짜", example="2024-01-01"),
      *                 @OA\Property (property="r_time", type="time", description="예약 시간", example="12:12:12"),
@@ -53,7 +53,7 @@ class UserSalonReservationController extends Controller
     {
         try {
             $validated = $request->validate([
-                'salon_price_id' => 'required|numeric',
+                'salon_service_id' => 'required|numeric',
                 'user_id' => 'required|numeric',
                 'r_date' => 'required|date',
                 'r_time' => 'required|time',
@@ -65,7 +65,7 @@ class UserSalonReservationController extends Controller
         }
 
         $reservation = SalonReservation::create([
-            'salon_price_id' => $validated['salon_price_id'],
+            'salon_service_id' => $validated['salon_service_id'],
             'user_id' => $validated['user_id'],
             'reservation_date' => $validated['r_date'],
             'reservation_time' => $validated['r_time'],
