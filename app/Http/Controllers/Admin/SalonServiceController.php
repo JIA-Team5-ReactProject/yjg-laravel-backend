@@ -25,14 +25,24 @@ class SalonServiceController extends Controller
      *            required=true,
      *            in="path",
      *            @OA\Schema(type="integer"),
-     *        ),
+     *      ),
+     *      @OA\Parameter(
+     *        name="gender",
+     *        description="찾을 성별",
+     *        required=true,
+     *        in="path",
+     *        @OA\Schema(type="string"),
+     *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function show(string $id)
+    public function show(string $id, string $gender)
     {
-        $validator = Validator::make(['id' => $id], [
+        $validator = Validator::make([
+            'id' => $id,
+            'gender' => $gender,
+        ], [
             'id' => 'required|exists:App\Models\SalonCategory,id',
             'gender' => ['required', Rule::in(['male', 'female'])],
         ]);
