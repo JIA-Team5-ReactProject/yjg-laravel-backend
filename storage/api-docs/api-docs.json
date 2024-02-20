@@ -327,7 +327,7 @@
                 ],
                 "summary": "이메일 중복 확인",
                 "description": "관리자 이메일 중복 확인",
-                "operationId": "ff82ba175e9938c7c62fa4aa514c0f2d",
+                "operationId": "ed9a1699e49fa1427b90ffb5a6dd6637",
                 "parameters": [
                     {
                         "name": "id",
@@ -536,15 +536,12 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "s_time": {
-                                        "description": "예약불가 시작",
-                                        "type": "time",
-                                        "example": "08:00:00"
-                                    },
-                                    "e_time": {
-                                        "description": "예약불가 종료",
-                                        "type": "time",
-                                        "example": "21:00:00"
+                                    "break_time": {
+                                        "description": "삭제할 시간",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "time"
+                                        }
                                     },
                                     "date": {
                                         "description": "날짜",
@@ -585,9 +582,11 @@
                             "schema": {
                                 "properties": {
                                     "break_time": {
-                                        "description": "삭제할 예약불가 시간",
-                                        "type": "time",
-                                        "example": "08:00:00"
+                                        "description": "삭제할 시간",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "time"
+                                        }
                                     },
                                     "date": {
                                         "description": "삭제할 날짜",
@@ -1327,7 +1326,7 @@
                 ],
                 "summary": "이메일 중복 확인",
                 "description": "학생 이메일 중복 확인",
-                "operationId": "c752834dbf618dbbce2ecce0c0f21b81",
+                "operationId": "969d4ec34856375027650a1d786876ec",
                 "parameters": [
                     {
                         "name": "id",

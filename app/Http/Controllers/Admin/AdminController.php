@@ -316,7 +316,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\GET (
+     * @OA\Get (
      *     path="/api/admin/verify-email/{id}",
      *     tags={"관리자"},
      *     summary="이메일 중복 확인",
@@ -332,7 +332,7 @@ class AdminController extends Controller
      *     @OA\Response(response="422", description="Validation Error"),
      * )
      */
-    public function verifyUniqueEmail(string $email)
+    public function verifyUniqueAdminEmail(string $email)
     {
         $rules = [
             'email' => 'required|email|unique:admins,email'
