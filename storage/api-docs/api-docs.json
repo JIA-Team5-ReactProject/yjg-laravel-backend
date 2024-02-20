@@ -738,7 +738,7 @@
                     {
                         "name": "day",
                         "in": "path",
-                        "description": "요일(MON,TUE... 이런시긍로)",
+                        "description": "요일(MON,TUE... 이런식으로)",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -997,15 +997,15 @@
                                         "type": "string",
                                         "example": "커트"
                                     },
-                                    "price_male": {
-                                        "description": "남성 가격",
+                                    "gender": {
+                                        "description": "성별",
                                         "type": "string",
-                                        "example": "12345"
+                                        "example": "male"
                                     },
-                                    "price_female": {
-                                        "description": "여성 가격",
+                                    "price": {
+                                        "description": "가격",
                                         "type": "string",
-                                        "example": "54321"
+                                        "example": "10000"
                                     }
                                 },
                                 "type": "object"

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalonBusinessHour;
-use DateInterval;
-use DateTime;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -75,13 +74,14 @@ class SalonBusinessHourController extends Controller
         $b_hour = SalonBusinessHour::where('date' , $day)->first();
 
         // UNIX 타임스탬프로 변경
-        $current = strtotime($b_hour->s_time);
-        $end = strtotime($b_hour->e_time);
+        $current = $b_hour->s_time;
+        $end = $b_hour->e_time;
         $business_hours = [];
 
         while ($current <= $end) {
-            $business_hours[] = (object) ['time' => date('H:i', $current), 'available' => true];
-            $current = strtotime('+1 hour', $current);
+            $business_hours[] = (object) ['time' => $current, 'available' => true];
+            $carbonTime = Carbon::parse($current)->addHours()->format('H:i');
+            $current = $carbonTime;
         }
 
         foreach ($business_hours as $business_hour) {
@@ -90,7 +90,7 @@ class SalonBusinessHourController extends Controller
             }
         }
 
-        return $business_hours;
+        return response()->json(['business_hours' => $business_hours]);
     }
 
     /**
