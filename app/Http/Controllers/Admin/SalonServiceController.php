@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
-use App\Models\SalonCategory;
 use App\Models\SalonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class SalonServiceController extends Controller
@@ -34,6 +34,7 @@ class SalonServiceController extends Controller
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:App\Models\SalonCategory,id',
+            'gender' => ['required', Rule::in(['male', 'female'])],
         ]);
 
         try {
@@ -44,7 +45,8 @@ class SalonServiceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        return response()->json(['services' => SalonService::where('salon_category_id', $validated['id'])->get()]);
+        return response()->json(['services' => SalonService::where('salon_category_id', $validated['id'])
+            ->where('gender', $validated['gender'])->get()]);
     }
 
     /**
@@ -61,8 +63,8 @@ class SalonServiceController extends Controller
      *             @OA\Schema (
      *                 @OA\Property (property="category_id", type="integer", description="카테고리 아이디", example=1),
      *                 @OA\Property (property="service_name", type="string", description="서비스 명", example="커트"),
-     *                 @OA\Property (property="price_male", type="string", description="남성 가격", example="12345"),
-     *                 @OA\Property (property="price_female", type="string", description="여성 가격", example="54321"),
+     *                 @OA\Property (property="gender", type="string", description="성별", example="male"),
+     *                 @OA\Property (property="price", type="string", description="가격", example="10000"),
      *             )
      *         )
      *     ),
