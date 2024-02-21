@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('salon_break_times', function (Blueprint $table) {
+            $table->id();
             $table->time('break_time');
             $table->date('date');
-            $table->primary(['break_time', 'date']);
             $table->timestamps();
         });
     }
