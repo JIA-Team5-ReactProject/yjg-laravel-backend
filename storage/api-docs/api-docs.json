@@ -615,6 +615,22 @@
             }
         },
         "/api/admin/salon-hour": {
+            "get": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "전체 영업시간",
+                "description": "모든 요일의 미용실 영업 시간",
+                "operationId": "e5a1fa849ebec6c0c6e793fe275b7701",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "미용실"
@@ -707,6 +723,35 @@
                     },
                     "500": {
                         "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-hour/{day}": {
+            "get": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "특정 요일의 영업시간",
+                "description": "특정 요일의 미용실 영업 시간을 한시간 단위로 반환함",
+                "operationId": "4d4f7d458a217ebc1a86cedf1ef0ba63",
+                "parameters": [
+                    {
+                        "name": "day",
+                        "in": "path",
+                        "description": "요일(MON,TUE... 이런식으로)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
                     }
                 }
             }
@@ -953,15 +998,15 @@
                                         "type": "string",
                                         "example": "커트"
                                     },
-                                    "price_male": {
-                                        "description": "남성 가격",
+                                    "gender": {
+                                        "description": "성별",
                                         "type": "string",
-                                        "example": "12345"
+                                        "example": "male"
                                     },
-                                    "price_female": {
-                                        "description": "여성 가격",
+                                    "price": {
+                                        "description": "가격",
                                         "type": "string",
-                                        "example": "54321"
+                                        "example": "10000"
                                     }
                                 },
                                 "type": "object"

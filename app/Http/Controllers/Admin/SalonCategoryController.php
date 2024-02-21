@@ -110,7 +110,7 @@ class SalonCategoryController extends Controller
             return response()->json(['error' => $errorMessage], 404);
         }
 
-        $category->name = $validated['category_name'];
+        $category->category = $validated['category_name'];
 
         if(!$category->save()) return response()->json(['error' => 'Failed to update category name'], 500);
 

@@ -10,12 +10,25 @@ use Illuminate\Validation\ValidationException;
 class SalonBreakTimeController extends Controller
 {
 
-    //TODO: 불러오는 기능 구현
-
     private $validationRule = [
-        'break_times' => 'required|array',
+        'break_time' => 'required|array',
         'date'   => 'required|date',
     ];
+
+
+    public function index()
+    {
+        $dayList = $this->dayList;
+
+        $breakTimes = SalonBreakTime::all(['break_time', 'date']);
+
+        foreach ($breakTimes as $breakTime) {
+            $breakTime->day = $dayList[date('w', strtotime($breakTime->date))];
+            $breakTime->break_time = date('H:i', strtotime($breakTime->break_time));
+        }
+
+        return $breakTimes;
+    }
 
     /**
      * @OA\Post (
@@ -29,8 +42,13 @@ class SalonBreakTimeController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="s_time", type="time", description="예약불가 시작", example="08:00:00"),
-     *                 @OA\Property (property="e_time", type="time", description="예약불가 종료", example="21:00:00"),
+     *                 @OA\Property(
+     *                     property="break_time",
+     *                     type="array",
+     *                     @OA\Items(type="time"),
+     *                     description="삭제할 시간"
+     *
+     *                 ),
      *                 @OA\Property (property="date", type="date", description="날짜", example="2024-01-01")
      *             )
      *         )
@@ -50,12 +68,11 @@ class SalonBreakTimeController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        foreach ($validated['break_times'] as $breakTime) {
+        foreach ($validated['break_time'] as $breakTime) {
             $salonBreakTime = new SalonBreakTime();
             $salonBreakTime->break_time = $breakTime;
             $salonBreakTime->date = $validated['date'];
             if(!$salonBreakTime->save()) return response()->json(['error' => 'Failed to set BreakTime'], 500);
-
         }
 
         return response()->json(['success' => 'Set BreakTime successfully'], 201);
@@ -73,7 +90,12 @@ class SalonBreakTimeController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="break_time", type="time", description="삭제할 예약불가 시간", example="08:00:00"),
+     *                 @OA\Property(
+     *                     property="break_time",
+     *                     type="array",
+     *                     @OA\Items(type="time"),
+     *                     description="삭제할 시간"
+     *                 ),
      *                 @OA\Property (property="date", type="date", description="삭제할 날짜", example="2024-01-01")
      *             )
      *         )
