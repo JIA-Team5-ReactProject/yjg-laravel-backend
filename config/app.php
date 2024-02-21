@@ -5,7 +5,7 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
-    
+
 
     /*
     |--------------------------------------------------------------------------
@@ -72,7 +72,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Seoul',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'kr',
 
     /*
     |--------------------------------------------------------------------------
@@ -158,8 +158,8 @@ return [
     */
 
     'providers' => ServiceProvider::defaultProviders()->merge([
-        
-        
+
+
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
@@ -169,7 +169,7 @@ return [
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ])->toArray(),
 
-    
+
     /*
     |--------------------------------------------------------------------------
     | Class Aliases
