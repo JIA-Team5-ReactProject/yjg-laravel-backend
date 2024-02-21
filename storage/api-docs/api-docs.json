@@ -536,12 +536,15 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "break_time": {
-                                        "description": "삭제할 시간",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "time"
-                                        }
+                                    "s_time": {
+                                        "description": "예약불가 시작",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "e_time": {
+                                        "description": "예약불가 종료",
+                                        "type": "time",
+                                        "example": "21:00:00"
                                     },
                                     "date": {
                                         "description": "날짜",
@@ -582,11 +585,9 @@
                             "schema": {
                                 "properties": {
                                     "break_time": {
-                                        "description": "삭제할 시간",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "time"
-                                        }
+                                        "description": "삭제할 예약불가 시간",
+                                        "type": "time",
+                                        "example": "08:00:00"
                                     },
                                     "date": {
                                         "description": "삭제할 날짜",
@@ -1074,6 +1075,121 @@
                     },
                     "404": {
                         "description": "Model Not Found Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/qr": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "QR코드 생성",
+                "description": "QR코드 생성해서 이미지로 반환",
+                "operationId": "e226390d94736fbc202f93f996e5de19",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "식수 학기 신청",
+                "description": "식수 학기 신청을 처리합니다",
+                "operationId": "0f60453fbb985176ae9c93f99e7c5536",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "사용자 ID",
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "menu_type": {
+                                        "description": "식사유형",
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "payment": {
+                                        "description": "입금여부",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "식수 주말 신청",
+                "description": "식수 주말 신청을 처리합니다",
+                "operationId": "dbb5c91d3fe0431f6e2f02d5f02413e0",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "사용자 ID",
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "menu_type": {
+                                        "description": "식사유형",
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "sat": {
+                                        "description": "토요일",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    },
+                                    "sun": {
+                                        "description": "일요일",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "Fail"
