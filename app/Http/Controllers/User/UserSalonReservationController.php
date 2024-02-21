@@ -55,8 +55,8 @@ class UserSalonReservationController extends Controller
             $validated = $request->validate([
                 'salon_service_id' => 'required|numeric',
                 'user_id' => 'required|numeric',
-                'r_date' => 'required|date',
-                'r_time' => 'required|time',
+                'r_date' => 'required|date_format:Y-m-d',
+                'r_time' => 'required|date_format:H:i',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;

@@ -127,8 +127,8 @@ class SalonBusinessHourController extends Controller
 
         try {
             $validated = $request->validate([
-                's_time' => 'required|time',
-                'e_time' => 'required|time',
+                's_time' => 'required|date_format:H:i',
+                'e_time' => 'required|date_format:H:i',
                 'date'   => ['required', Rule::in($this->dayList), 'unique:salon_business_hours,date'],
             ]);
         } catch (ValidationException $validationException) {
@@ -175,8 +175,8 @@ class SalonBusinessHourController extends Controller
         try {
             $validated = $request->validate([
                 'b_hour_id' => 'required|numeric',
-                's_time' => 'required|time',
-                'e_time' => 'required|time',
+                's_time' => 'required|date_format:H:i',
+                'e_time' => 'required|date_format:H:i',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;

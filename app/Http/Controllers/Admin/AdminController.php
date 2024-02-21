@@ -163,7 +163,7 @@ class AdminController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *             @OA\Property (property="id", type="number", description="권한을 부여할 유저 아이디", example=1),
+     *             @OA\Property (property="admin_id", type="number", description="권한을 부여할 유저 아이디", example=1),
      *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
      *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
      *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
@@ -177,7 +177,7 @@ class AdminController extends Controller
     public function privilege(Request $request) {
         try {
             $validated = $request->validate([
-                'id'               => 'required|numeric',
+                'admin_id'               => 'required|numeric',
                 'salon_privilege'       => 'required|boolean',
                 'admin_privilege'       => 'required|boolean',
                 'restaurant_privilege'  => 'required|boolean',
@@ -189,14 +189,14 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::findOrFail($validated['id']);
+            $admin = Admin::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        unset($validated['id']);
+        unset($validated['admin_id']);
 
         foreach($validated as $key => $value) {
             $admin->$key = $value;
@@ -322,7 +322,7 @@ class AdminController extends Controller
      *     summary="이메일 중복 확인",
      *     description="관리자 이메일 중복 확인",
      *      @OA\Parameter(
-     *            name="id",
+     *            name="email",
      *            description="중복을 확인할 관리자의 이메일",
      *            required=true,
      *            in="path",
