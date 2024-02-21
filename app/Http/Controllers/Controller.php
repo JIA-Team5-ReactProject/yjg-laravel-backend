@@ -15,7 +15,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    protected array $dayList = ['MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT', 'SUN'];
+    protected array $dayList = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     protected array $userValidateRules = [
         'name' => 'required|string',
         'phone_number' => 'required|string',
