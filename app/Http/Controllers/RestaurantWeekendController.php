@@ -8,6 +8,29 @@ use App\Models\RestaurantWeekend;
 
 class RestaurantWeekendController extends Controller
 {
+    /**
+     * @OA\Post (
+     *     path="/api/restaurant/weekend",
+     *     tags={"학생"},
+     *     summary="식수 주말 신청",
+     *     description="식수 주말 신청을 처리합니다",
+     *         @OA\RequestBody(
+     *             description="학생 식사 신청 정보",
+     *             required=true,
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema (
+     *                     @OA\Property (property="user_id", type="string", description="사용자 ID", example="1"),
+     *                     @OA\Property (property="menu_type", type="string", description="식사유형", example="A"),
+     *                     @OA\Property (property="sat", type="boolean", description="토요일", example="true"),
+     *                     @OA\Property (property="sun", type="boolean", description="일요일", example="true"),
+     *                 )
+     *             )
+     *         ),
+     *         @OA\Response(response="200", description="Success"),
+     *         @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function store(Request $request)
     {
         try {
