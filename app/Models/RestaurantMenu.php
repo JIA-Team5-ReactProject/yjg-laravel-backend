@@ -14,4 +14,8 @@ class RestaurantMenu extends Model
         'menu',
         'meal_type',
     ];
+    public function restaurantMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RestaurantMealType::class);
+    }
 }
