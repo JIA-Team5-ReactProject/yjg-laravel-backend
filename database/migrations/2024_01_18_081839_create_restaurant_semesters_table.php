@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('restaurant_semesters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->char('menu_type',1);
             $table->boolean('payment')->default(false);
             $table->softDeletes();
             $table->timestamps();

@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('restaurant_weekends', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->boolean('sat')->default(false);
-            $table->boolean('sun')->default(false);
-            $table->char('menu_type',1);
+            $table->boolean('payment')->default(false);
+            $table->boolean('refund')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('restaurant_meal_types', function (Blueprint $table) {
-            $table->id();
-            $table->char('meal_type',1);
-            $table->char('meal_genre',1);
+        Schema::create('semester_meal_type', function (Blueprint $table) {
+            $table->char('id', 1)->primary();
             $table->string('content')->nullable();
-            $table->integer('price');
-            $table->boolean('weekend')->default(false);
+            $table->string('price', 10);
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('restaurant_meal_types');
+        Schema::dropIfExists('semester_meal_type');
     }
 };
