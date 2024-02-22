@@ -243,7 +243,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
+                                    "admin_id": {
                                         "description": "권한을 부여할 유저 아이디",
                                         "type": "number",
                                         "example": 1
@@ -330,7 +330,7 @@
                 "operationId": "ed9a1699e49fa1427b90ffb5a6dd6637",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "email",
                         "in": "path",
                         "description": "중복을 확인할 관리자의 이메일",
                         "required": true,
@@ -536,15 +536,12 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "s_time": {
-                                        "description": "예약불가 시작",
-                                        "type": "time",
-                                        "example": "08:00:00"
-                                    },
-                                    "e_time": {
-                                        "description": "예약불가 종료",
-                                        "type": "time",
-                                        "example": "21:00:00"
+                                    "break_time": {
+                                        "description": "삭제할 시간",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "time"
+                                        }
                                     },
                                     "date": {
                                         "description": "날짜",
@@ -585,9 +582,11 @@
                             "schema": {
                                 "properties": {
                                     "break_time": {
-                                        "description": "삭제할 예약불가 시간",
-                                        "type": "time",
-                                        "example": "08:00:00"
+                                        "description": "삭제할 시간",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "time"
+                                        }
                                     },
                                     "date": {
                                         "description": "삭제할 날짜",
@@ -732,17 +731,17 @@
                 "tags": [
                     "미용실"
                 ],
-                "summary": "특정 요일의 영업시간",
-                "description": "특정 요일의 미용실 영업 시간을 한시간 단위로 반환함",
+                "summary": "특정 날짜의 영업시간",
+                "description": "특정 날짜의 미용실 영업 시간을 한시간 단위로 반환함",
                 "operationId": "4d4f7d458a217ebc1a86cedf1ef0ba63",
                 "parameters": [
                     {
                         "name": "day",
                         "in": "path",
-                        "description": "요일(MON,TUE... 이런식으로)",
+                        "description": "2024-01-01",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "date"
                         }
                     }
                 ],
@@ -933,6 +932,15 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "path",
+                        "description": "찾을 성별",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -1197,61 +1205,45 @@
                 }
             }
         },
-        "/api/user/login": {
-            "get": {
-                "tags": [
-                    "학생"
-                ],
-                "summary": "로그인",
-                "description": "유저 Google 로그인",
-                "operationId": "41d97a651bbdd987dda255209cc578cd",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/user/logout": {
-            "get": {
-                "tags": [
-                    "학생"
-                ],
-                "summary": "로그아웃",
-                "description": "유저 Google 로그아웃",
-                "operationId": "c9a0f004b340af9bd5848972fba78d08",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/user": {
-            "get": {
+            "post": {
                 "tags": [
                     "학생"
                 ],
-                "summary": "승인 혹은 미승인 학생 목록",
-                "description": "파라미터 값에 맞는 학생을 users 배열에 반환",
-                "operationId": "d317735745268edceff53dba390dcceb",
+                "summary": "회원가입",
+                "description": "회원가입",
+                "operationId": "dd64a93e748fe4a41050741e050f42ec",
                 "requestBody": {
-                    "description": "승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
-                    "required": false,
+                    "description": "회원가입 정보",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "type": {
-                                        "description": "승인 미승인 여부",
-                                        "type": "boolean",
-                                        "example": true
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "관리자"
+                                    },
+                                    "student_id": {
+                                        "description": "학번",
+                                        "type": "string",
+                                        "example": "1901234"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
                                     }
                                 },
                                 "type": "object"
@@ -1261,10 +1253,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "description": "fail"
                     }
                 }
             },
@@ -1310,73 +1302,51 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "500": {
-                        "description": "Fail"
+                        "description": "fail"
                     }
                 }
             }
         },
-        "/api/user/foreigner": {
-            "post": {
+        "/api/user/{id}": {
+            "delete": {
                 "tags": [
                     "학생"
                 ],
-                "summary": "회원가입",
-                "description": "유학생 회원가입",
-                "operationId": "cbdb5292e9560ce496c12b8a0cc29f96",
-                "requestBody": {
-                    "description": "회원가입 정보",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "description": "사용자 이름",
-                                        "type": "string",
-                                        "example": "관리자"
-                                    },
-                                    "phone_number": {
-                                        "description": "전화번호",
-                                        "type": "string",
-                                        "example": "01012345678"
-                                    },
-                                    "email": {
-                                        "description": "이메일",
-                                        "type": "string",
-                                        "example": "admin@gmail.com"
-                                    },
-                                    "password": {
-                                        "description": "비밀번호",
-                                        "type": "string",
-                                        "example": "admin123"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "summary": "탈퇴",
+                "description": "일반 학생 및 유학생 탈퇴",
+                "operationId": "30e379b8383ecf7961ec3abd88fe2c70",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "탈퇴할 학생, 유학생의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "500": {
-                        "description": "Fail"
+                        "description": "fail"
                     }
                 }
             }
         },
-        "/api/user/foreigner/login": {
+        "/api/user/google-login": {
             "post": {
                 "tags": [
                     "학생"
                 ],
                 "summary": "로그인",
-                "description": "유학생 로그인",
-                "operationId": "39e923277f2d84a89b3171e6d98227b4",
+                "description": "유저 google 로그인",
+                "operationId": "3d7511c23a000b62df04ce3c77a950ad",
                 "requestBody": {
                     "description": "회원가입 정보",
                     "required": true,
@@ -1402,10 +1372,69 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "500": {
-                        "description": "Fail"
+                        "description": "fail"
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "로그인",
+                "description": "일반 로그인",
+                "operationId": "a67c3ed4f26d016a108ef4269cc8bffe",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "500": {
+                        "description": "fail"
+                    }
+                }
+            }
+        },
+        "/api/user/logout": {
+            "get": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "로그아웃",
+                "description": "유저 google 로그아웃",
+                "operationId": "c9a0f004b340af9bd5848972fba78d08",
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "500": {
+                        "description": "fail"
                     }
                 }
             }
@@ -1443,39 +1472,46 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "500": {
-                        "description": "Fail"
+                        "description": "fail"
                     }
                 }
             }
         },
-        "/api/user/{id}": {
-            "delete": {
+        "/api/user/list": {
+            "get": {
                 "tags": [
                     "학생"
                 ],
-                "summary": "탈퇴",
-                "description": "일반 학생 및 유학생 탈퇴",
-                "operationId": "30e379b8383ecf7961ec3abd88fe2c70",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "탈퇴할 학생, 유학생의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "summary": "승인 혹은 미승인 학생 목록",
+                "description": "파라미터 값에 맞는 학생을 users 배열에 반환",
+                "operationId": "6f6a619a1a3f9acdc7e530127d37d896",
+                "requestBody": {
+                    "description": "승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "승인 미승인 여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "500": {
-                        "description": "Fail"
+                        "description": "server error"
                     }
                 }
             }
@@ -1501,10 +1537,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "success"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "validation error"
                     }
                 }
             }
