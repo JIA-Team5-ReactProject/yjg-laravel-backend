@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('restaurant_weekend_meal_type', function (Blueprint $table) {
             $table->id();
-            $table->char('weekend_meal_type_id', 1);
-            $table->foreign('weekend_meal_type_id')->references('id')->on('weekend_meal_type')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('weekend_meal_type_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('restaurant_weekend_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
