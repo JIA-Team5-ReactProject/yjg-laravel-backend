@@ -18,6 +18,7 @@ class Controller extends BaseController
     protected array $dayList = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     protected array $userValidateRules = [
         'name' => 'required|string',
+        'student_id' => 'required|string',
         'phone_number' => 'required|string',
         'email' => 'required|string|unique:users',
         'password' => 'required|string',
