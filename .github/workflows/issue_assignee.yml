@@ -6,7 +6,8 @@ on:
       - opened
 
 jobs:
-  add-reviews:
+  check_issue_creator:
     runs-on: ubuntu-latest
     steps:
-      - uses: kentaro-m/auto-assign-action@v2.0.0
+    - name: Check issue creator
+      run: echo "The issue was created by ${{ github.event.sender.login }}"
