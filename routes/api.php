@@ -102,6 +102,7 @@ Route::prefix('user')->group(function () {
 //
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
+Route::get('/restaurant/semester/payment', [RestaurantSemesterController::class, 'getPayment']);
 Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
 Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
 Route::post('/restaurant/mealtype', [RestaurantMealTypeController::class, 'store']);
