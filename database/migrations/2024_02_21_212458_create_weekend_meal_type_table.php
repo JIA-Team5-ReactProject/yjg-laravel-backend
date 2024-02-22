@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salon_break_times', function (Blueprint $table) {
-            $table->id();
-            $table->time('break_time');
-            $table->date('date');
+        Schema::create('weekend_meal_type', function (Blueprint $table) {
+            $table->char('id', 1)->primary();
+            $table->string('content')->nullable();
+            $table->string('price', 10);
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salon_break_times');
+        Schema::dropIfExists('weekend_meal_type');
     }
 };
