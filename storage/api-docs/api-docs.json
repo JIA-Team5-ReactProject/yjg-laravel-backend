@@ -916,14 +916,14 @@
                 }
             }
         },
-        "/api/admin/salon-service/{id}": {
+        "/api/admin/salon-service/{id}/{gender}": {
             "get": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "카테고리 서비스 목록",
                 "description": "미용실 특정 카테고리의 서비스 목록",
-                "operationId": "ff42cf6264606d021eddcf79dce9e69e",
+                "operationId": "a6a3202940eaadd86abead76435ad0f2",
                 "parameters": [
                     {
                         "name": "id",
@@ -941,33 +941,6 @@
                         "required": true,
                         "schema": {
                             "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "미용실"
-                ],
-                "summary": "서비스 삭제",
-                "description": "미용실 서비스 삭제",
-                "operationId": "765665a1df52406f7a2430b0b5ddb2ed",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 서비스의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
                         }
                     }
                 ],
@@ -1083,6 +1056,53 @@
                     },
                     "404": {
                         "description": "Model Not Found Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/salon-service/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실"
+                ],
+                "summary": "서비스 삭제",
+                "description": "미용실 서비스 삭제",
+                "operationId": "765665a1df52406f7a2430b0b5ddb2ed",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/after-service": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "전체 AS 목록",
+                "description": "모든 AS 목록",
+                "operationId": "0e26d397958d08dd79c77cc5f6f0f848",
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "Fail"
@@ -1359,10 +1379,10 @@
                                         "type": "string",
                                         "example": "admin@gmail.com"
                                     },
-                                    "password": {
-                                        "description": "비밀번호",
+                                    "displayName": {
+                                        "description": "이름",
                                         "type": "string",
-                                        "example": "admin123"
+                                        "example": "엄준식"
                                     }
                                 },
                                 "type": "object"
@@ -1372,10 +1392,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "success"
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
                     },
                     "500": {
-                        "description": "fail"
+                        "description": "Fail"
                     }
                 }
             }
