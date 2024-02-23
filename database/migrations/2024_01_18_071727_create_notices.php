@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->string('tag');
+            $table->boolean('urgent')->default(false);
             $table->timestamps();
         });
     }
