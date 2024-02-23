@@ -11,6 +11,7 @@ class AfterServiceComment extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'admin_id',
         'after_service_id',
         'comment',
     ];
