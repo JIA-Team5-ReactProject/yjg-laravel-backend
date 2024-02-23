@@ -79,7 +79,7 @@ Route::prefix('admin')->group(function() {
 Route::prefix('user')->group(function () {
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::delete('/{id}',[UserController::class, 'unregister'])->name('user.unregister');
-    Route::get('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
     Route::post('/login', [UserController::class, 'login'])->name('user.login');
     Route::get('/list', [UserController::class, 'userList'])->name('user.list');
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
