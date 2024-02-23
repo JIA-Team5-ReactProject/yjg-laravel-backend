@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
+use App\Models\MeetingRoomReservation;
 use Illuminate\Database\Seeder;
 
-class AdminTestSeeder extends Seeder
+class MeetingRoomReservationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Admin::factory()->count(50)->create();
+        MeetingRoomReservation::factory()->count(10)->create();
     }
 }
