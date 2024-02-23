@@ -100,12 +100,13 @@ class UserController extends Controller
      *               mediaType="application/json",
      *               @OA\Schema(
      *                    @OA\Property (property="email", type="string", description="이메일", example="admin@gmail.com"),
-     *                    @OA\Property (property="password", type="string", description="비밀번호", example="admin123"),
+     *                    @OA\Property (property="displayName", type="string", description="이름", example="엄준식"),
      *               )
      *          )
      *     ),
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="Validation Exception"),
+     *     @OA\Response(response="500", description="Fail"),
      * )
      */
     public function googleRegisterOrLogin(Request $request)
