@@ -12,9 +12,8 @@ class RestaurantWeekend extends Model
 
     protected $fillable = [
         'user_id',
-        'menu_type',
-        'sun',
-        'sat',
+        'payment',
+        'refund',
     ];
     public function user() {
         $this->belongsTo(User::class);

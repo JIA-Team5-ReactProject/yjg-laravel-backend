@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('weekend_meal_type', function (Blueprint $table) {
-            $table->char('id', 1)->primary();
-            $table->string('content')->nullable();
+            $table->id();
+            $table->string('meal_type');
+            $table->string('date', 10);
+            $table->string('content', 225);
             $table->string('price', 10);
             $table->timestamps();
         });

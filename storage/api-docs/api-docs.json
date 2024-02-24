@@ -1128,15 +1128,10 @@
                                         "type": "string",
                                         "example": "1"
                                     },
-                                    "menu_type": {
-                                        "description": "식사유형",
-                                        "type": "string",
-                                        "example": "A"
-                                    },
                                     "payment": {
-                                        "description": "입금여부",
+                                        "description": "입금 확인",
                                         "type": "boolean",
-                                        "example": "true"
+                                        "example": false
                                     }
                                 },
                                 "type": "object"
@@ -1174,18 +1169,23 @@
                                         "type": "string",
                                         "example": "1"
                                     },
-                                    "menu_type": {
+                                    "meal_type": {
                                         "description": "식사유형",
                                         "type": "string",
                                         "example": "A"
                                     },
-                                    "sat": {
-                                        "description": "토요일",
+                                    "refund": {
+                                        "description": "환불여부",
                                         "type": "boolean",
                                         "example": "true"
                                     },
-                                    "sun": {
-                                        "description": "일요일",
+                                    "date": {
+                                        "description": "식사시간",
+                                        "type": "string",
+                                        "example": "lunch"
+                                    },
+                                    "payment": {
+                                        "description": "입금여부",
                                         "type": "boolean",
                                         "example": "true"
                                     }
