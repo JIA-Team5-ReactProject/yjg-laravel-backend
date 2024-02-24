@@ -19,4 +19,9 @@ class Notice extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function noticeImages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(NoticeImage::class);
+    }
 }

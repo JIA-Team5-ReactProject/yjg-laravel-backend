@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\SalonBreakTimeController;
 use App\Http\Controllers\Admin\SalonBusinessHourController;
 use App\Http\Controllers\Admin\SalonCategoryController;
@@ -73,6 +74,11 @@ Route::prefix('admin')->group(function() {
         Route::post('/', [SalonBusinessHourController::class, 'store'])->name('admin.salon.hour.store');
         Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('admin.salon.hour.update');
         Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
+    });
+    Route::prefix('notice')->group(function() {
+        Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
+        Route::patch('/', [NoticeController::class, 'update'])->name('admin.notice.update');
+        Route::get('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
     });
 });
 

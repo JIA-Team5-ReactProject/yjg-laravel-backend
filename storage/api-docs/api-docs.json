@@ -521,6 +521,157 @@
                 }
             }
         },
+        "/api/admin/notice": {
+            "post": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 작성",
+                "description": "공지사항 작성",
+                "operationId": "768a676cbbff9a912cf9749ad2723348",
+                "requestBody": {
+                    "description": "글 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "관리자 아이디",
+                                        "type": "string",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "행정"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 삭제",
+                "description": "공지사항 삭제",
+                "operationId": "110ce2d854f089dc9ebd548cbcce99e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 수정",
+                "description": "공지사항 수정",
+                "operationId": "16ec04007791e16d5fb7c6ea0a166665",
+                "requestBody": {
+                    "description": "수정할 글 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "notice_id": {
+                                        "description": "관리자 아이디",
+                                        "type": "string",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "행정"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    },
+                                    "delete_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/admin/salon-break": {
             "post": {
                 "tags": [
@@ -537,10 +688,9 @@
                             "schema": {
                                 "properties": {
                                     "break_time": {
-                                        "description": "삭제할 시간",
                                         "type": "array",
                                         "items": {
-                                            "type": "time"
+                                            "example": "10:00"
                                         }
                                     },
                                     "date": {
