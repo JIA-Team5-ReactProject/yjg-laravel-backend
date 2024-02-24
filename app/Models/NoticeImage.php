@@ -12,8 +12,8 @@ class NoticeImage extends Model
         'image',
     ];
 
-    public function notices(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function notices(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsToMany(Notice::class);
+        return $this->belongsTo(Notice::class);
     }
 }
