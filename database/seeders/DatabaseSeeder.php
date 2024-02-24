@@ -13,17 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // for testing
-        if(app()->environment() === 'testing'){
-            $this->call([
-                AdminTestSeeder::class,
-            ]);
-        }
-        // for teammate
         $this->call([
             AdminSeeder::class,
             SalonSeeder::class,
             SalonBusinessHourSeeder::class,
+            MeetingRoomSeeder::class,
+            UserSeeder::class,
+            MeetingRoomReservationSeeder::class,
         ]);
     }
 }

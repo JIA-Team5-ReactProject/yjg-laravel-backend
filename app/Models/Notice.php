@@ -9,6 +9,7 @@ class Notice extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'admin_id',
         'title',
         'content',
         'tag',
@@ -17,5 +18,10 @@ class Notice extends Model
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function noticeImages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(NoticeImage::class);
     }
 }

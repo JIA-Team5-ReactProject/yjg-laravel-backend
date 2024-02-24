@@ -13,7 +13,7 @@ class SalonBusinessHourSeeder extends Seeder
      */
     public function run(): void
     {
-        $dayList = ['MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT', 'SUN'];
+        $dayList = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
         foreach ($dayList as $day) {
             SalonBusinessHour::create([

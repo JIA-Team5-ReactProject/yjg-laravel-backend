@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('meeting_room_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->char('status');
-            $table->timestamp('reservation_date');
-            $table->softDeletes();
+            $table->boolean('status')->default(true);
+            $table->date('reservation_date');
+            $table->time('reservation_s_time');
+            $table->time('reservation_e_time');
             $table->timestamps();
         });
     }

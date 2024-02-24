@@ -15,6 +15,5 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         Excel::import(new UsersImport(), env('EXCEL_USER_FILE_PATH'), 's3');
-
     }
 }

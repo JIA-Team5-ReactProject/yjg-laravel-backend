@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('notices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('admin_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('title');
             $table->text('content');
             $table->string('tag');
+            $table->boolean('urgent')->default(false);
             $table->timestamps();
         });
     }
@@ -27,7 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('notices', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['admin_id']);
             $table->dropIfExists();
         });
     }
