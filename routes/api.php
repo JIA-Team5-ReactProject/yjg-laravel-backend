@@ -28,12 +28,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// 토큰 불필요
+Route::prefix('user')->group(function () {
+    Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
+    Route::post('/', [UserController::class, 'register'])->name('user.register');
+    Route::post('/login', [UserController::class, 'login'])->name('user.login');
+});
+
+// 토큰 필요
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::prefix('user')->group(function () {
+        Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
+        Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
+        Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
+        Route::get('/list', [UserController::class, 'userList'])->name('user.list');
+        Route::patch('/' , [UserController::class, 'update'])->name('user.update');
+        Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve');
+        Route::prefix('salon-reservation')->group(function () {
+            Route::get('/', [UserSalonReservationController::class, 'index'])->name('user.salon.reservation.index');
+            Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
+            Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
+        });
+    });
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    Route::post('/user/logout', [UserController::class, 'logout'])  ->name('user.logout');
 });
 
 Route::prefix('admin')->group(function() {
@@ -81,24 +101,6 @@ Route::prefix('admin')->group(function() {
         Route::get('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
     });
 });
-
-Route::prefix('user')->group(function () {
-    Route::post('/', [UserController::class, 'register'])->name('user.register');
-    Route::delete('/{id}',[UserController::class, 'unregister'])->name('user.unregister');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
-    Route::post('/login', [UserController::class, 'login'])->name('user.login');
-    Route::get('/list', [UserController::class, 'userList'])->name('user.list');
-    Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
-    Route::patch('/' , [UserController::class, 'update'])->name('user.update');
-    Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('foreigner.approve');
-    Route::prefix('salon-reservation')->group(function () {
-        Route::get('/', [UserSalonReservationController::class, 'index'])->name('user.salon.reservation.index');
-        Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
-        Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
-    });
-});
-
-
 
 //
 Route::get('/admin/qr', [QRController::class, 'generator']);
