@@ -15,48 +15,46 @@ class SalonServiceController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/admin/salon-service/{id}/{gender}",
+     *     path="/api/admin/salon-service",
      *     tags={"미용실"},
      *     summary="카테고리 서비스 목록",
      *     description="미용실 특정 카테고리의 서비스 목록",
-     *      @OA\Parameter(
-     *            name="id",
-     *            description="찾을 카테고리의 아이디",
-     *            required=true,
-     *            in="path",
-     *            @OA\Schema(type="integer"),
-     *      ),
-     *      @OA\Parameter(
-     *        name="gender",
-     *        description="찾을 성별",
-     *        required=true,
-     *        in="path",
-     *        @OA\Schema(type="string"),
+     *     @OA\RequestBody(
+     *          description="서비스 관련 정보",
+     *          required=false,
+     *          @OA\MediaType(
+     *               mediaType="application/json",
+     *               @OA\Schema (
+     *                   @OA\Property (property="category_id", type="integer", description="카테고리 아이디", example=1),
+     *                   @OA\Property (property="gender", type="string", description="성별", example="male"),
+     *               )
+     *          )
      *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function show(string $id, string $gender)
+    public function show(Request $request)
     {
-        $validator = Validator::make([
-            'id' => $id,
-            'gender' => $gender,
-        ], [
-            'id' => 'required|exists:App\Models\SalonCategory,id',
-            'gender' => ['required', Rule::in(['male', 'female'])],
-        ]);
-
         try {
-            $validated = $validator->validate();
+            $validated = $request->validate([
+                'category_id' => 'exists:App\Models\SalonCategory,id',
+                'gender' => [Rule::in(['male', 'female'])],
+            ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        return response()->json(['services' => SalonService::where('salon_category_id', $validated['id'])
-            ->where('gender', $validated['gender'])->get()]);
+        if(empty($validated['id']) && empty($validated['gender'])) {
+            $services = SalonService::all(['id', 'salon_category_id', 'service', 'price', 'gender']);
+        } else {
+            $services = SalonService::where('salon_category_id', $validated['id'])
+                ->where('gender', $validated['gender'])->get();
+        }
+
+        return response()->json(['services' => $services]);
     }
 
     /**
