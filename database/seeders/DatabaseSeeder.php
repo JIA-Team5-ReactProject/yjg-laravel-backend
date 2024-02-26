@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             MeetingRoomSeeder::class,
             UserSeeder::class,
             MeetingRoomReservationSeeder::class,
+            NoticeSeeder::class,
         ]);
     }
 }
