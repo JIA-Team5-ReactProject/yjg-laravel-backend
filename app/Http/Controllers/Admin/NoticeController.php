@@ -14,10 +14,76 @@ use Illuminate\Validation\ValidationException;
 
 class NoticeController extends Controller
 {
-    private array $tagRules = ['admin', 'salon', 'restaurant'];
+    private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
+
+    /**
+     * @OA\Get (
+     *     path="/api/admin/notice",
+     *     tags={"공지사항"},
+     *     summary="공지사항 검색",
+     *     description="파라미터 값에 맞는 공지사항을 반환",
+     *     @OA\RequestBody(
+     *     description="검색 파라미터가 있을 경우 반환, 없을 경우 전체 반환",
+     *     required=true,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="search_by", type="string", description="검색 구분(tag or title)", example="tag"),
+     *                 @OA\Property (property="page", type="integer", description="페이지", example=1),
+     *                 @OA\Property (property="keyword", type="string", description="검색어", example="엄준식")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
     public function index(Request $request)
     {
-        return response()->json(['notices' => Notice::all()]);
+        try {
+            $validated = $request->validate([
+                'search_by' => ['required', Rule::in(['tag', 'title'])],
+                'page' => 'required|numeric',
+                'keyword' => 'string',
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        $notices = Notice::where($validated['search_by'], 'LIKE', "%{$validated['keyword']}%")->paginate(10);
+
+        return response()->json(['notices' => $notices]);
+    }
+
+    /**
+     * @OA\Get (
+     *     path="/api/admin/notice/{id}",
+     *     tags={"공지사항"},
+     *     summary="공지사항 검색",
+     *     description="파라미터 값에 맞는 공지사항을 반환",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="찾을 공지사항의 아이디",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function show(string $id)
+    {
+        try {
+            $notice = Notice::findOrFail($id);
+        } catch (ModelNotFoundException $modelException) {
+            $errorMessage = $modelException->getMessage();
+            return response()->json(['error'=>$errorMessage], 404);
+        }
+
+        return response()->json(['notice' => $notice]);
     }
 
     /**
@@ -32,7 +98,6 @@ class NoticeController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="admin_id", type="string", description="관리자 아이디", example=1),
      *                 @OA\Property (property="title", type="string", description="제목", example="제목입니다."),
      *                 @OA\Property (property="content", type="string", description="내용", example="내용입니다."),
      *                 @OA\Property (property="tag", type="string", description="태그", example="행정"),
@@ -54,12 +119,12 @@ class NoticeController extends Controller
         // 태그를 가지고 있는 테이블을 생성해서 그에 맞는 테이블을 참조하게 하기
         try {
             $validated = $request->validate([
-                'admin_id' => 'required|numeric',
-                'title' => 'required|string',
-                'content' => 'required|string',
-                'tag' => ['required', Rule::in($this->tagRules)],
-                'images' => 'array',
-                'images.*' => 'image|mimes:jpg,jpeg,png',
+                'title'     => 'required|string',
+                'content'   => 'required|string',
+                'tag'       => ['required', Rule::in($this->tagRules)],
+                'urgent'    => 'boolean',
+                'images'    => 'array',
+                'images.*'  => 'image|mimes:jpg,jpeg,png',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -67,16 +132,19 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
+        $adminId = $request->user()->id;
+
         try {
-            Admin::findOrFail($validated['admin_id']);
+            Admin::findOrFail($adminId);
         } catch (ModelNotFoundException $modelException) {
-            return response()->json(['error' => 'admin_id에 해당하는 관리자가 없습니다.'], 404);
+            return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
         $notice = Notice::create([
-            'admin_id' => $validated['admin_id'],
+            'admin_id' => $adminId,
             'title'    => $validated['title'],
             'content'  => $validated['content'],
+            'urgent'   => $validated['urgent'],
             'tag'      => $validated['tag'],
         ]);
 
@@ -136,6 +204,7 @@ class NoticeController extends Controller
                 'title' => 'string',
                 'content' => 'string',
                 'tag' => [Rule::in($this->tagRules)],
+                'urgent' => 'boolean',
                 'images' => 'array',
                 'images.*' => 'image|mimes:jpg,jpeg,png',
                 'delete_images' => 'array',
