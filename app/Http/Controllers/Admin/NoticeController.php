@@ -58,6 +58,35 @@ class NoticeController extends Controller
     }
 
     /**
+     * @OA\Get (
+     *     path="/api/admin/notice/{id}",
+     *     tags={"공지사항"},
+     *     summary="공지사항 검색",
+     *     description="파라미터 값에 맞는 공지사항을 반환",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="찾을 공지사항의 아이디",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function show(string $id)
+    {
+        try {
+            $notice = Notice::findOrFail($id);
+        } catch (ModelNotFoundException $modelException) {
+            $errorMessage = $modelException->getMessage();
+            return response()->json(['error'=>$errorMessage], 404);
+        }
+
+        return response()->json(['notice' => $notice]);
+    }
+
+    /**
      * @OA\Post (
      *     path="/api/admin/notice",
      *     tags={"공지사항"},
