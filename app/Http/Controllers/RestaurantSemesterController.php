@@ -15,7 +15,7 @@ class RestaurantSemesterController extends Controller
     /**
      * @OA\Post (
      * path="/api/restaurant/semester",
-     * tags={"학생"},
+     * tags={"식수"},
      * summary="식수 학기 신청",
      * description="식수 학기 신청을 처리합니다",
      *     @OA\RequestBody(
@@ -78,7 +78,7 @@ class RestaurantSemesterController extends Controller
         /**
          * @OA\Get (
          * path="/api/restaurant/semester/payment",
-         * tags={"학생"},
+         * tags={"식수"},
          * summary="식수 학기 신청 입금여부",
          * description="식수 학기 신청의 입금여부를 확인 합니다",
          *     @OA\RequestBody(

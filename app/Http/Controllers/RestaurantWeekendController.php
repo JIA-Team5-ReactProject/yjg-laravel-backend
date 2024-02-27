@@ -14,7 +14,7 @@ class RestaurantWeekendController extends Controller
     /**
      * @OA\Post (
      *     path="/api/restaurant/weekend",
-     *     tags={"학생"},
+     *     tags={"식수"},
      *     summary="식수 주말 신청",
      *     description="식수 주말 신청을 처리합니다",
      *         @OA\RequestBody(

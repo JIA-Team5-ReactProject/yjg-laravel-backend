@@ -45,9 +45,9 @@ class SalonBreakTimeController extends Controller
      *                 @OA\Property(
      *                     property="break_time",
      *                     type="array",
-     *                     @OA\Items(type="time"),
-     *                     description="삭제할 시간"
-     *
+     *                     @OA\Items(
+     *                          example="10:00",
+     *                     ),
      *                 ),
      *                 @OA\Property (property="date", type="date", description="날짜", example="2024-01-01")
      *             )

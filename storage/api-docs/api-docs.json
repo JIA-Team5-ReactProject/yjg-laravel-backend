@@ -522,6 +522,40 @@
             }
         },
         "/api/admin/notice": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 검색",
+                "description": "파라미터 값에 맞는 공지사항을 반환",
+                "operationId": "0ded74c1cafe239b0c473b9251d5a0f7",
+                "requestBody": {
+                    "description": "검색 파라미터가 있을 경우 반환, 없을 경우 전체 반환",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "승인 미승인 여부",
+                                        "type": "string",
+                                        "example": "approved"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "공지사항"
@@ -1066,25 +1100,37 @@
                 }
             }
         },
-        "/api/admin/salon-service/{id}/{gender}": {
+        "/api/admin/salon-service": {
             "get": {
                 "tags": [
                     "미용실"
                 ],
                 "summary": "카테고리 서비스 목록",
                 "description": "미용실 특정 카테고리의 서비스 목록",
-                "operationId": "a6a3202940eaadd86abead76435ad0f2",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "찾을 카테고리의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "operationId": "6ee7eb179ab34b48e7aec69626d27edf",
+                "requestBody": {
+                    "description": "서비스 관련 정보",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "description": "카테고리 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "gender": {
+                                        "description": "성별",
+                                        "type": "string",
+                                        "example": "male"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -1094,35 +1140,6 @@
                     }
                 }
             },
-            "delete": {
-                "tags": [
-                    "미용실"
-                ],
-                "summary": "서비스 삭제",
-                "description": "미용실 서비스 삭제",
-                "operationId": "765665a1df52406f7a2430b0b5ddb2ed",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "찾을 성별",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/admin/salon-service": {
             "post": {
                 "tags": [
                     "미용실"
@@ -1398,7 +1415,7 @@
                 "tags": [
                     "학생"
                 ],
-                "summary": "회원가입",
+                "summary": "회원가입(인증X)",
                 "description": "회원가입",
                 "operationId": "dd64a93e748fe4a41050741e050f42ec",
                 "requestBody": {
@@ -1448,6 +1465,22 @@
                     }
                 }
             },
+            "delete": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "탈퇴",
+                "description": "일반 학생 및 유학생 탈퇴",
+                "operationId": "c5260b9a4becc73394a39ea0b0c1ef13",
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "500": {
+                        "description": "fail"
+                    }
+                }
+            },
             "patch": {
                 "tags": [
                     "학생"
@@ -1462,11 +1495,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "description": "정보를 수정할 유저의 아이디",
-                                        "type": "number",
-                                        "example": 1
-                                    },
                                     "student_id": {
                                         "description": "정보를 수정할 유저의 아이디",
                                         "type": "string",
@@ -1488,35 +1516,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "success"
-                    },
-                    "500": {
-                        "description": "fail"
-                    }
-                }
-            }
-        },
-        "/api/user/{id}": {
-            "delete": {
-                "tags": [
-                    "학생"
-                ],
-                "summary": "탈퇴",
-                "description": "일반 학생 및 유학생 탈퇴",
-                "operationId": "30e379b8383ecf7961ec3abd88fe2c70",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "탈퇴할 학생, 유학생의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "success"
@@ -1636,7 +1635,7 @@
                     "학생"
                 ],
                 "summary": "회원가입 승인",
-                "description": "유학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
+                "description": "학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
                 "operationId": "104985906292896376471e2145beb3e5",
                 "requestBody": {
                     "description": "아이디 및 승인 여부",
@@ -1645,11 +1644,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "admin_id": {
-                                        "description": "권한을 부여할 유학생의 아이디",
-                                        "type": "number",
-                                        "example": 1
-                                    },
                                     "approve": {
                                         "description": "유학생 회원가입 승인 여부",
                                         "type": "boolean",
@@ -1712,7 +1706,7 @@
                 "tags": [
                     "학생"
                 ],
-                "summary": "이메일 중복 확인",
+                "summary": "이메일 중복 확인(인증X)",
                 "description": "학생 이메일 중복 확인",
                 "operationId": "969d4ec34856375027650a1d786876ec",
                 "parameters": [
@@ -1769,11 +1763,6 @@
                                 "properties": {
                                     "salon_service_id": {
                                         "description": "미용실 서비스 아이디",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "user_id": {
-                                        "description": "유저 아이디",
                                         "type": "integer",
                                         "example": 1
                                     },

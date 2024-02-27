@@ -22,7 +22,6 @@ class UserSalonReservationController extends Controller
      */
     public function index(Request $request)
     {
-        //TODO: 현재 로그인과 연동하여 테스트 필요
         return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', $request->user()->id)->get()]);
     }
     /**
@@ -38,7 +37,6 @@ class UserSalonReservationController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="salon_service_id", type="integer", description="미용실 서비스 아이디", example=1),
-     *                 @OA\Property (property="user_id", type="integer", description="유저 아이디", example=1),
      *                 @OA\Property (property="r_date", type="date", description="예약 날짜", example="2024-01-01"),
      *                 @OA\Property (property="r_time", type="time", description="예약 시간", example="12:12:12"),
      *             )
@@ -54,7 +52,6 @@ class UserSalonReservationController extends Controller
         try {
             $validated = $request->validate([
                 'salon_service_id' => 'required|numeric',
-                'user_id' => 'required|numeric',
                 'r_date' => 'required|date_format:Y-m-d',
                 'r_time' => 'required|date_format:H:i',
             ]);
@@ -64,9 +61,11 @@ class UserSalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
+        $userId = $request->user()->id;
+
         $reservation = SalonReservation::create([
             'salon_service_id' => $validated['salon_service_id'],
-            'user_id' => $validated['user_id'],
+            'user_id' => $userId,
             'reservation_date' => $validated['r_date'],
             'reservation_time' => $validated['r_time'],
         ]);
@@ -93,21 +92,10 @@ class UserSalonReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|exists:App\Models\SalonReservation,id',
-        ]);
-        //TODO: 로그인 로직 구현 완료 시 예약 취소하는 사람의 아이디(현재 로그인 된 유저)와 예약의 아이디가 일치한지 확인
-        try {
-            $validated = $validator->validate();
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
-        }
-
-        if(!SalonReservation::destroy($validated['id'])) return response()->json(['error' => 'Failed to cancel reservation'], 500);
+        $userId = $request->user()->id;
+        if(!SalonReservation::destroy($userId)) return response()->json(['error' => 'Failed to cancel reservation'], 500);
 
         return response()->json(['success' => 'Reservation canceled successfully']);
     }

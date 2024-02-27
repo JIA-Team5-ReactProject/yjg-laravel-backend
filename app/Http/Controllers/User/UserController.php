@@ -17,7 +17,7 @@ class UserController extends Controller
      * @OA\Post (
      *     path="/api/user",
      *     tags={"학생"},
-     *     summary="회원가입",
+     *     summary="회원가입(인증X)",
      *     description="회원가입",
      *     @OA\RequestBody(
      *          description="회원가입 정보",
@@ -62,29 +62,23 @@ class UserController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/user/{id}",
+     *     path="/api/user",
      *     tags={"학생"},
      *     summary="탈퇴",
      *     description="일반 학생 및 유학생 탈퇴",
-     *      @OA\Parameter(
-     *            name="id",
-     *            description="탈퇴할 학생, 유학생의 아이디",
-     *            required=true,
-     *            in="path",
-     *            @OA\Schema(type="integer"),
-     *        ),
      *     @OA\Response(response="200", description="success"),
      *     @OA\Response(response="500", description="fail"),
      * )
      * @throws destroyexception
      */
-    public function unregister(string $id)
+    public function unregister(Request $request)
     {
-        if (!User::destroy($id)) {
-            throw new destroyException('failed to destroy user');
+        $userId = $request->user()->id;
+        if (!User::destroy($userId)) {
+            throw new destroyException('Failed to destroy user', 500);
         }
 
-        return response()->json(['message'=>'destroy user successfully']);
+        return response()->json(['message' => 'Destroy user successfully']);
     }
 
     /**
@@ -218,7 +212,6 @@ class UserController extends Controller
      *         @OA\Mediatype(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                  @OA\Property (property="user_id", type="number", description="정보를 수정할 유저의 아이디", example=1),
      *                  @OA\Property (property="student_id", type="string", description="정보를 수정할 유저의 아이디", example=1),
      *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
      *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
@@ -233,7 +226,6 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'user_id'       => 'required|numeric', // 수정할 유저의 아이디
                 'student_id'    => 'numeric',
                 'name'          => 'required|string',
                 'phone_number'  => 'required|string|unique:admins',
@@ -244,15 +236,14 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        // user_id에 해당하는 모델 검색
+        $userId = $request->user()->id;
+
         try {
-            $user = User::findOrFail($validated['user_id']);
+            $user = User::findOrFail($userId);
         } catch(modelNotFoundException $modelException) {
             $errorMessage = $modelException->getMessage();
             return response()->json(['error' => $errorMessage], 404);
         }
-
-        unset($validated['user_id']);
 
         foreach($validated as $key => $value) {
             $user->$key = $value;
@@ -268,14 +259,13 @@ class UserController extends Controller
      *     path="/api/user/approve",
      *     tags={"학생"},
      *     summary="회원가입 승인",
-     *     description="유학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
+     *     description="학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
      *     @OA\Requestbody(
      *         description="아이디 및 승인 여부",
      *         required=true,
      *         @OA\Mediatype(
      *             mediaType="application/json",
      *            @OA\Schema (
-     *              @OA\Property (property="admin_id", type="number", description="권한을 부여할 유학생의 아이디", example=1),
      *              @OA\Property (property="approve", type="boolean", description="유학생 회원가입 승인 여부", example=false),
      *            )
      *         ),
@@ -288,24 +278,30 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'admin_id' => 'required|numeric',
-                'approve'  => 'required|boolean',
+                'approve'  => 'required',
             ]);
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getmessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error'=>$request], $errorStatus);
         }
 
+        $userId = $request->user()->id;
+
         try {
-            $user = user::findOrFail($validated['admin_id']);
+            $user = User::findOrFail($userId);
         } catch(modelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $user->approved = true;
+        if($validated['approve']) {
+            $user->approved = true;
+        } else {
+            $user->delete();
+            return response()->json(['success' => 'User deleted successfully']);
+        }
 
         if(!$user->save()) {
             return response()->json(['error' => 'Failed to update approve status'], 500);
@@ -355,7 +351,7 @@ class UserController extends Controller
      * @OA\Get (
      *     path="/api/user/verify-email/{id}",
      *     tags={"학생"},
-     *     summary="이메일 중복 확인",
+     *     summary="이메일 중복 확인(인증X)",
      *     description="학생 이메일 중복 확인",
      *      @OA\Parameter(
      *            name="id",
