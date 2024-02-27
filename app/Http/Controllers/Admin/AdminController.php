@@ -138,12 +138,9 @@ class AdminController extends Controller
             ]);
         }
 
-        $data = [
-            'token' => $this->tokenService->userToken($admin, 'admin', ['admin']),
-            'user' => $admin,
-        ];
+        $token = $this->tokenService->adminToken($admin, 'admin', ['admin']);
 
-        return response()->json(['admin' => $data]);
+        return response()->json(['admin' => $admin, 'token' => $token]);
     }
 
     /**
