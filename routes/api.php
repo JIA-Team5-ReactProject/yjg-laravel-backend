@@ -89,6 +89,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
         });
         Route::prefix('notice')->group(function() {
+            Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
             Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
             Route::patch('/', [NoticeController::class, 'update'])->name('admin.notice.update');
             Route::get('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
