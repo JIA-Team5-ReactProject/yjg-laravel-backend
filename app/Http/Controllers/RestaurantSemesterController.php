@@ -26,6 +26,7 @@ class RestaurantSemesterController extends Controller
      *             @OA\Schema (
      *                 @OA\Property (property="user_id", type="string", description="사용자 ID", example="1"),
      *                 @OA\Property (property="payment", type="boolean", description="입금 확인", example=false),
+ *                     @OA\Property (property="meal_type", type="string", description="식사 유형", example="C"),
      *             )
      *         )
      *     ),
@@ -46,8 +47,8 @@ class RestaurantSemesterController extends Controller
             // 유효성 검사 실패시 애러 메세지
             return response()->json(['error' => $exception->getMessage()], 422);
         }
-        
-        
+
+
 
         try {
             // 데이터베이스에 저장
@@ -62,7 +63,7 @@ class RestaurantSemesterController extends Controller
         try {
             SemesterMealType::create([
                 'id' => $validatedData['meal_type'],
-                
+
             ]);
 
         } catch (\Exception $exception) {//Exception는 부모 예외 클래스임
@@ -127,7 +128,7 @@ class RestaurantSemesterController extends Controller
             return response()->json(['error' => $exception->getMessage()], 422);
         }
 
-        
+
         try {
                 // 기존 사용자의 결제 정보를 업데이트
                 $user = RestaurantSemester::findOrFail($validatedData['user_id']);

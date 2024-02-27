@@ -7,40 +7,6 @@
     },
     "paths": {
         "/api/admin": {
-            "get": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "승인 혹은 미승인 관리자 목록",
-                "description": "파라미터 값에 맞는 관리자를 admins 배열에 반환",
-                "operationId": "1aa48cc3a601191997d32b65056c2b17",
-                "requestBody": {
-                    "description": "승인 관리자 조회의 경우 approved, 미승인 관리자 조회의 경우 unapproved, 전체 조회 시에는 body 없이 요청만",
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "type": {
-                                        "description": "승인 미승인 여부",
-                                        "type": "string",
-                                        "example": "approved"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            },
             "post": {
                 "tags": [
                     "관리자"
@@ -425,6 +391,42 @@
                     },
                     "422": {
                         "description": "Unprocessable Content(Request body에 올바르게 값을 입력했는지 확인)"
+                    }
+                }
+            }
+        },
+        "/api/admin/list": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "승인 혹은 미승인 관리자 목록",
+                "description": "파라미터 값에 맞는 관리자를 admins 배열에 반환",
+                "operationId": "3dd9b1934a554a5692fd79fb14b61f65",
+                "requestBody": {
+                    "description": "승인 관리자 조회의 경우 approved, 미승인 관리자 조회의 경우 unapproved, 전체 조회 시에는 body 없이 요청만",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "승인 미승인 여부",
+                                        "type": "string",
+                                        "example": "approved"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
             }
@@ -1316,7 +1318,7 @@
         "/api/restaurant/semester": {
             "post": {
                 "tags": [
-                    "학생"
+                    "식수"
                 ],
                 "summary": "식수 학기 신청",
                 "description": "식수 학기 신청을 처리합니다",
@@ -1337,6 +1339,11 @@
                                         "description": "입금 확인",
                                         "type": "boolean",
                                         "example": false
+                                    },
+                                    "meal_type": {
+                                        "description": "식사 유형",
+                                        "type": "string",
+                                        "example": "C"
                                     }
                                 },
                                 "type": "object"
@@ -1357,7 +1364,7 @@
         "/api/restaurant/weekend": {
             "post": {
                 "tags": [
-                    "학생"
+                    "식수"
                 ],
                 "summary": "식수 주말 신청",
                 "description": "식수 주말 신청을 처리합니다",
