@@ -13,19 +13,6 @@ return new class extends Migration
     {
         Schema::create('bus_times', function (Blueprint $table) {
             $table->id();
-            $table->time('bokhyun');
-            $table->time('woobang');
-            $table->time('city');
-            $table->time('sk');
-            $table->time('dc');
-            $table->time('bukgu');
-            $table->time('bank');
-            $table->time('taejeon');
-            $table->time('g_campus');
-            $table->time('en');
-            $table->time('munyang');
-            $table->boolean('start_end'); // 출발, 도착
-            $table->boolean('week_end'); // 주말, 평일
             $table->timestamps();
         });
     }
