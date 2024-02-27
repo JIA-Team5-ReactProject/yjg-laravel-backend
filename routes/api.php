@@ -15,6 +15,7 @@ use App\Http\Controllers\RestaurantSemesterController;
 use App\Http\Controllers\RestaurantWeekendController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserSalonReservationController;
+use App\Http\Controllers\WeekendMealTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -103,14 +104,16 @@ Route::prefix('admin')->group(function() {
     });
 });
 
-//
+// Route::prefix('restaurant')->group(function () {
+
+// });
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
 Route::get('/restaurant/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);
 Route::post('/restaurant/semester/p/payment', [RestaurantSemesterController::class, 'setPayment']);
 Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
 Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
-Route::post('/restaurant/mealtype', [RestaurantMealTypeController::class, 'store']);
+Route::post('/weekend/mealtype', [WeekendMealTypeController::class, 'store']);
 
 Route::post('/bus/time', [busTimeController::class, 'store']);
 

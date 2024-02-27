@@ -18,4 +18,8 @@ class RestaurantWeekend extends Model
     public function user() {
         $this->belongsTo(User::class);
     }
+    public function restaurantWeekendMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RestaurantWeekendMealType::class);
+    }
 }

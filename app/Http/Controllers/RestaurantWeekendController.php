@@ -41,9 +41,10 @@ class RestaurantWeekendController extends Controller
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'user_id' => 'required|exists:users,id',
                 'meal_type' => 'required|string',
                 'date' => 'required|string',
+
+                'user_id' => 'required|exists:users,id',
                 'payment' => 'required|boolean',
                 'refund' => 'required|boolean',
                 
@@ -59,20 +60,16 @@ class RestaurantWeekendController extends Controller
                 'user_id' => $validatedData['user_id'],
                 'payment' => $validatedData['payment'],
                 'refund' => $validatedData['refund'],
-                
             ]);
         } catch (\Exception $exception) {
             // 데이터베이스 저장 실패시 애러 메세지
             //return response()->json(['error' => '데이터베이스에 저장하는 중에 오류가 발생했습니다.'], 500);
             return response()->json(['error' =>  $exception->getMessage()], 500);
         }
+
         $weekendMealTypeId = WeekendMealType::where('meal_type', $validatedData['meal_type'])
                                             ->where('date', $validatedData['date'])
                                             ->first();
-        Log::info('아이디레스토랑 위크 : ' . $RestaurantWeekend->id);
-        Log::info('아이디레스토랑 멜 위크 : ' . $weekendMealTypeId->id);
-
-
         RestaurantWeekendMealType::create([
             'restaurant_weekend_id' => $RestaurantWeekend->id,
             'weekend_meal_type_id' => $weekendMealTypeId->id

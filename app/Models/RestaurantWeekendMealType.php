@@ -16,6 +16,7 @@ class RestaurantWeekendMealType extends Model
     public function weekend_meal_types() {
         $this->belongsTo(WeekendMealType::class);
     }
+    
 
     public function restaurant_weekends() {
         $this->belongsTo(RestaurantWeekend::class);

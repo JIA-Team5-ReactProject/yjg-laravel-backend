@@ -13,6 +13,7 @@ class WeekendMealType extends Model
         'date',
         'content',
         'price',
+        
     ];
 
 
