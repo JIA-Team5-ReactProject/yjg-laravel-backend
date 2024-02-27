@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('restaurant_semester_meal_type', function (Blueprint $table) {
+        Schema::create('restaurant_semester_meal_types', function (Blueprint $table) {
             $table->id();
             $table->char('semester_meal_type_id', 1);
             $table->foreign('semester_meal_type_id')->references('id')->on('semester_meal_type')->cascadeOnUpdate()->cascadeOnDelete();

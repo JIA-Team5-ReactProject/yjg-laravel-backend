@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('restaurant_weekend_meal_type', function (Blueprint $table) {
+        Schema::create('restaurant_weekend_meal_types', function (Blueprint $table) {
             $table->id();
             $table->foreignId('weekend_meal_type_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('restaurant_weekend_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
