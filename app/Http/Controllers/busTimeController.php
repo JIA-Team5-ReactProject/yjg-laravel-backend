@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BusTime;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -31,12 +32,18 @@ class busTimeController extends Controller
 
         try {
             // 데이터베이스에 저장
-            RestaurantMealType::create([
-                'meal_type' => $validatedData['meal_type'],
-                'meal_genre' =>$validatedData['meal_genre'],
-                'content' =>$validatedData['content'],
-                'price' =>$validatedData['price'],
-                'weekend' =>$validatedData['weekend'],
+            BusTime::create([
+                'bokhyun' => $validatedData['bokhyun'],
+                'woobang' =>$validatedData['woobang'],
+                'city' =>$validatedData['city'],
+                'sk' =>$validatedData['sk'],
+                'dc' =>$validatedData['dc'],
+                'bukgu' =>$validatedData['bukgu'],
+                'bank' =>$validatedData['bank'],
+                'taejeon' =>$validatedData['taejeon'],
+                'g_campus' =>$validatedData['g_campus'],
+                'en' =>$validatedData['en'],
+                'munyang' =>$validatedData['munyang'],
             ]);
         } catch (\Exception $exception) {//Exception는 부모 예외 클래스임
             // 데이터베이스 저장 실패시 애러 메세지
@@ -44,6 +51,6 @@ class busTimeController extends Controller
         }
         
         // 성공 메시지
-        return response()->json(['message' => '식사 유형 저장 완료']);
+        return response()->json(['message' => '버스 시간표 저장 완료']);
     }
 }
