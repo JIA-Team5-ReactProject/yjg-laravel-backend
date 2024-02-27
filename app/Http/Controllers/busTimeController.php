@@ -13,6 +13,8 @@ class busTimeController extends Controller
         try {
             // 유효성 검사
             $validatedData = $request->validate([
+                'weekend' => 'required|',
+                'bus_route_direction' => 'required|time',
                 'bokhyun' => 'required|time',
                 'woobang' => 'required|time',
                 'city' => 'required|time',
