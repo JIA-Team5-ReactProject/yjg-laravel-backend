@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('restaurant_weekend_meal_type', function (Blueprint $table) {
+        Schema::table('restaurant_weekend_meal_types', function (Blueprint $table) {
             $table->dropForeign(['restaurant_weekend_id']);
             $table->dropForeign(['weekend_meal_type_id']);
             $table->dropIfExists();
