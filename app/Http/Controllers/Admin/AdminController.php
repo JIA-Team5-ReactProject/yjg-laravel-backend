@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Services\TokenService;
+use Aws\Token\Token;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,9 +14,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use function Illuminate\Events\queueable;
 
 class AdminController extends Controller
 {
+    public function __construct(protected TokenService $tokenService)
+    {
+    }
+
     /**
      * @OA\Post (
      *     path="/api/admin",
@@ -65,24 +72,18 @@ class AdminController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/{id}",
+     *     path="/api/admin",
      *     tags={"관리자"},
      *     summary="탈퇴",
      *     description="관리자 탈퇴",
-     *      @OA\Parameter(
-     *            name="id",
-     *            description="탈퇴할 관리자의 아이디",
-     *            required=true,
-     *            in="path",
-     *            @OA\Schema(type="integer"),
-     *        ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function unregister(string $id)
+    public function unregister(Request $request)
     {
-        if (!Admin::destroy($id)) {
+        $adminId = $request->user()->id;
+        if (!Admin::destroy($adminId)) {
             throw new DestroyException('Failed to destroy user');
         }
 
@@ -109,6 +110,7 @@ class AdminController extends Controller
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
+     * @throws ValidationException
      */
     public function login(Request $request)
     {
@@ -123,12 +125,25 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if(Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return Auth::user();
+        try {
+            $admin = Admin::where('email', $credentials['email'])->firstOrFail();
+        } catch(modelNotFoundException $modelNotFoundException) {
+            $errorMessage = $modelNotFoundException->getMessage();
+            return response()->json(['error' => '일치하는 유저가 없습니다.'], 404);
         }
 
-        return response()->json(['error' => 'The provided credentials do not match our records.'], 401);
+        if (! $admin || ! Hash::check($credentials['password'], $admin->password)) {
+            throw validationexception::withMessages([
+                'email' => ['비밀번호가 일치하지 않습니다.'],
+            ]);
+        }
+
+        $data = [
+            'token' => $this->tokenService->userToken($admin, 'admin', ['admin']),
+            'user' => $admin,
+        ];
+
+        return response()->json(['admin' => $data]);
     }
 
     /**
@@ -141,12 +156,11 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function logout(Request $request) {
-        Auth::guard('web')->logout();
+    public function logout(Request $request)
+    {
+        $deleteToken = $this->tokenService->revokeToken($request);
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        if(!$deleteToken) return response()->json(['error' => '로그아웃에 실패하였습니다.'], 500);
 
         return response()->json(['message' => 'logout successfully']);
     }
@@ -271,7 +285,6 @@ class AdminController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                  @OA\Property (property="admin_id", type="number", description="정보를 수정할 관리자의 아이디", example=1),
      *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
      *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
      *                  @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
@@ -286,10 +299,8 @@ class AdminController extends Controller
     {
         try {
             $validated = $request->validate([
-                'admin_id'      => 'numeric', // 수정할 유저의 아이디
                 'name'          => 'string',
                 'phone_number'  => 'string|unique:admins',
-                'password'      => 'string',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -297,18 +308,22 @@ class AdminController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        // admin_id에 해당하는 모델 검색
+        $adminId = $request->user()->id;
+
         try {
-            $admin = Admin::findOrFail($validated['admin_id']);
+            $admin = Admin::findOrFail($adminId);
         } catch(ModelNotFoundException $modelException) {
-            $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
+            return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
-        $admin->name = $validated['name'];
-        $admin->phone_number = $validated['phone_number'];
-        $admin->password = Hash::make($validated['password']);
+        foreach($validated as $key => $value) {
+            if($key == 'password') {
+                $admin->$key = Hash::make($validated['password']);
+            } else {
+                $admin->$key = $value;
+            }
+        }
 
         if(!$admin->save()) return response()->json(['error' => 'Failed to update profile'], 500);
 
@@ -381,12 +396,12 @@ class AdminController extends Controller
             $errorMessage = $validationException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
-        $user = Auth::user(); // 현재 인증된 유저
 
         if(!Hash::check($validated['password'], $request->user()->password)) return false;
 
         return true;
     }
+
     /**
      * @OA\Post (
      *     path="/api/admin/find-email",
@@ -430,9 +445,10 @@ class AdminController extends Controller
         }
         return response()->json(['admin' => $admin]);
     }
+
     /**
      * @OA\Get (
-     *     path="/api/admin",
+     *     path="/api/admin/list",
      *     tags={"관리자"},
      *     summary="승인 혹은 미승인 관리자 목록",
      *     description="파라미터 값에 맞는 관리자를 admins 배열에 반환",

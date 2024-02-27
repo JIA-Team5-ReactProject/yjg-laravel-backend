@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\TokenService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,8 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    public function __construct(protected TokenService $tokenService) {
+    }
     /**
      * @OA\Post (
      *     path="/api/user",
@@ -123,11 +126,11 @@ class UserController extends Controller
         ]);
 
         $data = [
-            'token' => $user->createToken(env('LOGIN_TOKEN_NAME'))->plainTextToken,
+            'token' => $this->tokenService->userToken($user, 'google', ['user']),
             'user' => $user,
         ];
 
-        return response()->json(['data' => $data]);
+        return response()->json(['user' => $data]);
     }
 
     /**
@@ -178,7 +181,12 @@ class UserController extends Controller
             ]);
         }
 
-        return $user->createToken('email')->plainTextToken;
+        $data = [
+            'token' => $this->tokenService->userToken($user, 'google', ['user']),
+            'user' => $user,
+        ];
+
+        return response()->json(['user' => $data]);
     }
 
     /**
