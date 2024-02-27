@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\SalonBusinessHourController;
 use App\Http\Controllers\Admin\SalonCategoryController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\SalonServiceController;
+use App\Http\Controllers\busTimeController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\RestaurantMealTypeController;
 use App\Http\Controllers\RestaurantMenusController;
@@ -110,4 +111,8 @@ Route::post('/restaurant/semester/p/payment', [RestaurantSemesterController::cla
 Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
 Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
 Route::post('/restaurant/mealtype', [RestaurantMealTypeController::class, 'store']);
+
+Route::post('/bus/time', [busTimeController::class, 'store']);
+
+
 
