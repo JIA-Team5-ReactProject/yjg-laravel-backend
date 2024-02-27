@@ -50,7 +50,7 @@ class SalonServiceController extends Controller
         if(empty($validated['id']) && empty($validated['gender'])) {
             $services = SalonService::all(['id', 'salon_category_id', 'service', 'price', 'gender']);
         } else {
-            $services = SalonService::where('salon_category_id', $validated['id'])
+            $services = SalonService::where('salon_category_id', $validated['category_id'])
                 ->where('gender', $validated['gender'])->get();
         }
 
