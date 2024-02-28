@@ -520,17 +520,17 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "search_by": {
-                                        "description": "검색 구분(tag or title)",
-                                        "type": "string",
-                                        "example": "tag"
-                                    },
                                     "page": {
                                         "description": "페이지",
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "keyword": {
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "Bus"
+                                    },
+                                    "title": {
                                         "description": "검색어",
                                         "type": "string",
                                         "example": "엄준식"

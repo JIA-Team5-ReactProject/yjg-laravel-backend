@@ -28,10 +28,9 @@ class NoticeController extends Controller
      *         @OA\MediaType(
      *         mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="search_by", type="string", description="검색 구분(tag or title)", example="tag"),
      *                 @OA\Property (property="page", type="integer", description="페이지", example=1),
-     *                 @OA\Property (property="", type="integer", description="페이지", example=1),
-     *                 @OA\Property (property="keyword", type="string", description="검색어", example="엄준식")
+     *                 @OA\Property (property="tag", type="string", description="태그", example="Bus"),
+     *                 @OA\Property (property="title", type="string", description="검색어", example="엄준식")
      *             )
      *         )
      *     ),
