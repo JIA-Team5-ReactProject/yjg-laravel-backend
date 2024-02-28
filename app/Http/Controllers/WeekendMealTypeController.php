@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 class WeekendMealTypeController extends Controller
 /**
      * @OA\Post (
-     *     path="/api/restaurant/weekend",
+     *     path="/api/weekend/mealtype",
      *     tags={"식수"},
      *     summary="식수 주말 신청",
      *     description="식수 주말 신청을 처리합니다",
@@ -19,12 +19,10 @@ class WeekendMealTypeController extends Controller
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema (
-     *                     @OA\Property (property="content", type="string", description="식사유형 설명", example="223식(1식3,500)"),
+     *                     @OA\Property (property="content", type="string", description="식사유형 설명", example="223식 1식3,500"),
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
      *                     @OA\Property (property="price", type="string", description="가격", example="750,000"),
      *                     @OA\Property (property="date", type="string", description="식사시간", example="lunch"),
-     *                     
-     *                     
      *                 )
      *             )
      *         ),
