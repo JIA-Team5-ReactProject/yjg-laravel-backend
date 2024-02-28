@@ -93,9 +93,11 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
         });
         Route::prefix('notice')->group(function() {
+            Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
+            Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
             Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
             Route::patch('/', [NoticeController::class, 'update'])->name('admin.notice.update');
-            Route::get('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
+            Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
         });
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
@@ -107,11 +109,15 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     });
 });
 
+<<<<<<< HEAD
 
 
 // Route::prefix('restaurant')->group(function () {
 
 // });
+=======
+//
+>>>>>>> 5e4a5b00ef3bd6d3689d4dccd013db9134cf9d2c
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
 Route::get('/restaurant/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);

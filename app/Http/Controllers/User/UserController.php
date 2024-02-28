@@ -125,12 +125,9 @@ class UserController extends Controller
             'name' => $validated['displayName'],
         ]);
 
-        $data = [
-            'token' => $this->tokenService->userToken($user, 'google', ['user']),
-            'user' => $user,
-        ];
+        $token = $this->tokenService->userToken($user, 'google', ['user']);
 
-        return response()->json(['user' => $data]);
+        return response()->json(['user' => $user, 'token' => $token]);
     }
 
     /**
@@ -181,12 +178,9 @@ class UserController extends Controller
             ]);
         }
 
-        $data = [
-            'token' => $this->tokenService->userToken($user, 'google', ['user']),
-            'user' => $user,
-        ];
+        $token = $this->tokenService->userToken($user, 'google', ['user']);
 
-        return response()->json(['user' => $data]);
+        return response()->json(['user' => $user, 'token' => $token]);
     }
 
     /**
