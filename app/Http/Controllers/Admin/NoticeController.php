@@ -87,7 +87,7 @@ class NoticeController extends Controller
     public function show(string $id)
     {
         try {
-            $notice = Notice::with('noticeImages')->findOrFail($id);
+            $notice = Notice::with(['noticeImages', 'admin'])->findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
             $errorMessage = $modelException->getMessage();
             return response()->json(['error'=>$errorMessage], 404);
@@ -163,13 +163,16 @@ class NoticeController extends Controller
 
         if(!$notice) return response()->json(['error' => 'Failed to create notice'], 500);
 
-        foreach ($validated['images'] as $image) {
-            $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
+        if(isset($validated['images'])) {
+            foreach ($validated['images'] as $image) {
+                $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
 
-            $saveImage = $notice->noticeImages()->save(new NoticeImage(['image' => $url]));
+                $saveImage = $notice->noticeImages()->save(new NoticeImage(['image' => $url]));
 
-            if(!$saveImage) return response()->json(['Failed to save image'], 500);
+                if(!$saveImage) return response()->json(['Failed to save image'], 500);
+            }
         }
+
 
         return response()->json(['notice' => $notice, 'images' => $notice->noticeImages()], 201);
     }

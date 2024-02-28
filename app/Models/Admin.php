@@ -35,4 +35,8 @@ class Admin extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public function notices(){
+        return $this->hasMany(Notice::class);
+    }
 }
