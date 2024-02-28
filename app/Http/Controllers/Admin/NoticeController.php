@@ -230,7 +230,7 @@ class NoticeController extends Controller
                 'images' => 'array',
                 'images.*' => 'image|mimes:jpg,jpeg,png',
                 'delete_images' => 'array',
-                'delete_images.*' => 'string',
+                'delete_images.*' => 'numeric',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
