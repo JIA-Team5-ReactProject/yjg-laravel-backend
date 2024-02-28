@@ -93,7 +93,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
             Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
             Route::patch('/', [NoticeController::class, 'update'])->name('admin.notice.update');
-            Route::get('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
+            Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
         });
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');

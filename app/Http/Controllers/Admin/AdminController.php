@@ -394,9 +394,9 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if(!Hash::check($validated['password'], $request->user()->password)) return false;
+        if(!Hash::check($validated['password'], $request->user()->password)) return response()->json(['error' => '비밀번호가 일치하지 않습니다.']);
 
-        return true;
+        return response()->json(['success' => '비밀번호가 일치합니다.']);
     }
 
     /**
