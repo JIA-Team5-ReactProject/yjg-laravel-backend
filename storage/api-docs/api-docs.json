@@ -90,6 +90,22 @@
                     }
                 }
             },
+            "delete": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "탈퇴",
+                "description": "관리자 탈퇴",
+                "operationId": "3ef147cc1bed46e9725ef9b450547e65",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
             "patch": {
                 "tags": [
                     "관리자"
@@ -104,11 +120,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "admin_id": {
-                                        "description": "정보를 수정할 관리자의 아이디",
-                                        "type": "number",
-                                        "example": 1
-                                    },
                                     "name": {
                                         "description": "변경할 이름",
                                         "type": "string",
@@ -130,35 +141,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/admin/{id}": {
-            "delete": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "탈퇴",
-                "description": "관리자 탈퇴",
-                "operationId": "dd4995c3a6252650b5a00f9bf0fe0327",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "탈퇴할 관리자의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success"

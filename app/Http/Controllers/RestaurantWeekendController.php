@@ -28,7 +28,6 @@ class RestaurantWeekendController extends Controller
      *                     @OA\Property (property="refund", type="boolean", description="환불여부", example="true"),
      *                     @OA\Property (property="date", type="string", description="식사시간", example="lunch"),
      *                     @OA\Property (property="payment", type="boolean", description="입금여부", example="true"),
-     *                     
      *                 )
      *             )
      *         ),
