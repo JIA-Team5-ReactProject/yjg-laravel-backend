@@ -75,7 +75,6 @@ class busTimeController extends Controller
             return response()->json(['error' => '해당하는 버스 노선을 찾을 수 없습니다.'], 404);
         }   
 
-        Log::info('버스노선 아이디: ' . $busRoute->id);
         try {
             // 데이터베이스에 저장
             BusTime::create([

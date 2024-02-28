@@ -9,12 +9,16 @@ use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\SalonServiceController;
 use App\Http\Controllers\busTimeController;
 use App\Http\Controllers\QRController;
-use App\Http\Controllers\RestaurantMealTypeController;
+
 use App\Http\Controllers\RestaurantMenusController;
 use App\Http\Controllers\RestaurantSemesterController;
 use App\Http\Controllers\RestaurantWeekendController;
+
+use App\Http\Controllers\SemesterMealTypeController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserSalonReservationController;
+use App\Http\Controllers\WeekendMealTypeController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -105,14 +109,24 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     });
 });
 
+<<<<<<< HEAD
+
+
+// Route::prefix('restaurant')->group(function () {
+
+// });
+=======
 //
+>>>>>>> 5e4a5b00ef3bd6d3689d4dccd013db9134cf9d2c
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
 Route::get('/restaurant/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);
 Route::post('/restaurant/semester/p/payment', [RestaurantSemesterController::class, 'setPayment']);
 Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
+Route::post('/semester/mealtype', [SemesterMealTypeController::class, 'store']);
 Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
-Route::post('/restaurant/mealtype', [RestaurantMealTypeController::class, 'store']);
+Route::post('/weekend/mealtype', [WeekendMealTypeController::class, 'store']);
+
 
 Route::post('/bus/time', [busTimeController::class, 'store']);
 
