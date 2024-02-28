@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bus_routes', function (Blueprint $table) {
             $table->id();
             $table->boolean('weekend');
+            $table->boolean('semester');
             $table->char('bus_route_direction',1);
             $table->timestamps();
         });

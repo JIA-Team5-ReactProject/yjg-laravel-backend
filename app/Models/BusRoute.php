@@ -11,11 +11,12 @@ class BusRoute extends Model
 
     protected $fillable = [
         'weekend',
-        'bus_route_direction'
+        'bus_route_direction',
+        'semester'
     ];
 
     public function bus_times(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(BusTime::class);
+        return $this->hasMany(BusSchedule::class);
     }
 }
