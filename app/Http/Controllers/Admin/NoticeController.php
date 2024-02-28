@@ -52,7 +52,7 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $notices = Notice::query();
+        $notices = Notice::query()->with('noticeImages');
 
         if(isset($validated['tag'])) {
             $notices = $notices->where('tag', $validated['tag']);
@@ -87,7 +87,7 @@ class NoticeController extends Controller
     public function show(string $id)
     {
         try {
-            $notice = Notice::findOrFail($id);
+            $notice = Notice::with('noticeImages')->findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
             $errorMessage = $modelException->getMessage();
             return response()->json(['error'=>$errorMessage], 404);
@@ -150,13 +150,16 @@ class NoticeController extends Controller
             return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
-        $notice = Notice::create([
-            'admin_id' => $adminId,
-            'title'    => $validated['title'],
-            'content'  => $validated['content'],
-            'urgent'   => $validated['urgent'],
-            'tag'      => $validated['tag'],
-        ]);
+        $notice = new Notice();
+        $notice->admin_id = $adminId;
+        $notice->title = $validated['title'];
+        $notice->content = $validated['content'];
+        $notice->tag = $validated['tag'];
+        if(isset($validated['urgent'])) {
+            $notice->urgent = $validated['urgent'];
+        }
+
+        $notice->save();
 
         if(!$notice) return response()->json(['error' => 'Failed to create notice'], 500);
 
