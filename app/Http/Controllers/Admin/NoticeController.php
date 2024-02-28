@@ -179,10 +179,17 @@ class NoticeController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/notice",
+     *     path="/api/admin/notice/{id}",
      *     tags={"공지사항"},
      *     summary="공지사항 수정",
      *     description="공지사항 수정",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="찾을 공지사항의 아이디",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="integer"),
+     *     ),
      *     @OA\RequestBody(
      *         description="수정할 글 내용",
      *         required=true,
@@ -211,12 +218,11 @@ class NoticeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request)
+    public function update(string $id, Request $request)
     {
         // 태그를 가지고 있는 테이블을 생성해서 그에 맞는 테이블을 참조하게 하기
         try {
             $validated = $request->validate([
-                'notice_id' => 'required|numeric',
                 'title' => 'string',
                 'content' => 'string',
                 'tag' => [Rule::in($this->tagRules)],
@@ -233,18 +239,22 @@ class NoticeController extends Controller
         }
 
         try {
-            $notice = Notice::findOrFail($validated['notice_id']);
+            $notice = Notice::findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
-            return response()->json(['error' => 'admin_id에 해당하는 관리자가 없습니다.'], 404);
+            return response()->json(['error' => 'id에 해당하는 게시글이 없습니다.'], 404);
         }
-
-        unset($validated['notice_id']);
 
         if(isset($validated['delete_images'])) {
             foreach ($validated['delete_images'] as $deleteImage) {
-                $fileName = basename($deleteImage);
-                $delete = Storage::delete('images/'.$fileName);
-                if(!$delete) return response()->json(['error' => '이미지 삭제에 실패하였습니다.'], 500);
+                try {
+                    $noticeImage = NoticeImage::findOrFail($deleteImage);
+                } catch (ModelNotFoundException $modelException) {
+                    return response()->json(['error' => '해당하는 이미지가 존재하지 않습니다.'], 404);
+                }
+                $deleteDb = $noticeImage->delete();
+                $fileName = basename($noticeImage->image);
+                $deleteS3 = Storage::delete('images/'.$fileName);
+                if(!$deleteS3 || !$deleteDb) return response()->json(['error' => '이미지 삭제에 실패하였습니다.'], 500);
             }
             unset($validated['delete_images']);
         }
