@@ -28,9 +28,9 @@ class NoticeController extends Controller
      *         @OA\MediaType(
      *         mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="search_by", type="string", description="검색 구분(tag or title)", example="tag"),
      *                 @OA\Property (property="page", type="integer", description="페이지", example=1),
-     *                 @OA\Property (property="keyword", type="string", description="검색어", example="엄준식")
+     *                 @OA\Property (property="tag", type="string", description="태그", example="Bus"),
+     *                 @OA\Property (property="title", type="string", description="검색어", example="엄준식")
      *             )
      *         )
      *     ),
@@ -42,9 +42,9 @@ class NoticeController extends Controller
     {
         try {
             $validated = $request->validate([
-                'search_by' => ['required', Rule::in(['tag', 'title'])],
+                'tag' => [Rule::in($this->tagRules)],
+                'title' => 'string',
                 'page' => 'required|numeric',
-                'keyword' => 'string',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -52,7 +52,17 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $notices = Notice::where($validated['search_by'], 'LIKE', "%{$validated['keyword']}%")->paginate(10);
+        $notices = Notice::query();
+
+        if(isset($validated['tag'])) {
+            $notices = $notices->where('tag', $validated['tag']);
+        }
+
+        if(isset($validated['title'])) {
+            $notices = $notices->where('title', 'LIKE', "%{$validated['title']}%");
+        }
+
+        $notices = $notices->paginate(10);
 
         return response()->json(['notices' => $notices]);
     }
