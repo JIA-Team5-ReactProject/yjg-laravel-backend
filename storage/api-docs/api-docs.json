@@ -1295,24 +1295,6 @@
                 }
             }
         },
-        "/api/admin/after-service": {
-            "get": {
-                "tags": [
-                    "AS"
-                ],
-                "summary": "전체 AS 목록",
-                "description": "모든 AS 목록",
-                "operationId": "0e26d397958d08dd79c77cc5f6f0f848",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/admin/qr": {
             "get": {
                 "tags": [
@@ -1844,6 +1826,57 @@
                     },
                     "422": {
                         "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/weekend/mealtype": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 주말 신청",
+                "description": "식수 주말 신청을 처리합니다",
+                "operationId": "4ef64f1d4cb40bfe817921004b13bc60",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "content": {
+                                        "description": "식사유형 설명",
+                                        "type": "string",
+                                        "example": "223식 1식3,500"
+                                    },
+                                    "meal_type": {
+                                        "description": "식사유형",
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "750,000"
+                                    },
+                                    "date": {
+                                        "description": "식사시간",
+                                        "type": "string",
+                                        "example": "lunch"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "Fail"
