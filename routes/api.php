@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
-    Route::post('/login', [UserController::class, 'login'])->name('user.login');
+    Route::post('/login', [UserController::class, 'login'])->middleware('approve')->name('user.login');
     Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
