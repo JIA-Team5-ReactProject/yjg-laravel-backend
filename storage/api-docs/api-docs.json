@@ -1306,14 +1306,221 @@
                 }
             }
         },
-        "/api/admin/after-service": {
-            "get": {
+        "/api/bus/schedule": {
+            "post": {
                 "tags": [
-                    "AS"
+                    "버스"
                 ],
-                "summary": "전체 AS 목록",
-                "description": "모든 AS 목록",
-                "operationId": "0e26d397958d08dd79c77cc5f6f0f848",
+                "summary": "버스 시간표 추가",
+                "description": "버스 시간표를 추가",
+                "operationId": "b8aa98b1710cb3ea335cd4f7a4d8d277",
+                "requestBody": {
+                    "description": "추가할 시간표 내용,노선,회차",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_round_id": {
+                                        "description": "버스회차 아이디",
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "B"
+                                    },
+                                    "station": {
+                                        "description": "정류장",
+                                        "type": "string",
+                                        "example": "태전역"
+                                    },
+                                    "bus_time": {
+                                        "description": "버스시간",
+                                        "type": "date_format",
+                                        "example": "08:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/schedule/update/{id}": {
+            "patch": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 시간표 업데이트",
+                "description": "버스 시간표를 업데이트",
+                "operationId": "431bfcb21fd10d4d4fe9d9fd593601d3",
+                "requestBody": {
+                    "description": "업데이트할 시간표 내용,노선,회차",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_round_id": {
+                                        "description": "버스회차 아이디",
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "B"
+                                    },
+                                    "station": {
+                                        "description": "정류장",
+                                        "type": "string",
+                                        "example": "태전역"
+                                    },
+                                    "bus_time": {
+                                        "description": "버스시간",
+                                        "type": "date_format",
+                                        "example": "08:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/schedule/delete": {
+            "delete": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 시간표 삭제",
+                "description": "버스 시간표 삭제",
+                "operationId": "6d4eef22dd760e593ca04dbdd64da8cb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 버스 시간표의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/addRound": {
+            "post": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 회차 추가",
+                "description": "버스 회차 추가 ",
+                "operationId": "45856546d87a6c90548d307623949314",
+                "requestBody": {
+                    "description": "추가할 버스 회차",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "round": {
+                                        "description": "회차",
+                                        "type": "string",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/round/delete": {
+            "delete": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 회차 삭제",
+                "description": "버스 회차 삭제",
+                "operationId": "9e5983439bbdc4b6ae61ebdd61cbbfe3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 버스 회차의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
