@@ -684,11 +684,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "notice_id": {
-                                        "description": "관리자 아이디",
-                                        "type": "string",
-                                        "example": 1
-                                    },
                                     "title": {
                                         "description": "제목",
                                         "type": "string",
@@ -699,6 +694,11 @@
                                         "type": "string",
                                         "example": "내용입니다."
                                     },
+                                    "urgent": {
+                                        "description": "긴급",
+                                        "type": "boolean",
+                                        "example": "긴급 여부"
+                                    },
                                     "tag": {
                                         "description": "태그",
                                         "type": "string",
@@ -707,7 +707,7 @@
                                     "images": {
                                         "type": "array",
                                         "items": {
-                                            "example": "file"
+                                            "example": "string"
                                         }
                                     },
                                     "delete_images": {
