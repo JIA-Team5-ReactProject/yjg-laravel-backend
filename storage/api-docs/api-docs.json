@@ -629,70 +629,6 @@
                         "description": "Fail"
                     }
                 }
-            },
-            "patch": {
-                "tags": [
-                    "공지사항"
-                ],
-                "summary": "공지사항 수정",
-                "description": "공지사항 수정",
-                "operationId": "16ec04007791e16d5fb7c6ea0a166665",
-                "requestBody": {
-                    "description": "수정할 글 내용",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "notice_id": {
-                                        "description": "관리자 아이디",
-                                        "type": "string",
-                                        "example": 1
-                                    },
-                                    "title": {
-                                        "description": "제목",
-                                        "type": "string",
-                                        "example": "제목입니다."
-                                    },
-                                    "content": {
-                                        "description": "내용",
-                                        "type": "string",
-                                        "example": "내용입니다."
-                                    },
-                                    "tag": {
-                                        "description": "태그",
-                                        "type": "string",
-                                        "example": "행정"
-                                    },
-                                    "images": {
-                                        "type": "array",
-                                        "items": {
-                                            "example": "file"
-                                        }
-                                    },
-                                    "delete_images": {
-                                        "type": "array",
-                                        "items": {
-                                            "example": "file"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "422": {
-                        "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
             }
         },
         "/api/admin/notice/{id}": {
@@ -720,6 +656,81 @@
                     },
                     "500": {
                         "description": "Server Error"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 수정",
+                "description": "공지사항 수정",
+                "operationId": "3dca9ef62241d93b7a54f47ded74e1f5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "찾을 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 글 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "urgent": {
+                                        "description": "긴급",
+                                        "type": "boolean",
+                                        "example": "긴급 여부"
+                                    },
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "행정"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "string"
+                                        }
+                                    },
+                                    "delete_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
                     }
                 }
             }
@@ -1285,6 +1296,24 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/after-service": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "전체 AS 목록",
+                "description": "모든 AS 목록",
+                "operationId": "0e26d397958d08dd79c77cc5f6f0f848",
                 "responses": {
                     "200": {
                         "description": "Success"

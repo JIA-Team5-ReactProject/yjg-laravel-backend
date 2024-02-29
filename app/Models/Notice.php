@@ -16,9 +16,9 @@ class Notice extends Model
         'tag',
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function admin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Admin::class);
     }
 
     public function noticeImages(): \Illuminate\Database\Eloquent\Relations\HasMany

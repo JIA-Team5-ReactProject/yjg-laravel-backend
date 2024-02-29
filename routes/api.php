@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
-    Route::post('/login', [UserController::class, 'login'])->name('user.login');
+    Route::post('/login', [UserController::class, 'login'])->middleware('approve')->name('user.login');
     Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
@@ -98,7 +98,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
             Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
             Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
-            Route::patch('/', [NoticeController::class, 'update'])->name('admin.notice.update');
+            Route::patch('/{id}', [NoticeController::class, 'update'])->name('admin.notice.update');
             Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
         });
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');

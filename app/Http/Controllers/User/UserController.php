@@ -165,12 +165,7 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        try {
-            $user = User::where('email', $credentials['email'])->first();
-        } catch(modelNotFoundException $modelNotFoundException) {
-            $errorMessage = $modelNotFoundException->getMessage();
-            return response()->json(['error' => $errorMessage], 404);
-        }
+        $user = User::where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw validationexception::withMessages([
