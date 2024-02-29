@@ -10,7 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class BusScheduleController extends Controller
 {
-    public function store(Request $request)
     /**
      * @OA\Post (
      *     path="/api/bus/schedule",
@@ -37,6 +36,7 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
+    public function store(Request $request)
     {
         try {
             // 유효성 검사
@@ -76,7 +76,6 @@ class BusScheduleController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
-    public function update(Request $request, $id)
      /**
      * @OA\Patch (
      *     path="/api/bus/schedule/update/{id}",
@@ -103,6 +102,7 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
+    public function update(Request $request, $id)
     {
         try {
             // 유효성 검사
@@ -141,7 +141,6 @@ class BusScheduleController extends Controller
         }
     }
 
-    public function destroy($id)
     /**
      * @OA\Delete (
      *     path="/api/bus/schedule/delete",
@@ -159,6 +158,7 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
+    public function destroy($id)
     {
         try {
             // 삭제할 버스 시간표를 찾습니다.
@@ -173,7 +173,6 @@ class BusScheduleController extends Controller
         }
     }
 
-    public function addRound(Request $request)
     /**
      * @OA\Post (
      *     path="/api/bus/addRound",
@@ -195,6 +194,7 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
+    public function addRound(Request $request)
     {
         try {
             // 유효성 검사
@@ -216,7 +216,6 @@ class BusScheduleController extends Controller
         return response()->json(['message' => '버스 회차가 추가 되었습니다.']);
     }
 
-    public function roundDestroy($id)
     /**
      * @OA\Delete (
      *     path="/api/bus/round/delete",
@@ -234,6 +233,7 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
+    public function roundDestroy($id)
     {
         try {
             // 삭제할 버스 시간표를 찾습니다.
