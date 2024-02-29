@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bus_routes', function (Blueprint $table) {
+        Schema::create('bus_rounds', function (Blueprint $table) {
             $table->id();
-            $table->boolean('weekend');
-            $table->boolean('semester');
-            $table->char('bus_route_direction',1);
+            $table->string('round');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bus_routes');
+        Schema::dropIfExists('bus_rounds');
     }
 };

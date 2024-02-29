@@ -7,7 +7,9 @@ use App\Http\Controllers\Admin\SalonBusinessHourController;
 use App\Http\Controllers\Admin\SalonCategoryController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\SalonServiceController;
-use App\Http\Controllers\busTimeController;
+
+
+use App\Http\Controllers\BusScheduleController;
 use App\Http\Controllers\QRController;
 
 use App\Http\Controllers\RestaurantMenusController;
@@ -122,7 +124,9 @@ Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']
 Route::post('/weekend/mealtype', [WeekendMealTypeController::class, 'store']);
 
 
-Route::post('/bus/time', [busTimeController::class, 'store']);
 
-
-
+Route::post('/bus/schedule', [BusScheduleController::class, 'store']);
+Route::patch('/bus/schedule/update/{id}', [BusScheduleController::class, 'update']);
+Route::delete('/bus/schedule/delete/{id}', [BusScheduleController::class, 'destroy']);
+Route::post('/bus/addRound', [BusScheduleController::class, 'addRound']);
+Route::delete('/bus/round/delete/{id}', [BusScheduleController::class, 'roundDestroy']);
