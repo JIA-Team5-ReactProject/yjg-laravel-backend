@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BusRoute extends Model
+class BusRound extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'weekend',
-        'bus_route_direction',
-        'semester'
+        'round',
     ];
-
 
     public function bus_schedule(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
