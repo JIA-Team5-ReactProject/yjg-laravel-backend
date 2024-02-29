@@ -62,7 +62,7 @@ class NoticeController extends Controller
             $notices = $notices->where('title', 'LIKE', "%{$validated['title']}%");
         }
 
-        $notices = $notices->paginate(10);
+        $notices = $notices->orderByDesc('created_at')->paginate(8);
 
         return response()->json(['notices' => $notices]);
     }
@@ -196,13 +196,13 @@ class NoticeController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="notice_id", type="string", description="관리자 아이디", example=1),
      *                 @OA\Property (property="title", type="string", description="제목", example="제목입니다."),
      *                 @OA\Property (property="content", type="string", description="내용", example="내용입니다."),
+     *                 @OA\Property (property="urgent", type="boolean", description="긴급", example="긴급 여부"),
      *                 @OA\Property (property="tag", type="string", description="태그", example="행정"),
      *                 @OA\Property (property="images", type="array",
      *                     @OA\Items(
-     *                          example="file",
+     *                          example="string",
      *                     ),
      *                 ),
      *                @OA\Property (property="delete_images", type="array",
@@ -247,6 +247,7 @@ class NoticeController extends Controller
         if(isset($validated['delete_images'])) {
             foreach ($validated['delete_images'] as $deleteImage) {
                 try {
+                    //TODO: 연관관계 메서드 이용하여 수정하기
                     $noticeImage = NoticeImage::findOrFail($deleteImage);
                 } catch (ModelNotFoundException $modelException) {
                     return response()->json(['error' => '해당하는 이미지가 존재하지 않습니다.'], 404);
