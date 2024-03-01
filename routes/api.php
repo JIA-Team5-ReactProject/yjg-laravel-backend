@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\SalonServiceController;
 
 
+use App\Http\Controllers\AfterServiceController;
 use App\Http\Controllers\BusScheduleController;
 use App\Http\Controllers\QRController;
 
@@ -20,7 +21,6 @@ use App\Http\Controllers\SemesterMealTypeController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserSalonReservationController;
 use App\Http\Controllers\WeekendMealTypeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,18 +38,18 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
-    Route::post('/login', [UserController::class, 'login'])->middleware('approve')->name('user.login');
+    Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
     Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
-    Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
+    Route::post('/login', [AdminController::class, 'login'])->middleware('admin.approve')->name('admin.login');
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
     Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueAdminEmail'])->name('admin.verify.email');
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
 });
 
-// 토큰 필요
+// 유저
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
@@ -65,6 +65,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     });
 });
 
+// 어드민
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::prefix('salon-break')->group(function () {
@@ -95,8 +96,6 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
         });
         Route::prefix('notice')->group(function() {
-            Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
-            Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
             Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
             Route::patch('/{id}', [NoticeController::class, 'update'])->name('admin.notice.update');
             Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
@@ -108,9 +107,25 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
+        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
     });
 });
 
+// 유저 및 어드민
+Route::middleware(['auth:sanctum', 'abilities:user,admin'])->group(function () {
+    Route::prefix('notice')->group(function () {
+        Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
+        Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
+    });
+});
+
+Route::prefix('as')->group(function () {
+    Route::get('/', [AfterServiceController::class, 'index'])->name('user.as.index');
+    Route::get('/{id}', [AfterServiceController::class, 'show'])->name('user.as.show');
+    Route::post('/', [AfterServiceController::class, 'store'])->name('user.as.store');
+    Route::patch('/', [AfterServiceController::class, 'update'])->name('user.as.update');
+    Route::delete('/{id}', [AfterServiceController::class, 'destroy'])->name('user.as.destroy');
+});
 
 
 

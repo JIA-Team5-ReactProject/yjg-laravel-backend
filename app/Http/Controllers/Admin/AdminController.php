@@ -74,7 +74,7 @@ class AdminController extends Controller
      * @OA\Delete (
      *     path="/api/admin",
      *     tags={"관리자"},
-     *     summary="탈퇴",
+     *     summary="탈퇴(본인)",
      *     description="관리자 탈퇴",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -84,6 +84,32 @@ class AdminController extends Controller
     {
         $adminId = $request->user()->id;
         if (!Admin::destroy($adminId)) {
+            throw new DestroyException('Failed to destroy user');
+        }
+
+        return response()->json(['message'=>'Destroy user successfully']);
+    }
+
+    /**
+     * @OA\Delete (
+     *     path="/api/admin/master",
+     *     tags={"관리자"},
+     *     summary="탈퇴(마스터)",
+     *     description="관리자 탈퇴",
+     *     @OA\Parameter(
+     *          name="email",
+     *          description="중복을 확인할 관리자의 이메일",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="string"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function unregisterMaster(string $id)
+    {
+        if (!Admin::destroy($id)) {
             throw new DestroyException('Failed to destroy user');
         }
 
@@ -227,13 +253,12 @@ class AdminController extends Controller
      *     summary="회원가입 승인",
      *     description="관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
      *     @OA\RequestBody(
-     *         description="아이디 및 승인 여부",
+     *         description="아이디",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *            @OA\Schema (
      *              @OA\Property (property="admin_id", type="number", description="권한을 부여할 관리자의 아이디", example=1),
-     *              @OA\Property (property="approve", type="boolean", description="관리자 회원가입 승인 여부", example=false),
      *            )
      *         ),
      *     ),
@@ -246,7 +271,6 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'admin_id' => 'required|numeric',
-                'approve'  => 'required|boolean',
             ]);
         } catch(ValidationException $validationException) {
                 $errorStatus = $validationException->status;
