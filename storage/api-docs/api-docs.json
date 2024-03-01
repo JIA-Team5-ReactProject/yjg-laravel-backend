@@ -60,7 +60,7 @@
                 "tags": [
                     "관리자"
                 ],
-                "summary": "탈퇴",
+                "summary": "탈퇴(본인)",
                 "description": "관리자 탈퇴",
                 "operationId": "3ef147cc1bed46e9725ef9b450547e65",
                 "responses": {
@@ -107,6 +107,35 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/master": {
+            "delete": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "탈퇴(마스터)",
+                "description": "관리자 탈퇴",
+                "operationId": "92c85fc357d56079273d8cb19dfdbc83",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "중복을 확인할 관리자의 이메일",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -236,7 +265,7 @@
                 "description": "관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
                 "operationId": "53e00267ec8c72df658417c9c01ae034",
                 "requestBody": {
-                    "description": "아이디 및 승인 여부",
+                    "description": "아이디",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -246,11 +275,6 @@
                                         "description": "권한을 부여할 관리자의 아이디",
                                         "type": "number",
                                         "example": 1
-                                    },
-                                    "approve": {
-                                        "description": "관리자 회원가입 승인 여부",
-                                        "type": "boolean",
-                                        "example": false
                                     }
                                 },
                                 "type": "object"
@@ -602,33 +626,6 @@
                         "description": "Fail"
                     }
                 }
-            },
-            "delete": {
-                "tags": [
-                    "공지사항"
-                ],
-                "summary": "공지사항 삭제",
-                "description": "공지사항 삭제",
-                "operationId": "110ce2d854f089dc9ebd548cbcce99e5",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 공지사항의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
             }
         },
         "/api/admin/notice/{id}": {
@@ -656,6 +653,33 @@
                     },
                     "500": {
                         "description": "Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 삭제",
+                "description": "공지사항 삭제",
+                "operationId": "22cc57bf01917a6de91a0ea0a1e16305",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
                     }
                 }
             },
@@ -1299,6 +1323,397 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/as/comment": {
+            "get": {
+                "tags": [
+                    "태그"
+                ],
+                "summary": "요약",
+                "description": "설명",
+                "operationId": "6c3efdba75f71d356042c7384dcb0487",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "태그"
+                ],
+                "summary": "요약",
+                "description": "설명",
+                "operationId": "1b22d4fb90922fb1224f7bd528569820",
+                "requestBody": {
+                    "description": "설명",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "속성명": {
+                                        "description": "설명",
+                                        "type": "타입",
+                                        "example": "예시"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "태그"
+                ],
+                "summary": "요약",
+                "description": "설명",
+                "operationId": "2cb4ffacc41c53c690ff9ea4c25321d4",
+                "parameters": [
+                    {
+                        "name": "파라미터명",
+                        "in": "path",
+                        "description": "설명",
+                        "required": true,
+                        "schema": {
+                            "type": "타입"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "태그"
+                ],
+                "summary": "요약",
+                "description": "설명",
+                "operationId": "c93f6ed87492ecdfb6b6c26b5002d4b6",
+                "parameters": [
+                    {
+                        "name": "파라미터명",
+                        "in": "path",
+                        "description": "설명",
+                        "required": true,
+                        "schema": {
+                            "type": "타입"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "설명",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "속성명": {
+                                        "description": "설명",
+                                        "type": "타입",
+                                        "example": "예시"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/as/comment/{id}": {
+            "get": {
+                "tags": [
+                    "태그"
+                ],
+                "summary": "요약",
+                "description": "설명",
+                "operationId": "59383343f00c4c9db5b121163930b79e",
+                "parameters": [
+                    {
+                        "name": "파라미터명",
+                        "in": "path",
+                        "description": "설명",
+                        "required": true,
+                        "schema": {
+                            "type": "타입"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/as": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "AS 검색",
+                "description": "조건에 맞게 AS 검색",
+                "operationId": "b7eb54ffe55bb3db6e9bb2cf95c36c02",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "신청인",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "상태 (true or false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "AS 작성",
+                "description": "새로운 AS를 생성함",
+                "operationId": "03776e4e758b660323fee9d2f6884114",
+                "requestBody": {
+                    "description": "생성할 AS의 내용",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "visit_place": {
+                                        "description": "방문 장소",
+                                        "type": "string",
+                                        "example": "101호"
+                                    },
+                                    "visit_date": {
+                                        "description": "희망 방문 일자",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/as/{id}": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "AS 읽기",
+                "description": "아이디에 해당하는 AS 정보 받아옴",
+                "operationId": "5a7163f1e58c28d29fe78d3e2c527e1a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "as의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "삭제",
+                "description": "아이디에 해당하는 AS를 삭제",
+                "operationId": "4355f84e1a1a9bbd2af439e2341c60e6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "수정",
+                "description": "아이디에 해당하는 AS를 수정",
+                "operationId": "aafb03cc8677ac49599f794f4980066f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 AS 글 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "visit_place": {
+                                        "description": "방문 장소",
+                                        "type": "string",
+                                        "example": "101호"
+                                    },
+                                    "visit_date": {
+                                        "description": "희망 방문 일자",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    },
+                                    "delete_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "numeric"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
                     },
                     "500": {
                         "description": "Fail"

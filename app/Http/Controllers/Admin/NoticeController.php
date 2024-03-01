@@ -280,7 +280,7 @@ class NoticeController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/notice",
+     *     path="/api/admin/notice/{id}",
      *     tags={"공지사항"},
      *     summary="공지사항 삭제",
      *     description="공지사항 삭제",
