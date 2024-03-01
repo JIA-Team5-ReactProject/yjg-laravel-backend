@@ -39,7 +39,7 @@ Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.approve')->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');

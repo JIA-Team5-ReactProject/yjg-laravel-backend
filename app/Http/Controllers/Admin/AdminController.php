@@ -60,6 +60,7 @@ class AdminController extends Controller
             'phone_number' => $validated['phone_number'],
             'email'        => $validated['email'],
             'password'     => Hash::make($validated['password']),
+            'approved'     => true,
         ]);
 
         $admin['admin_id'] = $admin['id'];
