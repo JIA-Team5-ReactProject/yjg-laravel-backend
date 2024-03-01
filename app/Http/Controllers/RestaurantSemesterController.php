@@ -70,9 +70,7 @@ class RestaurantSemesterController extends Controller
         return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
     }
 
-    public function getPayment(Request $request)
-    {
-        /**
+    /**
          * @OA\Get (
          * path="/api/restaurant/semester/payment",
          * tags={"식수"},
@@ -92,6 +90,9 @@ class RestaurantSemesterController extends Controller
          *  @OA\Response(response="500", description="Fail"),
          * )
          */
+    public function getPayment(Request $request)
+    {
+        
         try {
             // 유효성 검사
             $validatedData = $request->validate([

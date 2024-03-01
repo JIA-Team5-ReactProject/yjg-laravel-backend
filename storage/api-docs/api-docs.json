@@ -1502,6 +1502,60 @@
                 }
             }
         },
+        "/api/bus/getRound": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 전체 회차",
+                "description": "버스 전체 회차를 확인합니다",
+                "operationId": "d1e0c8cc053e346bf5612dea2ad52d97",
+                "requestBody": {
+                    "description": "버스 전체 회차 ",
+                    "required": true,
+                    "content": {
+                        "application/json": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/getRoundSchedule": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 회차의 버스 시간표",
+                "description": "해당 회차의 버스 시간표",
+                "operationId": "6e2d1377de5ca17e268fb138257f92d3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "가져올 버스 회차의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/bus/round/delete": {
             "delete": {
                 "tags": [
@@ -1578,6 +1632,42 @@
                                         "description": "식사 유형",
                                         "type": "string",
                                         "example": "C"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/payment": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 학기 신청 입금여부",
+                "description": "식수 학기 신청의 입금여부를 확인 합니다",
+                "operationId": "e542515362972e8bb34556bf8b0ba2a0",
+                "requestBody": {
+                    "description": "학생 식사 신청 입금여부",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "사용자 ID",
+                                        "type": "string",
+                                        "example": "1"
                                     }
                                 },
                                 "type": "object"
