@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'user.approve' => \App\Http\Middleware\UserApproveCheck::class,
         'admin.approve' => \App\Http\Middleware\AdminApprovedCheck::class,
+        'admin.master' => \App\Http\Middleware\AdminMasterCheck::class,
     ];
 }

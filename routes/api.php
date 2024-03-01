@@ -107,7 +107,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
-        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->name('admin.master.unregister');
+        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
     });
 });
 
