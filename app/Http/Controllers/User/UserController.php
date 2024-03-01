@@ -56,6 +56,7 @@ class UserController extends Controller
             'phone_number' => $validated['phone_number'],
             'email'        => $validated['email'],
             'password'     => Hash::make($validated['password']),
+            'approved'     => true,
         ]);
 
         if(!$user) return response()->json(['error' => 'Failed to register'],500);
