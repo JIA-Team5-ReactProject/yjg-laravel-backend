@@ -15,7 +15,7 @@ class SalonServiceController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/admin/salon-service",
+     *     path="/api/salon-service",
      *     tags={"미용실"},
      *     summary="카테고리 서비스 목록",
      *     description="미용실 특정 카테고리의 서비스 목록",
