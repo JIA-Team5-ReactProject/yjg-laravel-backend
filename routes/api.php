@@ -73,13 +73,11 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
         });
         Route::prefix('salon-category')->group(function() {
-            Route::get('/', [SalonCategoryController::class, 'index'])->name('admin.salon.category.index');
             Route::post('/', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
             Route::patch('/', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
             Route::delete('/{id}', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
         });
         Route::prefix('salon-service')->group(function () {
-            Route::get('/', [SalonServiceController::class, 'show'])->name('admin.salon.service.show');
             Route::post('/', [SalonServiceController::class, 'store'])->name('admin.salon.service.store');
             Route::patch('/', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
             Route::delete('/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
@@ -117,6 +115,8 @@ Route::middleware(['auth:sanctum', 'abilities:user,admin'])->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
     });
+    Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('admin.salon.category.index');
+    Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('admin.salon.service.show');
 });
 
 Route::prefix('as')->group(function () {
