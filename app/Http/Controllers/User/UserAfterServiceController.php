@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceImage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -9,11 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class AfterServiceController extends Controller
+class UserAfterServiceController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/as",
+     *     path="/api/after-service",
      *     tags={"AS"},
      *     summary="AS 검색",
      *     description="조건에 맞게 AS 검색",
@@ -66,7 +67,7 @@ class AfterServiceController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/as",
+     *     path="/api/user/after-service",
      *     tags={"AS"},
      *     summary="AS 작성",
      *     description="새로운 AS를 생성함",
@@ -137,7 +138,7 @@ class AfterServiceController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/as/{id}",
+     *     path="/api/after-service/{id}",
      *     tags={"AS"},
      *     summary="AS 읽기",
      *     description="아이디에 해당하는 AS 정보 받아옴",
@@ -165,7 +166,7 @@ class AfterServiceController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/as/{id}",
+     *     path="/api/user/after-service/{id}",
      *     tags={"AS"},
      *     summary="수정",
      *     description="아이디에 해당하는 AS를 수정",
@@ -265,7 +266,7 @@ class AfterServiceController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/as/{id}",
+     *     path="/api/user/after-service/{id}",
      *     tags={"AS"},
      *     summary="삭제",
      *     description="아이디에 해당하는 AS를 삭제",
