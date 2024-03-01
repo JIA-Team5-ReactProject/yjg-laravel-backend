@@ -129,4 +129,7 @@ Route::post('/bus/schedule', [BusScheduleController::class, 'store']);
 Route::patch('/bus/schedule/update/{id}', [BusScheduleController::class, 'update']);
 Route::delete('/bus/schedule/delete/{id}', [BusScheduleController::class, 'destroy']);
 Route::post('/bus/addRound', [BusScheduleController::class, 'addRound']);
+Route::get('/bus/getRound', [BusScheduleController::class, 'getRound']);
+Route::get('/bus/getRoundSchedule/{id}', [BusScheduleController::class, 'getRoundSchedule']);
+
 Route::delete('/bus/round/delete/{id}', [BusScheduleController::class, 'roundDestroy']);

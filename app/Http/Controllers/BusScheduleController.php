@@ -6,6 +6,7 @@ use App\Models\BusRound;
 use App\Models\BusRoute;
 use App\Models\BusSchedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class BusScheduleController extends Controller
@@ -214,6 +215,77 @@ class BusScheduleController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
         return response()->json(['message' => '버스 회차가 추가 되었습니다.']);
+    }
+
+
+    /**
+         * @OA\Get (
+         * path="/api/bus/getRound",
+         * tags={"버스"},
+         * summary="버스 전체 회차",
+         * description="버스 전체 회차를 확인합니다",
+         *     @OA\RequestBody(
+         *         description="버스 전체 회차 ",
+         *         required=true,
+         *         @OA\MediaType(
+         *             mediaType="application/json",
+         *         )
+         *     ),
+         *  @OA\Response(response="200", description="Success"),
+         *  @OA\Response(response="500", description="Fail"),
+         * )
+         */
+    public function getRound()
+    {
+        try {
+            $roundData = BusRound::all()->pluck('round');
+            Log::info('라운드 데이터: ' . $roundData->toJson());
+            return response()->json(['roundDate' => $roundData]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+        }
+    }
+
+
+    /**
+         * @OA\Get (
+         * path="/api/bus/getRoundSchedule",
+         * tags={"버스"},
+         * summary="해당 회차의 버스 시간표",
+         * description="해당 회차의 버스 시간표를 확인 합니다",
+         *     
+         *         description="해당 회차의 버스 시간표",
+         *         @OA\Parameter(
+         *           name="id",
+         *           description="가져올 버스 회차의 아이디",
+         *           required=true,
+         *           in="path",
+         *           @OA\Schema(type="integer"),
+         *          ),
+         *    
+         *  @OA\Response(response="200", description="Success"),
+         *  @OA\Response(response="500", description="Fail"),
+         * )
+         */
+    public function getRoundSchedule($id)
+    {
+        try {
+            // 요청에서 bus_round_id를 받습니다.
+            Log::info('회차 아이디: ' . $id);
+
+            // bus_round_id에 해당하는 모든 bus_schedule 데이터를 조회합니다.
+            $schedules = BusSchedule::where('bus_round_id', $id)->get();
+
+            // 조회된 데이터를 로그에 기록합니다.
+            Log::info('조회된 스케줄: ', ['schedules' => $schedules->toArray()]);
+
+            // 조회된 데이터를 JSON 형태로 반환합니다.
+            return response()->json(['schedules' => $schedules]);
+        } catch (\Exception $exception) {
+            // 예외 발생 시 에러 메시지를 반환합니다.
+            return response()->json(['error' => '데이터 조회 중 오류가 발생했습니다.'], 500);
+        }
+    
     }
 
     /**
