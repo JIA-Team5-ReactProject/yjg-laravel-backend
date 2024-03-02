@@ -38,7 +38,7 @@ class MeetingRoomReservationFactory extends Factory
 
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'meeting_room_id' => MeetingRoom::inRandomOrder()->first()->id,
+            'meeting_room_number' => MeetingRoom::inRandomOrder()->first()->room_number,
             'reservation_date' => $randomDate,
             'reservation_s_time' => $s_time,
             'reservation_e_time' => $e_time,
