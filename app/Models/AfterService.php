@@ -15,6 +15,7 @@ class AfterService extends Model
         'title',
         'content',
         'status',
+        'visit_place',
         'visit_date',
     ];
 
@@ -28,9 +29,9 @@ class AfterService extends Model
         return $this->hasMany(AfterServiceComment::class);
     }
 
-    public function afterServiceImages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function afterServiceImages(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(AfterServiceImage::class);
+        return $this->hasMany(AfterServiceImage::class);
     }
 
 }

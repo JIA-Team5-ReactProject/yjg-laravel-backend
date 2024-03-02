@@ -1,27 +1,25 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAfterServiceController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\SalonBreakTimeController;
 use App\Http\Controllers\Admin\SalonBusinessHourController;
 use App\Http\Controllers\Admin\SalonCategoryController;
-use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Admin\SalonServiceController;
-
-
-use App\Http\Controllers\AfterServiceController;
 use App\Http\Controllers\BusScheduleController;
 use App\Http\Controllers\QRController;
-
 use App\Http\Controllers\RestaurantMenusController;
 use App\Http\Controllers\RestaurantSemesterController;
 use App\Http\Controllers\RestaurantWeekendController;
-
 use App\Http\Controllers\SemesterMealTypeController;
+use App\Http\Controllers\User\UserAfterServiceController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserSalonReservationController;
 use App\Http\Controllers\WeekendMealTypeController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +59,11 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
             Route::get('/', [UserSalonReservationController::class, 'index'])->name('user.salon.reservation.index');
             Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
             Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
+        });
+        Route::prefix('after-service')->group(function () {
+            Route::post('/', [UserAfterServiceController::class, 'store'])->name('user.as.store');
+            Route::patch('/', [UserAfterServiceController::class, 'update'])->name('user.as.update');
+            Route::delete('/{id}', [UserAfterServiceController::class, 'destroy'])->name('user.as.destroy');
         });
     });
 });
@@ -106,6 +109,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
+        Route::patch('/after-service/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
     });
 });
 
@@ -115,16 +119,10 @@ Route::middleware(['auth:sanctum', 'abilities:user,admin'])->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
     });
-    Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('admin.salon.category.index');
-    Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('admin.salon.service.show');
-});
-
-Route::prefix('as')->group(function () {
-    Route::get('/', [AfterServiceController::class, 'index'])->name('user.as.index');
-    Route::get('/{id}', [AfterServiceController::class, 'show'])->name('user.as.show');
-    Route::post('/', [AfterServiceController::class, 'store'])->name('user.as.store');
-    Route::patch('/', [AfterServiceController::class, 'update'])->name('user.as.update');
-    Route::delete('/{id}', [AfterServiceController::class, 'destroy'])->name('user.as.destroy');
+    Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
+    Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('salon.service.show');
+    Route::get('/after-service', [UserAfterServiceController::class, 'index'])->name('as.index');
+    Route::get('/after-service/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
 });
 
 

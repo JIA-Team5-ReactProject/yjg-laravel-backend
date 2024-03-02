@@ -13,7 +13,7 @@ class SalonCategoryController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/admin/salon-category",
+     *     path="/api/salon-category",
      *     tags={"미용실"},
      *     summary="카테고리 목록",
      *     description="미용실 카테고리 목록",

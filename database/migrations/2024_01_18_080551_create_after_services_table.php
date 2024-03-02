@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('content');
             $table->boolean('status')->default(false);
             $table->string('visit_place', 20);
-            $table->timestamp('visit_date');
+            $table->date('visit_date');
             $table->timestamps();
         });
     }
