@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\SalonBusinessHourController;
 use App\Http\Controllers\Admin\SalonCategoryController;
 use App\Http\Controllers\Admin\SalonServiceController;
 use App\Http\Controllers\BusScheduleController;
+use App\Http\Controllers\MeetingRoomController;
+use App\Http\Controllers\MeetingRoomReservationController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\RestaurantMenusController;
 use App\Http\Controllers\RestaurantSemesterController;
@@ -60,11 +62,15 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
             Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
             Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
         });
-        Route::prefix('after-service')->group(function () {
-            Route::post('/', [UserAfterServiceController::class, 'store'])->name('user.as.store');
-            Route::patch('/', [UserAfterServiceController::class, 'update'])->name('user.as.update');
-            Route::delete('/{id}', [UserAfterServiceController::class, 'destroy'])->name('user.as.destroy');
-        });
+    });
+    Route::prefix('after-service')->group(function () {
+        Route::post('/', [UserAfterServiceController::class, 'store'])->name('user.as.store');
+        Route::patch('/', [UserAfterServiceController::class, 'update'])->name('user.as.update');
+        Route::delete('/{id}', [UserAfterServiceController::class, 'destroy'])->name('user.as.destroy');
+    });
+    Route::prefix('meeting-room/reservation')->group(function () {
+        Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
+        Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
     });
 });
 
@@ -101,6 +107,10 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::patch('/{id}', [NoticeController::class, 'update'])->name('admin.notice.update');
             Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
         });
+        Route::prefix('meeting-room')->group(function () {
+            Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
+            Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');
+        });
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
         Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
@@ -109,7 +119,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
-        Route::patch('/after-service/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
+        Route::patch('/after-service/status/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
     });
 });
 
@@ -119,10 +129,21 @@ Route::middleware(['auth:sanctum', 'abilities:user,admin'])->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
     });
+    Route::prefix('after-service')->group(function () {
+        Route::get('/after-service', [UserAfterServiceController::class, 'index'])->name('as.index');
+        Route::get('/after-service/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
+    });
     Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
     Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('salon.service.show');
-    Route::get('/after-service', [UserAfterServiceController::class, 'index'])->name('as.index');
-    Route::get('/after-service/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
+    Route::prefix('meeting-room')->group(function () {
+        Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
+        Route::get('/{id}', [MeetingRoomController::class, 'show'])->name('meeting.show');
+        Route::prefix('reservation')->group(function () {
+            Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
+            Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
+            Route::patch('/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
+        });
+    });
 });
 
 

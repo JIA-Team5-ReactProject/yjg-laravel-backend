@@ -6,14 +6,14 @@
         "version": "0.1"
     },
     "paths": {
-        "/api/": {
+        "/api/after-service/status/{id}": {
             "patch": {
                 "tags": [
-                    "태그"
+                    "AS"
                 ],
-                "summary": "요약",
-                "description": "설명",
-                "operationId": "8ada00e04e959c901bca6b2f272c3bf0",
+                "summary": "상태 변경",
+                "description": "AS의 상태를 완료로 변경",
+                "operationId": "a7b9f2082df95b01024c99ffd779f1ec",
                 "parameters": [
                     {
                         "name": "id",
@@ -25,24 +25,6 @@
                         }
                     }
                 ],
-                "requestBody": {
-                    "description": "설명",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "속성명": {
-                                        "description": "설명",
-                                        "type": "타입",
-                                        "example": "예시"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -1384,41 +1366,36 @@
                 }
             }
         },
-        "/api/as/comment": {
-            "get": {
-                "tags": [
-                    "태그"
-                ],
-                "summary": "요약",
-                "description": "설명",
-                "operationId": "6c3efdba75f71d356042c7384dcb0487",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            },
+        "/api/after-service/comment/{id}": {
             "post": {
                 "tags": [
-                    "태그"
+                    "AS 댓글"
                 ],
-                "summary": "요약",
-                "description": "설명",
-                "operationId": "1b22d4fb90922fb1224f7bd528569820",
+                "summary": "생성",
+                "description": "댓글 작성",
+                "operationId": "935379ea675bcbe81e250483729474f3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "댓글을 작성할 AS의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
-                    "description": "설명",
+                    "description": "작성할 댓글의 내용과 AS 글 아이디",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "속성명": {
-                                        "description": "설명",
-                                        "type": "타입",
-                                        "example": "예시"
+                                    "comment": {
+                                        "description": "댓글의 내용",
+                                        "type": "string",
+                                        "example": "2월 30일 12시에 방문하겠습니다"
                                     }
                                 },
                                 "type": "object"
@@ -1440,19 +1417,19 @@
             },
             "delete": {
                 "tags": [
-                    "태그"
+                    "AS 댓글"
                 ],
-                "summary": "요약",
-                "description": "설명",
-                "operationId": "2cb4ffacc41c53c690ff9ea4c25321d4",
+                "summary": "삭제",
+                "description": "아이디에 해당하는 댓글 삭제",
+                "operationId": "d1829ee74e15669ca23cb2ae2633c1fb",
                 "parameters": [
                     {
-                        "name": "파라미터명",
+                        "name": "id",
                         "in": "path",
-                        "description": "설명",
+                        "description": "삭제할 댓글의 아이디",
                         "required": true,
                         "schema": {
-                            "type": "타입"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -1467,19 +1444,19 @@
             },
             "patch": {
                 "tags": [
-                    "태그"
+                    "AS 댓글"
                 ],
-                "summary": "요약",
-                "description": "설명",
-                "operationId": "c93f6ed87492ecdfb6b6c26b5002d4b6",
+                "summary": "수정",
+                "description": "댓글 수정",
+                "operationId": "786816c3a93c008ea356df88e67500cb",
                 "parameters": [
                     {
-                        "name": "파라미터명",
+                        "name": "id",
                         "in": "path",
-                        "description": "설명",
+                        "description": "수정할 댓글의 아이디",
                         "required": true,
                         "schema": {
-                            "type": "타입"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -1490,10 +1467,10 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "속성명": {
-                                        "description": "설명",
-                                        "type": "타입",
-                                        "example": "예시"
+                                    "comment": {
+                                        "description": "수정할 댓글의 내용",
+                                        "type": "string",
+                                        "example": "3월 32일 24시에 방문하겠습니다."
                                     }
                                 },
                                 "type": "object"
@@ -1510,35 +1487,6 @@
                     },
                     "500": {
                         "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/as/comment/{id}": {
-            "get": {
-                "tags": [
-                    "태그"
-                ],
-                "summary": "요약",
-                "description": "설명",
-                "operationId": "59383343f00c4c9db5b121163930b79e",
-                "parameters": [
-                    {
-                        "name": "파라미터명",
-                        "in": "path",
-                        "description": "설명",
-                        "required": true,
-                        "schema": {
-                            "type": "타입"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
                     }
                 }
             }
@@ -1822,6 +1770,281 @@
                 }
             }
         },
+        "/api/meeting-room": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "목록",
+                "description": "회의실 목록",
+                "operationId": "6aeb2ea5863181db0f095fdcd7313278",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "추가",
+                "description": "회의실 추가",
+                "operationId": "8390beedb467bb18e0bfbd3e14f93a2f",
+                "requestBody": {
+                    "description": "설명",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "room_number": {
+                                        "description": "추가할 회의실의 번호",
+                                        "type": "string",
+                                        "example": "203"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/{id}": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 예약 목록",
+                "description": "특정 회의실의 예약 목록",
+                "operationId": "4368a3e527e5245b0bfa71b02ef867df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "회의실의 룸 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 삭제",
+                "description": "특정 회의실 삭제",
+                "operationId": "954823889b93ba8e407764993339bcca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "회의실의 룸 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "전체 보기",
+                "description": "전체 보기",
+                "operationId": "e9c496db056bec3f21d81548c586352a",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "예약하기",
+                "description": "회의실 예약하기",
+                "operationId": "589aadeb061f839392677a12c36a30e1",
+                "requestBody": {
+                    "description": "예약 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "속성명": {
+                                        "description": "설명",
+                                        "type": "타입",
+                                        "example": "예시"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation/user": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "유저의 예약",
+                "description": "로그인한 유저의 회의실 예약 목록을 반환",
+                "operationId": "45781e2e7856320bdc2b12a9538c4139",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation/{id}": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "특정 예약",
+                "description": "아이디에 해당하는 예약 정보를 받아옴",
+                "operationId": "5e34a5b7ca9042a27f0f73e1abe5c137",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "예약 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 예약 삭제",
+                "description": "",
+                "operationId": "5e11d5154a6b7c80db9cc2b9c7d09b06",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 예약의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation/reject/{id}": {
+            "patch": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "예약 거절",
+                "description": "관리자의 사유에 의해 예약 거절",
+                "operationId": "4fd7eff9a4979db9382015ac6000b0e9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "예약을 거절할 ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/admin/qr": {
             "get": {
                 "tags": [
@@ -2017,16 +2240,14 @@
                         "description": "Server Error"
                     }
                 }
-            }
-        },
-        "/api/user/after-service": {
+            },
             "post": {
                 "tags": [
                     "AS"
                 ],
                 "summary": "AS 작성",
                 "description": "새로운 AS를 생성함",
-                "operationId": "a71c2f10f48d8473ff298499abb9e592",
+                "operationId": "616ff7960375c29c309c2393a1f20224",
                 "requestBody": {
                     "description": "생성할 AS의 내용",
                     "required": true,
@@ -2107,16 +2328,14 @@
                         "description": "Server Error"
                     }
                 }
-            }
-        },
-        "/api/user/after-service/{id}": {
+            },
             "delete": {
                 "tags": [
                     "AS"
                 ],
                 "summary": "삭제",
                 "description": "아이디에 해당하는 AS를 삭제",
-                "operationId": "cd5064c1d3571afea33c7743e4af319e",
+                "operationId": "79b727c17be72064b0c2b21ed5b6230b",
                 "parameters": [
                     {
                         "name": "id",
@@ -2143,7 +2362,7 @@
                 ],
                 "summary": "수정",
                 "description": "아이디에 해당하는 AS를 수정",
-                "operationId": "9473759848b5e15747aec5b481129868",
+                "operationId": "546c4ed27a18696c4aa8d9a72c5842cf",
                 "parameters": [
                     {
                         "name": "id",
