@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('meeting_room_reservations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('meeting_room_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('meeting_room_number', 10);
+            $table->foreign('meeting_room_number')->references('room_number')->on('meeting_rooms')->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('status')->default(true);
             $table->date('reservation_date');
             $table->time('reservation_s_time');
