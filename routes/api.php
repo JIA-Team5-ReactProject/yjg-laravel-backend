@@ -119,8 +119,8 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
-        Route::patch('/after-service/status/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
     });
+    Route::patch('/after-service/status/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
 });
 
 // 유저 및 어드민
