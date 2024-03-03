@@ -67,7 +67,7 @@ class UserAfterServiceController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/user/after-service",
+     *     path="/api/after-service",
      *     tags={"AS"},
      *     summary="AS 작성",
      *     description="새로운 AS를 생성함",
@@ -166,7 +166,7 @@ class UserAfterServiceController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/user/after-service/{id}",
+     *     path="/api/after-service/{id}",
      *     tags={"AS"},
      *     summary="수정",
      *     description="아이디에 해당하는 AS를 수정",
@@ -266,7 +266,7 @@ class UserAfterServiceController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/user/after-service/{id}",
+     *     path="/api/after-service/{id}",
      *     tags={"AS"},
      *     summary="삭제",
      *     description="아이디에 해당하는 AS를 삭제",
