@@ -1698,7 +1698,7 @@
                 ],
                 "summary": "버스 전체 회차",
                 "description": "버스 전체 회차를 확인합니다",
-                "operationId": "d1e0c8cc053e346bf5612dea2ad52d97",
+                "operationId": "bfa8de43ac9e585c899d251275780a30",
                 "requestBody": {
                     "description": "버스 전체 회차 ",
                     "required": true,
@@ -2228,6 +2228,15 @@
                         "in": "path",
                         "description": "상태 (true or false)",
                         "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "현재 페이지",
+                        "required": true,
                         "schema": {
                             "type": "boolean"
                         }
