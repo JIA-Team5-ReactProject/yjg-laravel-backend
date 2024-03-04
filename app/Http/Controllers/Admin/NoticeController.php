@@ -18,7 +18,7 @@ class NoticeController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/admin/notice",
+     *     path="/api/notice",
      *     tags={"공지사항"},
      *     summary="공지사항 검색",
      *     description="파라미터 값에 맞는 공지사항을 반환",
@@ -69,7 +69,7 @@ class NoticeController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/admin/notice/{id}",
+     *     path="/api/notice/{id}",
      *     tags={"공지사항"},
      *     summary="공지사항 검색",
      *     description="파라미터 값에 맞는 공지사항을 반환",
