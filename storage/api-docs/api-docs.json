@@ -561,14 +561,14 @@
                 }
             }
         },
-        "/api/admin/notice": {
+        "/api/notice": {
             "get": {
                 "tags": [
                     "공지사항"
                 ],
                 "summary": "공지사항 검색",
                 "description": "파라미터 값에 맞는 공지사항을 반환",
-                "operationId": "0ded74c1cafe239b0c473b9251d5a0f7",
+                "operationId": "50f2a846dbc3718386ab9bd45c13ec75",
                 "requestBody": {
                     "description": "검색 파라미터가 있을 경우 반환, 없을 경우 전체 반환",
                     "required": true,
@@ -605,7 +605,38 @@
                         "description": "Server Error"
                     }
                 }
-            },
+            }
+        },
+        "/api/notice/{id}": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 검색",
+                "description": "파라미터 값에 맞는 공지사항을 반환",
+                "operationId": "c8d06969068c0b49fcc0ce485e93f520",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "찾을 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/admin/notice": {
             "post": {
                 "tags": [
                     "공지사항"
@@ -661,33 +692,6 @@
             }
         },
         "/api/admin/notice/{id}": {
-            "get": {
-                "tags": [
-                    "공지사항"
-                ],
-                "summary": "공지사항 검색",
-                "description": "파라미터 값에 맞는 공지사항을 반환",
-                "operationId": "c1b68e3bd2b3e338e8f7b9c9c4434690",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "찾을 공지사항의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "공지사항"
