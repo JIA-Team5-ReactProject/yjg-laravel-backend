@@ -29,7 +29,7 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/meeting-room",
+     *     path="/api/admin/meeting-room",
      *     tags={"회의실"},
      *     summary="추가",
      *     description="회의실 추가",
@@ -105,7 +105,7 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/meeting-room/{id}",
+     *     path="/api/admin/meeting-room/{id}",
      *     tags={"회의실"},
      *     summary="회의실 삭제",
      *     description="특정 회의실 삭제",
