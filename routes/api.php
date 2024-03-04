@@ -39,7 +39,7 @@ Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.approve')->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
@@ -124,14 +124,14 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
 });
 
 // 유저 및 어드민
-Route::middleware(['auth:sanctum', 'abilities:user,admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
     Route::prefix('notice')->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
     });
     Route::prefix('after-service')->group(function () {
-        Route::get('/after-service', [UserAfterServiceController::class, 'index'])->name('as.index');
-        Route::get('/after-service/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
+        Route::get('/', [UserAfterServiceController::class, 'index'])->name('as.index');
+        Route::get('/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
     });
     Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
     Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('salon.service.show');

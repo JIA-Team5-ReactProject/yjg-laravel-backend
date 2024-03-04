@@ -62,7 +62,26 @@ class MeetingRoomReservationController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $validated = $request->validate([
+                'meeting_room_number' => 'required|numeric',
+                'reservation_date' => 'required|date_format:Y-m-d',
+                'reservation_s_time' => 'required|date_format:H:m:s',
+                'reservation_e_time' => 'required|date_format:H:m:s',
+            ]);
+        } catch (ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
 
+        //TODO: 해당 호실, 해당 시간 예약이 있는지 없는지 확인
+
+        $reservation = MeetingRoomReservation::create($validated);
+
+        if(!$reservation) return response()->json(['error' => '예약에 실패하였습니다.'], 500);
+
+        return response()->json(['success' => '성공적으로 예약되었습니다.', 'reservation' => $reservation], 201);
     }
 
     /**

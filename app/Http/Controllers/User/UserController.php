@@ -120,6 +120,10 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
+        $check = User::findOrFail($validated['email']);
+
+        if($check && !$check->approved) return response()->json(['error' => '아직 승인되지 않은 유저입니다.'], 500);
+
         $user = User::updateOrCreate([
             'email' => $validated['email'],
         ], [
