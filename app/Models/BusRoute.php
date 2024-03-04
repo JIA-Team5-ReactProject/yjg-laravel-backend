@@ -16,7 +16,7 @@ class BusRoute extends Model
     ];
 
 
-    public function bus_schedule(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function bus_round(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(BusSchedule::class);
     }

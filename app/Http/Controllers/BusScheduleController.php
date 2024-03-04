@@ -235,12 +235,28 @@ class BusScheduleController extends Controller
          *  @OA\Response(response="500", description="Fail"),
          * )
          */
-    public function getRound()
+    public function getRoute(Request $request)
     {
+
         try {
-            $roundData = BusRound::all()->pluck('round');
-            Log::info('라운드 데이터: ' . $roundData->toJson());
-            return response()->json(['roundDate' => $roundData]);
+            // 유효성 검사
+            $validatedData = $request->validate([
+              'weekend' => 'required|boolean',
+              'semester' => 'required|boolean',
+              'bus_route_direction' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+
+        try {
+            $matchingRoutes = BusRoute::where('weekend', $validatedData['weekend'])
+                                  ->where('semester', $validatedData['semester'])
+                                  ->where('bus_route_direction', $validatedData['bus_route_direction'])
+                                  ->pluck('id');
+            Log::info('라운드 데이터: ' . $matchingRoutes->toJson());
+            return response()->json(['roundDate' => $matchingRoutes]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
         }
