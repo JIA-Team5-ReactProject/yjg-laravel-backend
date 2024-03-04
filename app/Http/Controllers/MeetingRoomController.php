@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MeetingRoom;
 use App\Models\MeetingRoomReservation;
-use Carbon\Carbon;
+use App\Services\ReservedTimeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -130,7 +130,7 @@ class MeetingRoomController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function checkReservation(Request $request): \Illuminate\Http\JsonResponse
+    public function checkReservation(Request $request)
     {
         try {
             $validated = $request->validate([
@@ -143,30 +143,9 @@ class MeetingRoomController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $reservations = MeetingRoomReservation::query();
+        $reservedTimes = new ReservedTimeService($validated['date'], $validated['room_number']);
 
-        if(isset($validated['date'])) {
-            $reservations = $reservations->where('reservation_date', $validated['date']);
-        }
-
-        if (isset($validated['room_number'])) {
-            $reservations = $reservations->where('meeting_room_number' , $validated['room_number']);
-        }
-
-        $reservations  = $reservations->get();
-        $reservedTimes = [];
-
-        foreach ($reservations as $reservation) {
-            $start = Carbon::parse($reservation->reservation_s_time);
-            $end   = Carbon::parse($reservation->reservation_e_time);
-            $currentHour = $start->copy();
-            while ($currentHour < $end) {
-                $reservedTimes[] = $currentHour->copy()->format('H:i');
-                $currentHour->addHour();
-            }
-        }
-
-        return response()->json(['reservations' => $reservedTimes]);
+        return response()->json(['reservations' => $reservedTimes()]);
     }
 
     /**
