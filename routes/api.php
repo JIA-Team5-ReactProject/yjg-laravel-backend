@@ -68,9 +68,13 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
         Route::patch('/', [UserAfterServiceController::class, 'update'])->name('user.as.update');
         Route::delete('/{id}', [UserAfterServiceController::class, 'destroy'])->name('user.as.destroy');
     });
-    Route::prefix('meeting-room/reservation')->group(function () {
-        Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
-        Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
+
+    Route::prefix('meeting-room')->group(function () {
+        Route::get('/check', [MeetingRoomController::class, 'checkReservation'])->name('meeting.check.reservation'); // show 메서드로 인해 먼저 읽혀야함
+        Route::prefix('reservation')->group(function () {
+            Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
+            Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
+        });
     });
 });
 
