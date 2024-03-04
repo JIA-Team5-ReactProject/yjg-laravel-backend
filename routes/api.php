@@ -124,7 +124,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
 });
 
 // 유저 및 어드민
-Route::middleware(['auth:sanctum', 'abilities:user,admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
     Route::prefix('notice')->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
