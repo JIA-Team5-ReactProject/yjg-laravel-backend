@@ -147,7 +147,7 @@ class MeetingRoomReservationController extends Controller
      */
     public function reject(string $id)
     {
-        $validator = Validator::make([$id], [
+        $validator = Validator::make(['id'=> $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'
         ]);
 
