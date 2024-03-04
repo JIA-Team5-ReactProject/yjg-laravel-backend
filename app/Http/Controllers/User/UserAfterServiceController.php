@@ -169,7 +169,7 @@ class UserAfterServiceController extends Controller
     public function show(string $id)
     {
         try {
-            $afterService = AfterService::with(['afterServiceImages', 'user'])->findOrFail($id);
+            $afterService = AfterService::with(['afterServiceImages', 'afterServiceComments', 'user'])->findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
             return response()->json(['error' => '해당하는 AS 정보가 없습니다.'], 404);
         }
