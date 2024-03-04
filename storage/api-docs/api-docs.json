@@ -1793,18 +1793,27 @@
                 }
             }
         },
-        "/api/meeting-room/{id}": {
+        "/api/meeting-room/check": {
             "get": {
                 "tags": [
                     "회의실"
                 ],
-                "summary": "회의실 예약 목록",
-                "description": "특정 회의실의 예약 목록",
-                "operationId": "4368a3e527e5245b0bfa71b02ef867df",
+                "summary": "예약된 시간 목록",
+                "description": "특정 날짜 및 특정 회의실의 예약된 시간 목록",
+                "operationId": "87d6c363a95637dcd77b3c2609905b2c",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "roomNumber",
+                        "in": "query",
                         "description": "회의실의 룸 번호",
                         "required": true,
                         "schema": {
@@ -2182,7 +2191,7 @@
                 "parameters": [
                     {
                         "name": "name",
-                        "in": "path",
+                        "in": "query",
                         "description": "신청인",
                         "required": false,
                         "schema": {
@@ -2191,7 +2200,7 @@
                     },
                     {
                         "name": "status",
-                        "in": "path",
+                        "in": "query",
                         "description": "상태 (true or false)",
                         "required": false,
                         "schema": {
@@ -2200,7 +2209,7 @@
                     },
                     {
                         "name": "page",
-                        "in": "path",
+                        "in": "query",
                         "description": "현재 페이지",
                         "required": true,
                         "schema": {
