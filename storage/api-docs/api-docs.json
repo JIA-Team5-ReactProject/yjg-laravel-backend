@@ -1520,10 +1520,10 @@
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "bus_round_id": {
-                                        "description": "버스회차 아이디",
+                                    "round": {
+                                        "description": "버스회차",
                                         "type": "string",
-                                        "example": "1"
+                                        "example": "1회차"
                                     },
                                     "bus_route_direction": {
                                         "description": "버스 노선 ",
@@ -1574,26 +1574,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "weekend": {
-                                        "description": "주말/평일",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "semester": {
-                                        "description": "학기/방학",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "bus_round_id": {
-                                        "description": "버스회차 아이디",
-                                        "type": "string",
-                                        "example": "1"
-                                    },
-                                    "bus_route_direction": {
-                                        "description": "버스 노선 ",
-                                        "type": "string",
-                                        "example": "B"
-                                    },
                                     "station": {
                                         "description": "정류장",
                                         "type": "string",
@@ -1630,7 +1610,7 @@
                 ],
                 "summary": "버스 시간표 삭제",
                 "description": "버스 시간표 삭제",
-                "operationId": "6d4eef22dd760e593ca04dbdd64da8cb",
+                "operationId": "8312f71c9f2a5d396f4f4b6073996398",
                 "parameters": [
                     {
                         "name": "id",
@@ -1652,25 +1632,35 @@
                 }
             }
         },
-        "/api/bus/addRound": {
-            "post": {
+        "/api/bus/getRound": {
+            "get": {
                 "tags": [
                     "버스"
                 ],
-                "summary": "버스 회차 추가",
-                "description": "버스 회차 추가 ",
-                "operationId": "45856546d87a6c90548d307623949314",
+                "summary": "해당 버스 회차 가져오기",
+                "description": "해당하는 id의 버스 회차 리스트 가져오기",
+                "operationId": "d1e0c8cc053e346bf5612dea2ad52d97",
                 "requestBody": {
-                    "description": "추가할 버스 회차",
-                    "required": true,
+                    "description": "가져오고 싶은 회차의 bus_route값",
+                    "required": false,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "round": {
-                                        "description": "회차",
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
                                         "type": "string",
-                                        "example": "1"
+                                        "example": "B"
                                     }
                                 },
                                 "type": "object"
@@ -1680,38 +1670,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    },
-                    "422": {
-                        "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/bus/getRound": {
-            "get": {
-                "tags": [
-                    "버스"
-                ],
-                "summary": "버스 전체 회차",
-                "description": "버스 전체 회차를 확인합니다",
-                "operationId": "bfa8de43ac9e585c899d251275780a30",
-                "requestBody": {
-                    "description": "버스 전체 회차 ",
-                    "required": true,
-                    "content": {
-                        "application/json": {}
-                    }
-                },
-                "responses": {
-                    "200": {
                         "description": "Success"
                     },
                     "500": {
-                        "description": "Fail"
+                        "description": "Server Error"
                     }
                 }
             }
@@ -1790,14 +1752,16 @@
                         "description": "Server Error"
                     }
                 }
-            },
+            }
+        },
+        "/api/admin/meeting-room": {
             "post": {
                 "tags": [
                     "회의실"
                 ],
                 "summary": "추가",
                 "description": "회의실 추가",
-                "operationId": "8390beedb467bb18e0bfbd3e14f93a2f",
+                "operationId": "54120d031864ef315b91cca90d4831ff",
                 "requestBody": {
                     "description": "설명",
                     "required": true,
@@ -1856,14 +1820,16 @@
                         "description": "Server Error"
                     }
                 }
-            },
+            }
+        },
+        "/api/admin/meeting-room/{id}": {
             "delete": {
                 "tags": [
                     "회의실"
                 ],
                 "summary": "회의실 삭제",
                 "description": "특정 회의실 삭제",
-                "operationId": "954823889b93ba8e407764993339bcca",
+                "operationId": "a4aab74025565291fb19c98edd9ef99a",
                 "parameters": [
                     {
                         "name": "id",
