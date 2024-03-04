@@ -66,8 +66,8 @@ class MeetingRoomReservationController extends Controller
             $validated = $request->validate([
                 'meeting_room_number' => 'required|numeric',
                 'reservation_date' => 'required|date_format:Y-m-d',
-                'reservation_s_time' => 'required|date_format:H:m:s',
-                'reservation_e_time' => 'required|date_format:H:m:s',
+                'reservation_s_time' => 'required|date_format:H:i:s',
+                'reservation_e_time' => 'required|date_format:H:i:s',
             ]);
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
@@ -75,7 +75,16 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        //TODO: 해당 호실, 해당 시간 예약이 있는지 없는지 확인
+        $validated['user_id'] = $request->user()->id;
+
+        //TODO: 해당 호실, 해당 시간 예약이 있는지 없는지
+
+        $reserved = MeetingRoomReservation::where('meeting_room_number', $validated['meeting_room_number'])
+            ->where('reservation_date', $validated['reservation_date'])
+            ->where('reservation_s_time', $validated['reservation_s_time'])->get();
+
+        if(empty($reserved)) return response()->json(['error' => '이미 예약된 시간입니다.'], 409);
+
 
         $reservation = MeetingRoomReservation::create($validated);
 
@@ -103,7 +112,7 @@ class MeetingRoomReservationController extends Controller
      */
     public function show(string $id): \Illuminate\Http\JsonResponse
     {
-        $validator = Validator::make([$id], [
+        $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'
         ]);
 
@@ -178,7 +187,7 @@ class MeetingRoomReservationController extends Controller
      */
     public function destroy(string $id)
     {
-        $validator = Validator::make([$id], [
+        $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'
         ]);
 
