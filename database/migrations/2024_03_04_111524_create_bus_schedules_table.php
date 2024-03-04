@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bus_schedules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bus_route_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            
             $table->foreignId('bus_round_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('station');
             $table->time('bus_time');
@@ -26,9 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        
         Schema::table('bus_schedules', function (Blueprint $table) {
-            // bus_route_id 외래 키 제약 조건 삭제
-            $table->dropForeign(['bus_route_id']);
             // bus_round_id 외래 키 제약 조건 삭제
             $table->dropForeign(['bus_round_id']); // 추가된 외래 키 제약 조건 삭제
         });
