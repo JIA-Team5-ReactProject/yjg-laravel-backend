@@ -73,6 +73,41 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Get (
+     *     path="/api/meeting-room/{room_number}",
+     *     tags={"회의실"},
+     *     summary="회의실의 목록",
+     *     description="특정 회의실의 예약 목록",
+     *     @OA\Parameter(
+     *          name="roomNumber",
+     *          description="회의실 번호",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="string"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function show(string $roomNumber)
+    {
+        $validator = Validator::make([
+            'room_number' => $roomNumber
+        ], [
+            'room_number' => 'required|numeric|exists:meeting_rooms,room_number'
+        ]);
+
+        try {
+            $validator->validate();
+        } catch (ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+        return response()->json(['reservations' => MeetingRoomReservation::where('meeting_room_number', $roomNumber)->get()]);
+    }
+
+    /**
+     * @OA\Get (
      *     path="/api/meeting-room/check",
      *     tags={"회의실"},
      *     summary="예약된 시간 목록",
