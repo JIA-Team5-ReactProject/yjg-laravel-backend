@@ -137,7 +137,7 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
     });
     Route::prefix('meeting-room')->group(function () {
         Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
-        Route::get('/{id}', [MeetingRoomController::class, 'show'])->name('meeting.show');
+        Route::get('/check', [MeetingRoomController::class, 'checkReservation'])->name('meeting.check.reservation');
         Route::prefix('reservation')->group(function () {
             Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
@@ -146,8 +146,6 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
         });
     });
 });
-
-
 
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
