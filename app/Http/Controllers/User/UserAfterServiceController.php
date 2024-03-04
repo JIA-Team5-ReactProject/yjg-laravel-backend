@@ -49,7 +49,7 @@ class UserAfterServiceController extends Controller
             $errorMessage = $exception->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
-        $afterService = AfterService::query();
+        $afterService = AfterService::query()->with('user');
 
         if(isset($request['status'])) {
             $afterService = $afterService->where('status', $validated['status']);
@@ -60,7 +60,7 @@ class UserAfterServiceController extends Controller
                 $query->where('name', $validated['name']);
             });
         }
-        $afterService = $afterService->paginate(10);
+        $afterService = $afterService->paginate(8);
 
         return response()->json(['after_services' => $afterService]);
     }
