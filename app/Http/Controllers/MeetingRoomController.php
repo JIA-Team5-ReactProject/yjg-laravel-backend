@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeetingRoom;
+use App\Models\MeetingRoomReservation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -71,36 +73,65 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/meeting-room/{id}",
+     *     path="/api/meeting-room/check",
      *     tags={"회의실"},
-     *     summary="회의실 예약 목록",
-     *     description="특정 회의실의 예약 목록",
+     *     summary="예약된 시간 목록",
+     *     description="특정 날짜 및 특정 회의실의 예약된 시간 목록",
      *     @OA\Parameter(
-     *          name="id",
+     *          name="date",
+     *          description="조회할 날짜",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(type="string"),
+     *     ),
+     *     @OA\Parameter(
+     *          name="roomNumber",
      *          description="회의실의 룸 번호",
      *          required=true,
-     *          in="path",
+     *          in="query",
      *          @OA\Schema(type="integer"),
-     *     ),
+     *      ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function show(string $id): \Illuminate\Http\JsonResponse
+    public function checkReservation(Request $request): \Illuminate\Http\JsonResponse
     {
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|exists:meeting_rooms,room_number|string'
-        ], $this->messages);
-
         try {
-            $validator->validate();
+            $validated = $request->validate([
+                'date'        => 'required|date_format:Y-m-d',
+                'room_number' => 'required|numeric|exists:meeting_rooms,room_number',
+            ]);
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        return response()->json(['meeting_room' => MeetingRoom::with('meetingRoomReservations')->findOrFail($id)]);
+        $reservations = MeetingRoomReservation::query();
+
+        if(isset($validated['date'])) {
+            $reservations = $reservations->where('reservation_date', $validated['date']);
+        }
+
+        if (isset($validated['room_number'])) {
+            $reservations = $reservations->where('meeting_room_number' , $validated['room_number']);
+        }
+
+        $reservations  = $reservations->get();
+        $reservedTimes = [];
+
+        foreach ($reservations as $reservation) {
+            $start = Carbon::parse($reservation->reservation_s_time);
+            $end   = Carbon::parse($reservation->reservation_e_time);
+            $currentHour = $start->copy();
+            while ($currentHour < $end) {
+                $reservedTimes[] = $currentHour->copy()->format('H:i');
+                $currentHour->addHour();
+            }
+        }
+
+        return response()->json(['reservations' => $reservedTimes]);
     }
 
     /**
