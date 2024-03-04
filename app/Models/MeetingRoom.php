@@ -20,6 +20,6 @@ class MeetingRoom extends Model
 
     public function meetingRoomReservations(): \Illuminate\Database\Eloquent\Relations\hasMany
     {
-        return $this->hasMany(MeetingRoomReservation::class);
+        return $this->hasMany(MeetingRoomReservation::class, 'meeting_room_number', 'room_number');
     }
 }

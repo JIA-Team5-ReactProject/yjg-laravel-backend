@@ -86,7 +86,7 @@ class MeetingRoomController extends Controller
     public function show(string $id): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make([$id], [
-            'id' => 'required|exists:meeting_rooms,room_number|string'
+            'id' => 'exists:meeting_rooms,room_number|string'
         ]);
 
         try {

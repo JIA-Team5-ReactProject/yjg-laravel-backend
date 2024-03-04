@@ -135,6 +135,7 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
     });
     Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
     Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('salon.service.show');
+});
     Route::prefix('meeting-room')->group(function () {
         Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
         Route::get('/{id}', [MeetingRoomController::class, 'show'])->name('meeting.show');
@@ -144,7 +145,6 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
             Route::patch('/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         });
     });
-});
 
 
 
