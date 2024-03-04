@@ -32,6 +32,13 @@ class UserAfterServiceController extends Controller
      *          in="path",
      *          @OA\Schema(type="boolean"),
      *     ),
+     *     @OA\Parameter(
+     *          name="page",
+     *          description="현재 페이지",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="boolean"),
+     *      ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="422", description="Validation Error"),
      *     @OA\Response(response="500", description="Server Error"),
@@ -49,20 +56,26 @@ class UserAfterServiceController extends Controller
             $errorMessage = $exception->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
-        $afterService = AfterService::query()->with('user');
+        $afterServices = AfterService::query();
 
         if(isset($request['status'])) {
-            $afterService = $afterService->where('status', $validated['status']);
+            $afterServices = $afterServices->where('status', $validated['status']);
         }
 
         if(isset($request['name'])) {
-            $afterService = $afterService->whereHas('user', function ($query) use ($validated) {
+            $afterServices = $afterServices->whereHas('user', function ($query) use ($validated) {
                 $query->where('name', $validated['name']);
             });
         }
-        $afterService = $afterService->paginate(8);
+        $afterServices = $afterServices->paginate(8);
 
-        return response()->json(['after_services' => $afterService]);
+        foreach ($afterServices as $afterService) {
+            $userName = $afterService->user['name'];
+            $afterService->user_name = $userName;
+            unset($afterService->user);
+        }
+
+        return response()->json(['after_services' => $afterServices]);
     }
 
     /**
