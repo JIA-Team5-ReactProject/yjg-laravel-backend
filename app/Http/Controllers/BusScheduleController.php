@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
+use function PHPUnit\Framework\isEmpty;
+
 class BusScheduleController extends Controller
 {
     /**
@@ -25,7 +27,7 @@ class BusScheduleController extends Controller
      *             @OA\Schema (
      *                 @OA\Property (property="weekend", type="boolean", description="주말/평일", example=true),
      *                 @OA\Property (property="semester", type="boolean", description="학기/방학", example=true),
-     *                 @OA\Property (property="bus_round_id", type="string", description="버스회차 아이디", example="1"),
+     *                 @OA\Property (property="round", type="string", description="버스회차", example="1회차"),
      *                 @OA\Property (property="bus_route_direction", type="string", description="버스 노선 ", example="B"),
      *                 @OA\Property (property="station", type="string", description="정류장", example="태전역"),
      *                 @OA\Property (property="bus_time", type="date_format", description="버스시간", example="08:00"),
@@ -45,7 +47,7 @@ class BusScheduleController extends Controller
                 'weekend' => 'required|boolean',
                 'semester' => 'required|boolean',
                 'bus_route_direction' => 'required|string|size:1',
-                'bus_round_id' => 'required|string',
+                'round' => 'required|string',
                 
                 'station' => 'required|string',
                 'bus_time' => 'required|date_format:H:i'
@@ -54,7 +56,7 @@ class BusScheduleController extends Controller
             return response()->json(['error' => $exception->getMessage()], 422);
         }
 
-
+        
         try{
             $busRoute = BusRoute::where('weekend', $validatedData['weekend'])
                              ->where('semester', $validatedData['semester'])
@@ -64,11 +66,29 @@ class BusScheduleController extends Controller
             return response()->json(['error' => $exception->getMessage()], 404);
         }   
 
-        
+        $existingRound = BusRound::where('round', $validatedData['round'])
+                             ->where('bus_route_id', $busRoute->id)
+                             ->pluck('id');
+
+        //라운드에 같은 값이 있으면 새로 안만들고 없으면 새로 BusRound테이블에 추가
+        if ($existingRound->isEmpty()) {
+            try {
+                $busRound = BusRound::create([
+                    'round' => $validatedData['round'],
+                    'bus_route_id' => $busRoute->id,
+                ]);
+            } catch (\Exception $exception) {
+                return response()->json(['error' => $exception->getMessage()], 404);
+            }   
+        } else {
+            $busRound = BusRound::where('round', $validatedData['round'])
+                                ->where('bus_route_id', $busRoute->id)
+                                ->firstOrFail();
+        }
+
         try{
             BusSchedule::create([
-                'bus_route_id' => $busRoute->id,
-                'bus_round_id' => $validatedData['bus_round_id'],
+                'bus_round_id' => $busRound->id,
                 'station' => $validatedData['station'],
                 'bus_time' => $validatedData['bus_time'],
             ]);
@@ -76,6 +96,7 @@ class BusScheduleController extends Controller
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
+
     }
      /**
      * @OA\Patch (
@@ -89,10 +110,6 @@ class BusScheduleController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="weekend", type="boolean", description="주말/평일", example=true),
-     *                 @OA\Property (property="semester", type="boolean", description="학기/방학", example=true),
-     *                 @OA\Property (property="bus_round_id", type="string", description="버스회차 아이디", example="1"),
-     *                 @OA\Property (property="bus_route_direction", type="string", description="버스 노선 ", example="B"),
      *                 @OA\Property (property="station", type="string", description="정류장", example="태전역"),
      *                 @OA\Property (property="bus_time", type="date_format", description="버스시간", example="08:00"),
      *              )
@@ -108,28 +125,14 @@ class BusScheduleController extends Controller
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'weekend' => 'required|boolean',
-                'semester' => 'required|boolean',
-                'bus_round_id' => 'required|string',
-                'bus_route_direction' => 'required|string|size:1',
                 'station' => 'required|string',
                 'bus_time' => 'required|date_format:H:i'
             ]);
 
-
             // 수정할 버스 시간표id 찾기
             $busSchedule = BusSchedule::findOrFail($id);
 
-            // 해당 버스 시간표 노선 찾기
-            $busRoute = BusRoute::where('weekend', $validatedData['weekend'])
-                             ->where('semester', $validatedData['semester'])
-                             ->where('bus_route_direction', $validatedData['bus_route_direction'])
-                             ->firstOrFail();
-
-            // 버스 시간표 정보 업데이트
             $busSchedule->update([
-                'bus_route_id' => $busRoute->id,
-                'bus_round_id' => $validatedData['bus_round_id'],
                 'station' => $validatedData['station'],
                 'bus_time' => $validatedData['bus_time'],
             ]);
@@ -137,9 +140,7 @@ class BusScheduleController extends Controller
             return response()->json(['message' => '버스 시간표 수정이 완료되었습니다.']);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 500);
-        }
+        } 
     }
 
     /**
@@ -159,7 +160,7 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy($id)
+    public function destroySchedule($id)
     {
         try {
             // 삭제할 버스 시간표를 찾습니다.
@@ -173,6 +174,8 @@ class BusScheduleController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
+
+
 
     /**
      * @OA\Post (
@@ -195,47 +198,54 @@ class BusScheduleController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function addRound(Request $request)
-    {
-        try {
-            // 유효성 검사
-            $validatedData = $request->validate([
-              'round' => 'required|string',
-            ]);
-        } catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
+    // public function addRound(Request $request)
+    // {
+    //     try {
+    //         // 유효성 검사
+    //         $validatedData = $request->validate([
+    //           'round' => 'required|string',
+    //         ]);
+    //     } catch (ValidationException $exception) {
+    //         return response()->json(['error' => $exception->getMessage()], 422);
+    //     }
 
 
-        try{
-            BusRound::create([
-                'round' => $validatedData['round']
-            ]);
-        }catch(\Exception $exception){
-            return response()->json(['error' => $exception->getMessage()], 500);
-        }
-        return response()->json(['message' => '버스 회차가 추가 되었습니다.']);
-    }
+    //     try{
+    //         BusRound::create([
+    //             'round' => $validatedData['round']
+    //         ]);
+    //     }catch(\Exception $exception){
+    //         return response()->json(['error' => $exception->getMessage()], 500);
+    //     }
+    //     return response()->json(['message' => '버스 회차가 추가 되었습니다.']);
+    // }
+
+
 
 
     /**
-         * @OA\Get (
-         * path="/api/bus/getRound",
-         * tags={"버스"},
-         * summary="버스 전체 회차",
-         * description="버스 전체 회차를 확인합니다",
-         *     @OA\RequestBody(
-         *         description="버스 전체 회차 ",
-         *         required=true,
-         *         @OA\MediaType(
-         *             mediaType="application/json",
-         *         )
-         *     ),
-         *  @OA\Response(response="200", description="Success"),
-         *  @OA\Response(response="500", description="Fail"),
-         * )
-         */
-    public function getRoute(Request $request)
+     * @OA\Get (
+     *     path="/api/bus/getRound",
+     *     tags={"버스"},
+     *     summary="해당 버스 회차 가져오기",
+     *     description="해당하는 id의 버스 회차 리스트 가져오기",
+     *     @OA\RequestBody(
+     *     description="가져오고 싶은 회차의 bus_route값",
+     *     required=false,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="weekend", type="boolean", description="주말/평일", example=true),
+     *                  @OA\Property (property="semester", type="boolean", description="학기/방학", example=true),
+     *                  @OA\Property (property="bus_route_direction", type="string", description="버스 노선 ", example="B"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function getRound(Request $request)
     {
 
         try {
@@ -251,14 +261,25 @@ class BusScheduleController extends Controller
 
 
         try {
-            $matchingRoutes = BusRoute::where('weekend', $validatedData['weekend'])
+            $RouteId = BusRoute::where('weekend', $validatedData['weekend'])
                                   ->where('semester', $validatedData['semester'])
                                   ->where('bus_route_direction', $validatedData['bus_route_direction'])
                                   ->pluck('id');
-            Log::info('라운드 데이터: ' . $matchingRoutes->toJson());
-            return response()->json(['roundDate' => $matchingRoutes]);
+            
+            if ($RouteId->isEmpty()) {
+                throw new \Exception('해당하는 노선을 찾을 수 없습니다.');
+            }
+
+            $matchingRouund = BusRound::where('bus_route_id', $RouteId)
+                                    ->select('id', 'round')
+                                    ->get();
+
+            if ($matchingRouund->isEmpty()) {
+                throw new \Exception('해당하는 회차를 찾을 수 없습니다.');
+            }
+            return response()->json(['roundDate' => $matchingRouund]);
         } catch (\Exception $exception) {
-            return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+            return response()->json(['error' => '버스 회차 데이터 조회 중 오류가 발생했습니다.'], 500);
         }
     }
 
@@ -286,8 +307,6 @@ class BusScheduleController extends Controller
     public function getRoundSchedule($id)
     {
         try {
-            // 요청에서 bus_round_id를 받습니다.
-            Log::info('회차 아이디: ' . $id);
 
             // bus_round_id에 해당하는 모든 bus_schedule 데이터를 조회합니다.
             $schedules = BusSchedule::where('bus_round_id', $id)->get();
