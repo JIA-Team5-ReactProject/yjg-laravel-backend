@@ -9,6 +9,9 @@ use Illuminate\Validation\ValidationException;
 
 class MeetingRoomController extends Controller
 {
+    private array $messages = [
+        'exists' => '해당하는 회의실이 존재하지 않습니다.',
+    ];
     /**
      * @OA\Get (
      *     path="/api/meeting-room",
@@ -85,9 +88,9 @@ class MeetingRoomController extends Controller
      */
     public function show(string $id): \Illuminate\Http\JsonResponse
     {
-        $validator = Validator::make([$id], [
-            'id' => 'exists:meeting_rooms,room_number|string'
-        ]);
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:meeting_rooms,room_number|string'
+        ], $this->messages);
 
         try {
             $validator->validate();
@@ -122,7 +125,7 @@ class MeetingRoomController extends Controller
     {
         $validator = Validator::make([$id], [
             'id' => 'required|exists:meeting_rooms,room_number|string'
-        ]);
+        ], $this->messages);
 
         try {
             $validator->validate();
