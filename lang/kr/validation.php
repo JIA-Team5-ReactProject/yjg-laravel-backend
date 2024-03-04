@@ -27,8 +27,8 @@ return [
     'in' => ':attribute 의 값은 허용되지 않는 값입니다.',
     'date_format' => ':attribute 값이 날짜(시간) 형식과 일치하지 않습니다.',
     'date' => ':attribute 의 값은 날짜 형식이어야 합니다.',
-    'exist' => ':attribute 의 값이 해당 테이블에 존재하지 않습니다.',
-    
+    'exists' => '해당하는 :attribute 이(가) 존재하지 않습니다.',
+
 
 
 
