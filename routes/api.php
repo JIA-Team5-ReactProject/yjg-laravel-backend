@@ -39,7 +39,7 @@ Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.google.approve')->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
@@ -129,22 +129,23 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('admin.notice.index');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
     });
+    Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
+    Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('salon.service.show');
     Route::prefix('after-service')->group(function () {
         Route::get('/', [UserAfterServiceController::class, 'index'])->name('as.index');
         Route::get('/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
     });
-    Route::get('/salon-category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
-    Route::get('/salon-service', [SalonServiceController::class, 'show'])->name('salon.service.show');
-});
     Route::prefix('meeting-room')->group(function () {
         Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
         Route::get('/{id}', [MeetingRoomController::class, 'show'])->name('meeting.show');
         Route::prefix('reservation')->group(function () {
             Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
+            Route::post('/', [MeetingRoomReservationController::class, 'store']);
             Route::patch('/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         });
     });
+});
 
 
 
