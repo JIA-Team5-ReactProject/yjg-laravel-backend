@@ -120,7 +120,7 @@ class MeetingRoomController extends Controller
      *          @OA\Schema(type="string"),
      *     ),
      *     @OA\Parameter(
-     *          name="roomNumber",
+     *          name="room_number",
      *          description="회의실의 룸 번호",
      *          required=true,
      *          in="query",
