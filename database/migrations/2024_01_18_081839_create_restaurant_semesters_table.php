@@ -27,7 +27,8 @@ return new class extends Migration
     {
         Schema::table('restaurant_semesters', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            $table->dropIfExists();
+            
         });
+        Schema::dropIfExists('restaurant_semesters');
     }
 };

@@ -31,8 +31,9 @@ return new class extends Migration
     {
         Schema::table('meeting_room_reservations', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            $table->dropForeign(['meeting_room_id']);
-            $table->dropIfExists();
+            $table->dropForeign(['meeting_room_number']);
+            
         });
+        //Schema::dropIfExists('meeting_room_reservations');
     }
 };
