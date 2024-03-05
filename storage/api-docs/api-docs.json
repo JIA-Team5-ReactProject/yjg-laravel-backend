@@ -142,17 +142,17 @@
                 "tags": [
                     "외출/외박"
                 ],
-                "summary": "요약",
-                "description": "설명",
+                "summary": "특정 외출/외박 내용",
+                "description": "파라미터로 받은 아이디와 일치하는 외출/외박 기록을 불러옴",
                 "operationId": "3f5750c02de9b580495309aad05eadc5",
                 "parameters": [
                     {
-                        "name": "파라미터명",
+                        "name": "id",
                         "in": "path",
-                        "description": "설명",
+                        "description": "외출/외박 기록의 아이디",
                         "required": true,
                         "schema": {
-                            "type": "타입"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -258,14 +258,14 @@
                 "tags": [
                     "외출/외박"
                 ],
-                "summary": "수정",
-                "description": "외출/외박 내용 수정",
+                "summary": "거절(관리자)",
+                "description": "외출/외박을 거절",
                 "operationId": "a7ad6a10213434e3678a130c89b506e1",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "수정할 외출/외박 기록의 아이디",
+                        "description": "거절할 외출/외박 기록의 아이디",
                         "required": true,
                         "schema": {
                             "type": "integer"
