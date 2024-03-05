@@ -70,7 +70,6 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     });
 
     Route::prefix('meeting-room')->group(function () {
-        Route::get('/check', [MeetingRoomController::class, 'checkReservation'])->name('meeting.check.reservation'); // show 메서드로 인해 먼저 읽혀야함
         Route::prefix('reservation')->group(function () {
             Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
             Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
@@ -140,14 +139,15 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
         Route::get('/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
     });
     Route::prefix('meeting-room')->group(function () {
-        Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
-        Route::get('/{roomNumber}', [MeetingRoomController::class, 'show'])->name('meeting.show');
-        Route::prefix('reservation')->group(function () {
+        Route::prefix('reservation')->group(function () { // show 메서드로 인해 먼저 나와야함
             Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
             Route::post('/', [MeetingRoomReservationController::class, 'store']);
             Route::patch('/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         });
+        Route::get('/check', [MeetingRoomController::class, 'checkReservation'])->name('meeting.check.reservation'); // show 메서드로 인해 먼저 읽혀야함
+        Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
+        Route::get('/{roomNumber}', [MeetingRoomController::class, 'show'])->name('meeting.show');
     });
 });
 
