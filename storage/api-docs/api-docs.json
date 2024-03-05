@@ -94,6 +94,11 @@
                                         "description": "사유",
                                         "type": "string",
                                         "example": "병원 진료로 인한 외박"
+                                    },
+                                    "type": {
+                                        "description": "외박, 외출 여부 (go, sleep)",
+                                        "type": "string",
+                                        "example": "sleep"
                                     }
                                 },
                                 "type": "object"
@@ -2009,7 +2014,7 @@
                 "tags": [
                     "회의실"
                 ],
-                "summary": "목록",
+                "summary": "회의실 목록",
                 "description": "회의실 목록",
                 "operationId": "6aeb2ea5863181db0f095fdcd7313278",
                 "responses": {
@@ -2020,16 +2025,14 @@
                         "description": "Server Error"
                     }
                 }
-            }
-        },
-        "/api/admin/meeting-room": {
+            },
             "post": {
                 "tags": [
                     "회의실"
                 ],
-                "summary": "추가",
+                "summary": "회의실 추가",
                 "description": "회의실 추가",
-                "operationId": "54120d031864ef315b91cca90d4831ff",
+                "operationId": "8390beedb467bb18e0bfbd3e14f93a2f",
                 "requestBody": {
                     "description": "설명",
                     "required": true,
@@ -2054,35 +2057,6 @@
                     },
                     "422": {
                         "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/meeting-room/{room_number}": {
-            "get": {
-                "tags": [
-                    "회의실"
-                ],
-                "summary": "회의실의 목록",
-                "description": "특정 회의실의 예약 목록",
-                "operationId": "98bcbb8ef8e0d4e160118ab41749f9dc",
-                "parameters": [
-                    {
-                        "name": "roomNumber",
-                        "in": "path",
-                        "description": "회의실 번호",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
                     },
                     "500": {
                         "description": "Server Error"
@@ -2128,14 +2102,14 @@
                 }
             }
         },
-        "/api/admin/meeting-room/{id}": {
+        "/api/meeting-room/{id}": {
             "delete": {
                 "tags": [
                     "회의실"
                 ],
                 "summary": "회의실 삭제",
                 "description": "특정 회의실 삭제",
-                "operationId": "a4aab74025565291fb19c98edd9ef99a",
+                "operationId": "954823889b93ba8e407764993339bcca",
                 "parameters": [
                     {
                         "name": "id",
@@ -2165,12 +2139,35 @@
                 "tags": [
                     "회의실"
                 ],
-                "summary": "전체 보기",
-                "description": "전체 보기",
+                "summary": "예약 검색",
+                "description": "주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색",
                 "operationId": "e9c496db056bec3f21d81548c586352a",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "예약 아이디",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "422": {
+                        "description": "Vaildation Exception"
                     },
                     "500": {
                         "description": "Server Error"
