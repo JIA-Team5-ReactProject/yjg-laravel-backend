@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\Admin\AdminAfterServiceController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
@@ -75,6 +76,13 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
             Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
         });
     });
+
+    Route::prefix('absence')->group(function () {
+        Route::get('/user', [AbsenceController::class, 'userIndex'])->name('absence.user.index');
+        Route::post('/', [AbsenceController::class, 'store'])->name('absence.store');
+        Route::patch('/{id}', [AbsenceController::class, 'update'])->name('absence.update');
+        Route::delete('/{id}', [AbsenceController::class, 'destroy'])->name('absence.destroy');
+    });
 });
 
 // 어드민
@@ -149,7 +157,14 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
         Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
         Route::get('/{roomNumber}', [MeetingRoomController::class, 'show'])->name('meeting.show');
     });
+    Route::prefix('absence')->group(function () {
+        Route::get('/', [AbsenceController::class, 'index'])->name('absence.index');
+        Route::get('/{id}', [AbsenceController::class, 'show'])->name('absence.show');
+        Route::patch('/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
+    });
 });
+
+
 
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
