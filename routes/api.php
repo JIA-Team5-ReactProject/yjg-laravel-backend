@@ -132,6 +132,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
     });
     Route::patch('/after-service/status/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
+    Route::patch('/absence/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
 });
 
 // 유저 및 어드민
@@ -160,7 +161,6 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
     Route::prefix('absence')->group(function () {
         Route::get('/', [AbsenceController::class, 'index'])->name('absence.index');
         Route::get('/{id}', [AbsenceController::class, 'show'])->name('absence.show');
-        Route::patch('/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
     });
 });
 
