@@ -13,7 +13,7 @@ class UserSalonReservationController extends Controller
     /**
      * @OA\Get (
      *     path="/api/user/salon-reservation",
-     *     tags={"학생"},
+     *     tags={"미용실"},
      *     summary="예약 정보 가져오기",
      *     description="현재 로그인한 유저의 예약 정보를 불러옴",
      *     @OA\Response(response="200", description="Success"),

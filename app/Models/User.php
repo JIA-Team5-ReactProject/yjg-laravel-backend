@@ -66,8 +66,8 @@ class User extends Authenticatable
         return $this->hasMany(RestaurantWeekend::class);
     }
 
-    public function absences(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function absenceLists(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Absence::class);
+        return $this->hasMany(AbsenceList::class);
     }
 }
