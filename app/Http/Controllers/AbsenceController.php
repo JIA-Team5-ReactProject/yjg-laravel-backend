@@ -75,7 +75,7 @@ class AbsenceController extends Controller
             });
         }
 
-        $stayOutLists = $absenceLists->paginate(8);
+        $absenceLists = $absenceLists->paginate(8);
 
         foreach ($absenceLists as $absenceList) {
             $userName = $absenceList->user['name'];
@@ -122,6 +122,7 @@ class AbsenceController extends Controller
      *                 @OA\Property (property="start_date", type="date", description="출발일", example="2024-01-01"),
      *                 @OA\Property (property="end_date", type="date", description="복귀일(외출의 경우에는 복귀일과 동일하게)", example="2024-01-02"),
      *                 @OA\Property (property="content", type="string", description="사유", example="병원 진료로 인한 외박"),
+     *                 @OA\Property (property="type", type="string", description="외박, 외출 여부 (go, sleep)", example="sleep"),
      *             )
      *         )
      *     ),
@@ -139,7 +140,7 @@ class AbsenceController extends Controller
                 'start_date' => 'required|date_format:Y-m-d',
                 'end_date'   => 'required|date_format:Y-m-d',
                 'content'    => 'required|string',
-                'type'       => ['required', Rule::in(['go', 'sleep'])],
+                'type'       => ['required', Rule::in(['go', 'sleep']), 'string'],
             ]);
         } catch(ValidationException $exception) {
             $errorStatus = $exception->status;
