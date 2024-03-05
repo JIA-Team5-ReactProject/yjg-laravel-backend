@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('semester_meal_type', function (Blueprint $table) {
+        Schema::create('semester_meal_types', function (Blueprint $table) {
             $table->id();
             $table->string('meal_type');
             $table->string('content')->nullable();
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('semester_meal_type');
+        Schema::dropIfExists('semester_meal_types');
     }
 };

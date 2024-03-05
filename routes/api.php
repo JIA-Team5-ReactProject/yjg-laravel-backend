@@ -167,6 +167,7 @@ Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
 
 Route::get('/admin/qr', [QRController::class, 'generator']);
 Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
+
 Route::get('/restaurant/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);
 Route::post('/restaurant/semester/p/payment', [RestaurantSemesterController::class, 'setPayment']);
 Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);

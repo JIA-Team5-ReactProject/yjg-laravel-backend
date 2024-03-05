@@ -29,5 +29,7 @@ return new class extends Migration
             $table->dropForeign(['weekend_meal_type_id']);
             $table->dropIfExists();
         });
+
+        
     }
 };
