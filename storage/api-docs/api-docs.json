@@ -16,19 +16,10 @@
                 "operationId": "0ef944aa20c15ffe57b80e3644f312a8",
                 "parameters": [
                     {
-                        "name": "status",
+                        "name": "type",
                         "in": "query",
-                        "description": "상태",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "uesr_name",
-                        "in": "query",
-                        "description": "사용자 이름",
-                        "required": false,
+                        "description": "타입(외박:sleep 혹은 외출:go)",
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
@@ -37,9 +28,27 @@
                         "name": "page",
                         "in": "query",
                         "description": "페이지",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜",
+                        "required": true,
+                        "schema": {
+                            "type": "date"
+                        }
+                    },
+                    {
+                        "name": "user_name",
+                        "in": "query",
+                        "description": "사용자 이름",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -239,14 +248,14 @@
                 }
             }
         },
-        "/api/absence/status/{id}": {
+        "/api/absence/reject/{id}": {
             "patch": {
                 "tags": [
                     "외출/외박"
                 ],
                 "summary": "수정",
                 "description": "외출/외박 내용 수정",
-                "operationId": "e47301d1cfdc2814e748b6cedfe56dcc",
+                "operationId": "a7ad6a10213434e3678a130c89b506e1",
                 "parameters": [
                     {
                         "name": "id",
@@ -3048,7 +3057,7 @@
         "/api/user/salon-reservation": {
             "get": {
                 "tags": [
-                    "학생"
+                    "미용실"
                 ],
                 "summary": "예약 정보 가져오기",
                 "description": "현재 로그인한 유저의 예약 정보를 불러옴",
