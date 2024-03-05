@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stay_out_lists', function (Blueprint $table) {
+        Schema::create('absence_lists', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('start_date');
             $table->date('end_date');
-            $table->char('status');
+            $table->string('type', 10); // go or sleep
+            $table->boolean('status')->default(true);
             $table->string('content');
             $table->timestamps();
         });
@@ -27,7 +28,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('stay_out_lists', function (Blueprint $table) {
+        Schema::table('absence_lists', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropIfExists();
         });
