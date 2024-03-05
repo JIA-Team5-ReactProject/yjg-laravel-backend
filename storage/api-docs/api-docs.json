@@ -6,6 +6,268 @@
         "version": "0.1"
     },
     "paths": {
+        "/api/absence": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "전체 목록",
+                "description": "외출/외박의 전체 목록 + 검색",
+                "operationId": "0ef944aa20c15ffe57b80e3644f312a8",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "상태",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "uesr_name",
+                        "in": "query",
+                        "description": "사용자 이름",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "페이지",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "외출/외박 신청",
+                "description": "유저의 외출/외박 신청",
+                "operationId": "309b5b827e445f8748be32e1efd5c75c",
+                "requestBody": {
+                    "description": "외출/외박 일자 및 사유",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "description": "출발일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "end_date": {
+                                        "description": "복귀일(외출의 경우에는 복귀일과 동일하게)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-02"
+                                    },
+                                    "content": {
+                                        "description": "사유",
+                                        "type": "string",
+                                        "example": "병원 진료로 인한 외박"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/absence/user": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "유저의 외출/외박 목록",
+                "description": "현재 유저의 외출/외박 목록",
+                "operationId": "932b6e56be0176875f585332934d950f",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/absence/{id}": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "요약",
+                "description": "설명",
+                "operationId": "3f5750c02de9b580495309aad05eadc5",
+                "parameters": [
+                    {
+                        "name": "파라미터명",
+                        "in": "path",
+                        "description": "설명",
+                        "required": true,
+                        "schema": {
+                            "type": "타입"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "삭제(취소)",
+                "description": "외출/외박 기록 삭제(취소)",
+                "operationId": "51987622ad535cb5395f320ea6078d49",
+                "parameters": [
+                    {
+                        "name": "파라미터명",
+                        "in": "path",
+                        "description": "설명",
+                        "required": true,
+                        "schema": {
+                            "type": "타입"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "수정",
+                "description": "외출/외박 내용 수정",
+                "operationId": "e4d9657818336d964dc0c85b040b106b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 외출/외박 기록의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 날짜 혹은 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "description": "출발일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "end_date": {
+                                        "description": "복귀일(외출의 경우에는 복귀일과 동일하게)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-02"
+                                    },
+                                    "content": {
+                                        "description": "사유",
+                                        "type": "string",
+                                        "example": "병원 진료로 인한 외박"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/absence/status/{id}": {
+            "patch": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "수정",
+                "description": "외출/외박 내용 수정",
+                "operationId": "e47301d1cfdc2814e748b6cedfe56dcc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 외출/외박 기록의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/after-service/status/{id}": {
             "patch": {
                 "tags": [
@@ -1199,29 +1461,26 @@
                 "summary": "카테고리 서비스 목록",
                 "description": "미용실 특정 카테고리의 서비스 목록",
                 "operationId": "0cb5f3adfdfb991e0a3940cc353c706f",
-                "requestBody": {
-                    "description": "서비스 관련 정보",
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "category_id": {
-                                        "description": "카테고리 아이디",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "gender": {
-                                        "description": "성별",
-                                        "type": "string",
-                                        "example": "male"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "카테고리 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "성별(male or female)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -1841,7 +2100,7 @@
                         }
                     },
                     {
-                        "name": "roomNumber",
+                        "name": "room_number",
                         "in": "query",
                         "description": "회의실의 룸 번호",
                         "required": true,
