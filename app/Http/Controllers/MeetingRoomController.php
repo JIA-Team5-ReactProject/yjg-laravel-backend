@@ -18,7 +18,7 @@ class MeetingRoomController extends Controller
      * @OA\Get (
      *     path="/api/meeting-room",
      *     tags={"회의실"},
-     *     summary="목록",
+     *     summary="회의실 목록",
      *     description="회의실 목록",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Server Error"),
@@ -31,9 +31,9 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/admin/meeting-room",
+     *     path="/api/meeting-room",
      *     tags={"회의실"},
-     *     summary="추가",
+     *     summary="회의실 추가",
      *     description="회의실 추가",
      *     @OA\RequestBody(
      *         description="설명",
@@ -73,41 +73,6 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/meeting-room/{room_number}",
-     *     tags={"회의실"},
-     *     summary="회의실의 목록",
-     *     description="특정 회의실의 예약 목록",
-     *     @OA\Parameter(
-     *          name="roomNumber",
-     *          description="회의실 번호",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(type="string"),
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function show(string $roomNumber)
-    {
-        $validator = Validator::make([
-            'room_number' => $roomNumber
-        ], [
-            'room_number' => 'required|numeric|exists:meeting_rooms,room_number'
-        ]);
-
-        try {
-            $validator->validate();
-        } catch (ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-        return response()->json(['reservations' => MeetingRoomReservation::where('meeting_room_number', $roomNumber)->get()]);
-    }
-
-    /**
-     * @OA\Get (
      *     path="/api/meeting-room/check",
      *     tags={"회의실"},
      *     summary="예약된 시간 목록",
@@ -130,7 +95,7 @@ class MeetingRoomController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function checkReservation(Request $request)
+    public function checkReservation(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -150,7 +115,7 @@ class MeetingRoomController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/meeting-room/{id}",
+     *     path="/api/meeting-room/{id}",
      *     tags={"회의실"},
      *     summary="회의실 삭제",
      *     description="특정 회의실 삭제",

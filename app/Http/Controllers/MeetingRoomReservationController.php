@@ -14,15 +14,49 @@ class MeetingRoomReservationController extends Controller
      * @OA\Get (
      *     path="/api/meeting-room/reservation",
      *     tags={"회의실"},
-     *     summary="전체 보기",
-     *     description="전체 보기",
+     *     summary="예약 검색",
+     *     description="주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색",
+     *     @OA\Parameter(
+     *          name="date",
+     *          description="조회할 날짜",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="예약 아이디",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer"),
+     *     ),
      *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="Vaildation Exception"),
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['meeting_room_reservations' => MeetingRoomReservation::with('user')->get()]);
+        try {
+            $validated = $request->validate([
+                'date'        => 'required|date-format:Y-m-d',
+                'room_number' => 'numeric|exists:meeting_rooms,room_number',
+            ]);
+        } catch (ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        $reservations = MeetingRoomReservation::where('reservation_date', $validated['date']);
+
+        if(isset($validated['room_number'])) {
+            $reservations = $reservations->where('meeting_room_number', $validated['room_number']);
+        }
+
+        $reservations = $reservations->paginate(8);
+
+        return response()->json(['reservations' => $reservations]);
     }
 
     /**
