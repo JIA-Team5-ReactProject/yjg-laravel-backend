@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class WeekendMealTypeController extends Controller
-/**
+{
+    /**
      * @OA\Post (
      *     path="/api/weekend/mealtype",
      *     tags={"식수"},
@@ -30,8 +31,6 @@ class WeekendMealTypeController extends Controller
      *         @OA\Response(response="500", description="Fail"),
      * )
      */
-{
-    
     public function store(Request $request)
     {
         try {

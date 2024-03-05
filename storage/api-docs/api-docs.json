@@ -1783,6 +1783,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
+<<<<<<< Updated upstream
                                     "weekend": {
                                         "description": "주말/평일",
                                         "type": "boolean",
@@ -1795,13 +1796,12 @@
                                     },
                                     "round": {
                                         "description": "버스회차",
+=======
+                                    "round_id": {
+                                        "description": "버스회차id",
+>>>>>>> Stashed changes
                                         "type": "string",
                                         "example": "1회차"
-                                    },
-                                    "bus_route_direction": {
-                                        "description": "버스 노선 ",
-                                        "type": "string",
-                                        "example": "B"
                                     },
                                     "station": {
                                         "description": "정류장",
@@ -1832,30 +1832,30 @@
                 }
             }
         },
-        "/api/bus/schedule/update/{id}": {
+        "/api/bus/round/update/{id}": {
             "patch": {
                 "tags": [
                     "버스"
                 ],
-                "summary": "버스 시간표 업데이트",
-                "description": "버스 시간표를 업데이트",
-                "operationId": "431bfcb21fd10d4d4fe9d9fd593601d3",
+                "summary": "버스 회차 수정",
+                "description": "버스 시간표를 수정",
+                "operationId": "ea1fa2657c96d9c2fa05e87a82f429d2",
                 "requestBody": {
-                    "description": "업데이트할 시간표 내용,노선,회차",
+                    "description": "수정할 회차 내용, 회차id",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
+<<<<<<< Updated upstream
                                     "station": {
                                         "description": "정류장",
+=======
+                                    "round": {
+                                        "description": "회차",
+>>>>>>> Stashed changes
                                         "type": "string",
-                                        "example": "태전역"
-                                    },
-                                    "bus_time": {
-                                        "description": "버스시간",
-                                        "type": "date_format",
-                                        "example": "08:00"
+                                        "example": "3회차"
                                     }
                                 },
                                 "type": "object"
@@ -1933,6 +1933,24 @@
                                     "bus_route_direction": {
                                         "description": "버스 노선 ",
                                         "type": "string",
+<<<<<<< Updated upstream
+=======
+                                        "example": "1"
+                                    },
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": "false"
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 방향",
+                                        "type": "string",
+>>>>>>> Stashed changes
                                         "example": "B"
                                     }
                                 },
@@ -1943,6 +1961,58 @@
                 },
                 "responses": {
                     "200": {
+<<<<<<< Updated upstream
+=======
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/getRound": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 버스 회차 가져오기",
+                "description": "해당하는 id의 버스 회차 리스트 가져오기",
+                "operationId": "d1e0c8cc053e346bf5612dea2ad52d97",
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 bus_route값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "B"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+>>>>>>> Stashed changes
                         "description": "Success"
                     },
                     "500": {
@@ -3156,7 +3226,7 @@
                 ],
                 "summary": "식수 주말 신청",
                 "description": "식수 주말 신청을 처리합니다",
-                "operationId": "4ef64f1d4cb40bfe817921004b13bc60",
+                "operationId": "bb994775235af462a6641488d3ba2696",
                 "requestBody": {
                     "description": "학생 식사 신청 정보",
                     "required": true,
