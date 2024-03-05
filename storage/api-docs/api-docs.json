@@ -1793,6 +1793,35 @@
                 }
             }
         },
+        "/api/meeting-room/{room_number}": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실의 목록",
+                "description": "특정 회의실의 예약 목록",
+                "operationId": "98bcbb8ef8e0d4e160118ab41749f9dc",
+                "parameters": [
+                    {
+                        "name": "roomNumber",
+                        "in": "path",
+                        "description": "회의실 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
         "/api/meeting-room/check": {
             "get": {
                 "tags": [
@@ -1894,10 +1923,26 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "속성명": {
-                                        "description": "설명",
-                                        "type": "타입",
-                                        "example": "예시"
+                                    "meeting_room_number": {
+                                        "description": "예약할 방 번호",
+                                        "type": "string",
+                                        "example": "206"
+                                    },
+                                    "reservation_date": {
+                                        "description": "예약할 날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-03-01"
+                                    },
+                                    "reservation_s_time": {
+                                        "description": "예약 시작(분까지)",
+                                        "type": "time",
+                                        "example": "17:00"
+                                    },
+                                    "reservation_e_time": {
+                                        "description": "예약 종료(분까지)",
+                                        "type": "time",
+                                        "example": "20:00"
                                     }
                                 },
                                 "type": "object"

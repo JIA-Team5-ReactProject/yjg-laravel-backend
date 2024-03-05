@@ -32,8 +32,6 @@ class AdminAfterServiceController extends Controller
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:after_services,id|numeric'
-        ], [
-            'exists' => '해당하는 AS 요청이 존재하지 않습니다.'
         ]);
 
         try {
