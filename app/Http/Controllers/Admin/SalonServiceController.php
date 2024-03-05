@@ -19,16 +19,19 @@ class SalonServiceController extends Controller
      *     tags={"미용실"},
      *     summary="카테고리 서비스 목록",
      *     description="미용실 특정 카테고리의 서비스 목록",
-     *     @OA\RequestBody(
-     *          description="서비스 관련 정보",
-     *          required=false,
-     *          @OA\MediaType(
-     *               mediaType="application/json",
-     *               @OA\Schema (
-     *                   @OA\Property (property="category_id", type="integer", description="카테고리 아이디", example=1),
-     *                   @OA\Property (property="gender", type="string", description="성별", example="male"),
-     *               )
-     *          )
+     *     @OA\Parameter(
+     *          name="category_id",
+     *          description="카테고리 아이디",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(type="string"),
+     *      ),
+     *      @OA\Parameter(
+     *          name="gender",
+     *          description="성별(male or female)",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(type="string"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -46,7 +49,7 @@ class SalonServiceController extends Controller
             $errorMessage = $validationException->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
-
+        // TODO : 수정할 필요 있음
         if(empty($validated['id']) && empty($validated['gender'])) {
             $services = SalonService::all(['id', 'salon_category_id', 'service', 'price', 'gender']);
         } else {
