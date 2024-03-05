@@ -75,7 +75,7 @@ class AbsenceController extends Controller
             });
         }
 
-        $stayOutLists = $absenceLists->paginate(8);
+        $absenceLists = $absenceLists->paginate(8);
 
         foreach ($absenceLists as $absenceList) {
             $userName = $absenceList->user['name'];
