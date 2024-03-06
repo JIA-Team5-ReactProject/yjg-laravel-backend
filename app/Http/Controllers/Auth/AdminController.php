@@ -306,7 +306,8 @@ class AdminController extends Controller
      *             @OA\Schema (
      *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
      *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
-     *                  @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
+     *                  @OA\Property (property="current_password", type="string", description="이전 비밀번호", example="asdf321"),
+     *                  @OA\Property (property="new_password", type="string", description="변경할 비밀번호", example="asdf123"),
      *             )
      *         ),
      *     ),
@@ -318,8 +319,10 @@ class AdminController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name'          => 'string',
-                'phone_number'  => 'string|unique:admins',
+                'name'             => 'string',
+                'phone_number'     => 'string|unique:admins',
+                'current_password' => 'current_password',
+                'new_password'     => 'string|required_with:current_password',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -336,9 +339,11 @@ class AdminController extends Controller
             return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
+        unset($validated['current_password']);
+
         foreach($validated as $key => $value) {
-            if($key == 'password') {
-                $admin->$key = Hash::make($validated['password']);
+            if($key == 'new_password') {
+                $admin->password = Hash::make($validated['new_password']);
             } else {
                 $admin->$key = $value;
             }
