@@ -133,7 +133,7 @@ class MeetingRoomController extends Controller
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        $validator = Validator::make([$id], [
+        $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_rooms,room_number|string'
         ], $this->messages);
 

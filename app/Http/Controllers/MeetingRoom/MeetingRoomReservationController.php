@@ -25,8 +25,8 @@ class MeetingRoomReservationController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Parameter(
-     *          name="id",
-     *          description="예약 아이디",
+     *          name="room_number",
+     *          description="회의실의 번호",
      *          required=false,
      *          in="query",
      *          @OA\Schema(type="integer"),
