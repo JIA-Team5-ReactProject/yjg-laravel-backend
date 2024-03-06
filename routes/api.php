@@ -123,7 +123,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('salon')->group(function () {
         Route::prefix('reservation')->group(function () {
-            Route::get('/', [SalonReservationController::class, 'index'])->name('user.salon.reservation.index');
+            Route::get('/user', [SalonReservationController::class, 'index'])->name('user.salon.reservation.index');
             Route::get('/', [SalonReservationController::class, 'show'])->name('salon.reservation.show');
             Route::post('/', [SalonReservationController::class, 'store'])->name('user.salon.reservation.store');
             Route::delete('/', [SalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
