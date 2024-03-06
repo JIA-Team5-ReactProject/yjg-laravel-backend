@@ -80,7 +80,9 @@ class AbsenceController extends Controller
 
         foreach ($absenceLists as $absenceList) {
             $userName = $absenceList->user['name'];
+            $studentId = $absenceList->user['student_id'];
             $absenceList['user_name'] = $userName;
+            $absenceList['student_id'] = $studentId;
             unset($absenceList['user']);
         }
 
@@ -178,7 +180,7 @@ class AbsenceController extends Controller
         // 공용
         // 특정 아이디를 가진 외박, 외출 목록
         try {
-            $stayOut = AbsenceList::findOrFail($id);
+            $stayOut = AbsenceList::with('user:id,student_id,name')->findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
             return response()->json(['error' => '해당하는 외출/외박 기록이 없습니다.'], 404);
         }
