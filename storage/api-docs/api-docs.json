@@ -1307,7 +1307,12 @@
                                         "type": "string",
                                         "example": "01012345678"
                                     },
-                                    "password": {
+                                    "current_password": {
+                                        "description": "이전 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf321"
+                                    },
+                                    "new_password": {
                                         "description": "변경할 비밀번호",
                                         "type": "string",
                                         "example": "asdf123"
@@ -1747,6 +1752,16 @@
                                         "description": "변경할 휴대폰 번호",
                                         "type": "string",
                                         "example": "01012345678"
+                                    },
+                                    "current_password": {
+                                        "description": "이전 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf321"
+                                    },
+                                    "new_password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
                                     }
                                 },
                                 "type": "object"
