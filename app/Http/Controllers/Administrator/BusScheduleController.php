@@ -77,7 +77,6 @@ class BusScheduleController extends Controller
         $busRoute = BusRound::where('id', $validatedData['round_id'])
             ->first();
 
-
         try{
             BusSchedule::create([
                 'bus_round_id' => $busRoute->id,
@@ -88,11 +87,10 @@ class BusScheduleController extends Controller
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
-
     }
      /**
      * @OA\Patch (
-     *     path="/api/bus/round/update/{id}",
+     *     path="/api/bus/round/{id}",
      *     tags={"버스"},
      *     summary="버스 회차 수정",
      *     description="버스 시간표를 수정",
@@ -134,7 +132,7 @@ class BusScheduleController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/bus/schedule/delete",
+     *     path="/api/bus/schedule/{id}",
      *     tags={"버스"},
      *     summary="버스 시간표 삭제",
      *     description="버스 시간표 삭제",
@@ -165,10 +163,10 @@ class BusScheduleController extends Controller
     }
 
 
-
+#ok
     /**
      * @OA\Post (
-     *     path="/api/bus/addRound",
+     *     path="/api/bus/round",
      *     tags={"버스"},
      *     summary="버스 회차 추가",
      *     description="버스 회차 추가 ",
@@ -230,7 +228,7 @@ class BusScheduleController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/bus/getRound",
+     *     path="/api/bus/round",
      *     tags={"버스"},
      *     summary="해당 버스 회차 가져오기",
      *     description="해당하는 id의 버스 회차 리스트 가져오기",
@@ -291,7 +289,7 @@ class BusScheduleController extends Controller
 
     /**
          * @OA\Get (
-         * path="/api/bus/getRoundSchedule",
+         * path="/api/bus/round/schedule/{id}",
          * tags={"버스"},
          * summary="해당 회차의 버스 시간표",
          * description="해당 회차의 버스 시간표를 확인 합니다",
@@ -330,7 +328,7 @@ class BusScheduleController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/bus/round/delete",
+     *     path="/api/bus/round/{id}",
      *     tags={"버스"},
      *     summary="버스 회차 삭제",
      *     description="버스 회차 삭제",

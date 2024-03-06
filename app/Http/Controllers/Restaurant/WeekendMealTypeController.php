@@ -11,20 +11,21 @@ class WeekendMealTypeController extends Controller
 {
     /**
      * @OA\Post (
-     *     path="/api/weekend/mealtype",
+     *     path="/api/restaurant/weekend/meal-type",
      *     tags={"식수"},
-     *     summary="식수 주말 신청",
-     *     description="식수 주말 신청을 처리합니다",
+     *     summary="주말 식수 유형 신청",
+     *     description="주말 식수 유형 신청을 처리합니다",
      *         @OA\RequestBody(
-     *             description="학생 식사 신청 정보",
+     *             description="주말 식수 유형 정보",
      *             required=true,
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema (
-     *                     @OA\Property (property="content", type="string", description="식사유형 설명", example="223식 1식3,500"),
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
+     *                     @OA\Property (property="date", type="string", description="식사시간", example="lunch"), 
+     *                     @OA\Property (property="content", type="string", description="식사유형 설명", example="223식 1식3,500"),
      *                     @OA\Property (property="price", type="string", description="가격", example="750,000"),
-     *                     @OA\Property (property="date", type="string", description="식사시간", example="lunch"),
+     *                     
      *                 )
      *             )
      *         ),
@@ -38,9 +39,10 @@ class WeekendMealTypeController extends Controller
             // 유효성 검사
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
+                'date' => 'required|string',
                 'content' => 'nullable|string',
                 'price' => 'required|string',
-                'date' => 'required|string',
+                
             ]);
         } catch (ValidationException $exception) {
             // 유효성 검사 실패시 애러 메세지

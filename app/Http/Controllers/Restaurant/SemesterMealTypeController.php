@@ -9,12 +9,34 @@ use Illuminate\Validation\ValidationException;
 
 class SemesterMealTypeController extends Controller
 {
+     /**
+     * @OA\Post (
+     * path="/api/restaurant/semester/meal-type",
+     * tags={"식수"},
+     * summary="학기 식수 유형 생성",
+     * description="학기 식수 유형을 생성",
+     *     @OA\RequestBody(
+     *         description="학기 식수 유형 정보",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="meal_type", type="string", description="식사 유형", example="C"),
+     *                 @OA\Property (property="content", type="string", description="설명", example="점심+저녁"),
+     *                 @OA\Property (property="price", type="string", description="가격", example="5600"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function store(Request $request)
     {
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'id' => 'required|string',
+                'meal_type' => 'required|string',
                 'content' => 'nullable|string',
                 'price' => 'required|string',
             ]);
@@ -26,7 +48,7 @@ class SemesterMealTypeController extends Controller
         try {
             // 데이터베이스에 저장
             SemesterMealType::create([
-                'id' => $validatedData['id'],
+                'meal_type' => $validatedData['meal_type'],
                 'content' =>$validatedData['content'],
                 'price' =>$validatedData['price'],
             ]);

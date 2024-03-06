@@ -363,14 +363,41 @@
                 }
             }
         },
-        "/api/bus/round/update/{id}": {
+        "/api/bus/round/{id}": {
+            "delete": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 회차 삭제",
+                "description": "버스 회차 삭제",
+                "operationId": "9d40f611cc6cd16a494418287413e857",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 버스 회차의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
             "patch": {
                 "tags": [
                     "버스"
                 ],
                 "summary": "버스 회차 수정",
                 "description": "버스 시간표를 수정",
-                "operationId": "ef830ad7c5ac1bef3d6653a90a75573f",
+                "operationId": "c219275d35cac0ba4e1932e5f326d7c7",
                 "requestBody": {
                     "description": "수정할 회차 내용, 회차id",
                     "required": true,
@@ -402,14 +429,14 @@
                 }
             }
         },
-        "/api/bus/schedule/delete": {
+        "/api/bus/schedule/{id}": {
             "delete": {
                 "tags": [
                     "버스"
                 ],
                 "summary": "버스 시간표 삭제",
                 "description": "버스 시간표 삭제",
-                "operationId": "0064f268206d95b369bc079e8d1e250d",
+                "operationId": "57ffe4db821e1218cbc475928ecf1987",
                 "parameters": [
                     {
                         "name": "id",
@@ -431,14 +458,58 @@
                 }
             }
         },
-        "/api/bus/addRound": {
+        "/api/bus/round": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 버스 회차 가져오기",
+                "description": "해당하는 id의 버스 회차 리스트 가져오기",
+                "operationId": "8063d770ddfac870340ced876704bec1",
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 bus_route값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "B"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "버스"
                 ],
                 "summary": "버스 회차 추가",
                 "description": "버스 회차 추가 ",
-                "operationId": "c03914cd5e5cc712e8074b201bff146a",
+                "operationId": "26dfbd2c977f9da516b460cfb49693e2",
                 "requestBody": {
                     "description": "추가할 버스 회차",
                     "required": true,
@@ -485,94 +556,19 @@
                 }
             }
         },
-        "/api/bus/getRound": {
-            "get": {
-                "tags": [
-                    "버스"
-                ],
-                "summary": "해당 버스 회차 가져오기",
-                "description": "해당하는 id의 버스 회차 리스트 가져오기",
-                "operationId": "6e94bf64ba48c18f704f515719ab3d03",
-                "requestBody": {
-                    "description": "가져오고 싶은 회차의 bus_route값",
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "weekend": {
-                                        "description": "주말/평일",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "semester": {
-                                        "description": "학기/방학",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "bus_route_direction": {
-                                        "description": "버스 노선 ",
-                                        "type": "string",
-                                        "example": "B"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/bus/getRoundSchedule": {
+        "/api/bus/round/schedule/{id}": {
             "get": {
                 "tags": [
                     "버스"
                 ],
                 "summary": "해당 회차의 버스 시간표",
                 "description": "해당 회차의 버스 시간표",
-                "operationId": "7b9690c8459b99c54bb7a8061814cb56",
+                "operationId": "4885b263ba7ae33a64f75e59ab622855",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
                         "description": "가져올 버스 회차의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/bus/round/delete": {
-            "delete": {
-                "tags": [
-                    "버스"
-                ],
-                "summary": "버스 회차 삭제",
-                "description": "버스 회차 삭제",
-                "operationId": "822501836c2ff20e959c670c7b69f11c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 버스 회차의 아이디",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -2408,25 +2404,65 @@
                 }
             }
         },
-        "/api/restaurant/semester/payment": {
+        "/api/restaurant/semester/g/payment{id}": {
             "get": {
                 "tags": [
                     "식수"
                 ],
                 "summary": "식수 학기 신청 입금여부",
                 "description": "식수 학기 신청의 입금여부를 확인 합니다",
-                "operationId": "1409f48a0e4eb70c18ff2494fae41f6c",
+                "operationId": "cad43b7b850c5562c601f66a44414c1a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "조회 할 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/p/payment/{id}": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 입금여부 수정",
+                "description": "학기 입금여부를 수정",
+                "operationId": "5625fe8196b922a488b72c7af3cf9d15",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
-                    "description": "학생 식사 신청 입금여부",
+                    "description": "수정할 입금여부(true,false), 신청id",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "description": "사용자 ID",
-                                        "type": "string",
-                                        "example": "1"
+                                    "payment": {
+                                        "description": "입금여부",
+                                        "type": "boolean",
+                                        "example": "true"
                                     }
                                 },
                                 "type": "object"
@@ -2436,7 +2472,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
                     },
                     "500": {
                         "description": "Fail"
@@ -2468,21 +2507,6 @@
                                         "description": "식사유형",
                                         "type": "string",
                                         "example": "A"
-                                    },
-                                    "refund": {
-                                        "description": "환불여부",
-                                        "type": "boolean",
-                                        "example": "true"
-                                    },
-                                    "date": {
-                                        "description": "식사시간",
-                                        "type": "string",
-                                        "example": "lunch"
-                                    },
-                                    "payment": {
-                                        "description": "입금여부",
-                                        "type": "boolean",
-                                        "example": "true"
                                     }
                                 },
                                 "type": "object"
@@ -2500,40 +2524,165 @@
                 }
             }
         },
-        "/api/weekend/mealtype": {
+        "/api/restaurant/weekend/g/payment/{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 입금여부 확인",
+                "description": "주말 식수 입금여부 확인",
+                "operationId": "054cc9d10ec30323087e31bcfa00868c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/p/payment/{id}": {
             "post": {
                 "tags": [
                     "식수"
                 ],
-                "summary": "식수 주말 신청",
-                "description": "식수 주말 신청을 처리합니다",
-                "operationId": "69ef77e71f4b5e0c8b410403da912cc2",
+                "summary": "주말 입금여부 수정",
+                "description": "주말 입금여부를 수정",
+                "operationId": "5e5483fbcfda1f3e0d49e1f3341aaa15",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
-                    "description": "학생 식사 신청 정보",
+                    "description": "수정할 입금여부(true,false)",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "content": {
-                                        "description": "식사유형 설명",
+                                    "payment": {
+                                        "description": "입금여부",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/meal-type": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유형 생성",
+                "description": "학기 식수 유형을 생성",
+                "operationId": "cb67ed8e50e5616f8f35e4ac53bca1cb",
+                "requestBody": {
+                    "description": "학기 식수 유형 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사 유형",
                                         "type": "string",
-                                        "example": "223식 1식3,500"
+                                        "example": "C"
                                     },
+                                    "content": {
+                                        "description": "설명",
+                                        "type": "string",
+                                        "example": "점심+저녁"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "5600"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/meal-type": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 유형 신청",
+                "description": "주말 식수 유형 신청을 처리합니다",
+                "operationId": "0c2ce999a6180b3284fe42a61988936d",
+                "requestBody": {
+                    "description": "주말 식수 유형 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
                                     "meal_type": {
                                         "description": "식사유형",
                                         "type": "string",
                                         "example": "A"
                                     },
-                                    "price": {
-                                        "description": "가격",
-                                        "type": "string",
-                                        "example": "750,000"
-                                    },
                                     "date": {
                                         "description": "식사시간",
                                         "type": "string",
                                         "example": "lunch"
+                                    },
+                                    "content": {
+                                        "description": "식사유형 설명",
+                                        "type": "string",
+                                        "example": "223식 1식3,500"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "750,000"
                                     }
                                 },
                                 "type": "object"
