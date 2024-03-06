@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Restaurant;
 
-use App\Models\RestaurantSemesterMealType;
-use App\Models\SemesterMealType;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException; // 예외 처리
+use App\Http\Controllers\Controller;
 use App\Models\RestaurantSemester;
-use App\Models\User;
+use App\Models\RestaurantSemesterMealType;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+
+// 예외 처리
 
 class RestaurantSemesterController extends Controller
 {
@@ -47,7 +48,7 @@ class RestaurantSemesterController extends Controller
             return response()->json(['error' => $exception->getMessage()], 422);
         }
         try {
-            
+
             // 데이터베이스에 저장
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $validatedData['user_id'],
@@ -92,7 +93,7 @@ class RestaurantSemesterController extends Controller
          */
     public function getPayment(Request $request)
     {
-        
+
         try {
             // 유효성 검사
             $validatedData = $request->validate([

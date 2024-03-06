@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Restaurant;
 
+use App\Http\Controllers\Controller;
 use App\Models\WeekendMealType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -58,7 +59,7 @@ class WeekendMealTypeController extends Controller
             // 데이터베이스 저장 실패시 애러 메세지
             return response()->json(['error' => '데이터베이스에 저장하는 중에 오류가 발생했습니다.'], 500);
         }
-        
+
         // 성공 메시지
         return response()->json(['message' => '주말 식사 유형 저장 완료']);
     }

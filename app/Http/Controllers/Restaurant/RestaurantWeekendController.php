@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Restaurant;
 
-use App\Models\RestaurantWeekendMealType;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException; // 예외 처리
+use App\Http\Controllers\Controller;
 use App\Models\RestaurantWeekend;
+use App\Models\RestaurantWeekendMealType;
 use App\Models\WeekendMealType;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
+// 예외 처리
 
 class RestaurantWeekendController extends Controller
 {
@@ -46,7 +48,7 @@ class RestaurantWeekendController extends Controller
                 'user_id' => 'required|exists:users,id',
                 'payment' => 'required|boolean',
                 'refund' => 'required|boolean',
-                
+
             ]);
         } catch (ValidationException $exception) {
             // 유효성 검사 실패시 애러 메세지

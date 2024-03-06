@@ -1,20 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Services\TokenService;
-use Aws\Token\Token;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use function Illuminate\Events\queueable;
 
 class AdminController extends Controller
 {
