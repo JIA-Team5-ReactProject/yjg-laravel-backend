@@ -12,6 +12,7 @@ class SalonReservation extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'salon_service_id',
+        'user_id',
         'reservation_time',
         'reservation_date',
         'status',
