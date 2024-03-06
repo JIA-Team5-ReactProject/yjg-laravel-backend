@@ -96,7 +96,8 @@ class AbsenceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $absenceLists = AbsenceList::with('user')->where('type', $validated['type'])->where('start_date', $validated['date']);
+        $absenceLists = AbsenceList::with('user')->where('type', $validated['type'])
+            ->where('start_date', $validated['date'])->where('status', true);
 
         if (isset($validated['user_name'])) {
             $absenceLists = $absenceLists->whereHas('user', function (Builder $query) use($validated) {
@@ -104,7 +105,7 @@ class AbsenceController extends Controller
             });
         }
 
-        $absenceLists = $absenceLists->paginate(8);
+        $absenceLists = $absenceLists->orderByDesc('created_at')->paginate(8);
 
         foreach ($absenceLists as $absenceList) {
             $userName = $absenceList->user['name'];
