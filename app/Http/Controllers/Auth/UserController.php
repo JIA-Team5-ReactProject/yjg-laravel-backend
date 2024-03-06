@@ -214,6 +214,8 @@ class UserController extends Controller
      *                  @OA\Property (property="student_id", type="string", description="정보를 수정할 유저의 아이디", example=1),
      *                  @OA\Property (property="name", type="string", description="변경할 이름", example="hyun"),
      *                  @OA\Property (property="phone_number", type="string", description="변경할 휴대폰 번호", example="01012345678"),
+     *                  @OA\Property (property="current_password", type="string", description="이전 비밀번호", example="asdf321"),
+     *                  @OA\Property (property="new_password", type="string", description="변경할 비밀번호", example="asdf123"),
      *             )
      *         ),
      *     ),
@@ -225,9 +227,11 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'student_id'    => 'numeric',
-                'name'          => 'required|string',
-                'phone_number'  => 'required|string|unique:admins',
+                'student_id'       => 'numeric',
+                'name'             => 'string',
+                'phone_number'     => 'string|unique:admins',
+                'current_password' => 'current_password',
+                'new_password'     => 'string|required_with:current_password',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -244,8 +248,14 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], 404);
         }
 
+        unset($validated['current_password']);
+
         foreach($validated as $key => $value) {
-            $user->$key = $value;
+            if($key == 'new_password') {
+                $user->password = Hash::make($validated['new_password']);
+            } else {
+                $user->$key = $value;
+            }
         }
 
         if(!$user->save()) return response()->json(['error' => '회원정보 수정에 실패하였습니다.'], 500);
