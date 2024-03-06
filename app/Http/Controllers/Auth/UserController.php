@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;

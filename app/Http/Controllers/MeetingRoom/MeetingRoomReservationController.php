@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\MeetingRoom;
 
+use App\Http\Controllers\Controller;
 use App\Models\MeetingRoomReservation;
 use App\Services\ReservedTimeService;
 use Illuminate\Http\Request;

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AfterService;
 
+use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceComment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

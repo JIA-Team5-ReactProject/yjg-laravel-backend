@@ -1,26 +1,26 @@
 <?php
 
-use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\Admin\AdminAfterServiceController;
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminSalonReservationController;
-use App\Http\Controllers\Admin\NoticeController;
-use App\Http\Controllers\Admin\SalonBreakTimeController;
-use App\Http\Controllers\Admin\SalonBusinessHourController;
-use App\Http\Controllers\Admin\SalonCategoryController;
-use App\Http\Controllers\Admin\SalonServiceController;
-use App\Http\Controllers\BusScheduleController;
-use App\Http\Controllers\MeetingRoomController;
-use App\Http\Controllers\MeetingRoomReservationController;
+use App\Http\Controllers\Administrator\AbsenceController;
+use App\Http\Controllers\Administrator\BusScheduleController;
+use App\Http\Controllers\Administrator\NoticeController;
+use App\Http\Controllers\AfterService\AfterServiceController;
+use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\MeetingRoom\MeetingRoomController;
+use App\Http\Controllers\MeetingRoom\MeetingRoomReservationController;
 use App\Http\Controllers\QRController;
-use App\Http\Controllers\RestaurantMenusController;
-use App\Http\Controllers\RestaurantSemesterController;
-use App\Http\Controllers\RestaurantWeekendController;
-use App\Http\Controllers\SemesterMealTypeController;
-use App\Http\Controllers\User\UserAfterServiceController;
-use App\Http\Controllers\User\UserController;
-use App\Http\Controllers\User\UserSalonReservationController;
-use App\Http\Controllers\WeekendMealTypeController;
+use App\Http\Controllers\Restaurant\RestaurantMenusController;
+use App\Http\Controllers\Restaurant\RestaurantSemesterController;
+use App\Http\Controllers\Restaurant\RestaurantWeekendController;
+use App\Http\Controllers\Restaurant\SemesterMealTypeController;
+use App\Http\Controllers\Restaurant\WeekendMealTypeController;
+use App\Http\Controllers\Salon\SalonBreakTimeController;
+use App\Http\Controllers\Salon\SalonBusinessHourController;
+use App\Http\Controllers\Salon\SalonCategoryController;
+use App\Http\Controllers\Salon\SalonReservationController;
+use App\Http\Controllers\Salon\SalonServiceController;
 use App\Models\AfterServiceComment;
 use Illuminate\Support\Facades\Route;
 
@@ -64,10 +64,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('salon')->group(function () {
         Route::prefix('reservation')->group(function () {
-            Route::get('/', [UserSalonReservationController::class, 'index'])->name('user.salon.reservation.index');
-            Route::get('/', [AdminSalonReservationController::class, 'show'])->name('salon.reservation.show');
-            Route::post('/', [UserSalonReservationController::class, 'store'])->name('user.salon.reservation.store');
-            Route::delete('/', [UserSalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
+            Route::get('/', [SalonReservationController::class, 'index'])->name('user.salon.reservation.index');
+            Route::get('/', [SalonReservationController::class, 'show'])->name('salon.reservation.show');
+            Route::post('/', [SalonReservationController::class, 'store'])->name('user.salon.reservation.store');
+            Route::delete('/', [SalonReservationController::class, 'destroy'])->name('user.salon.reservation.destroy');
         });
         Route::prefix('hour')->group(function () {
             Route::get('/', [SalonBusinessHourController::class, 'index'])->name('admin.salon.hour.index');
@@ -78,11 +78,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::prefix('after-service')->group(function () {
-        Route::post('/', [UserAfterServiceController::class, 'store'])->name('user.as.store');
-        Route::patch('/', [UserAfterServiceController::class, 'update'])->name('user.as.update');
-        Route::delete('/{id}', [UserAfterServiceController::class, 'destroy'])->name('user.as.destroy');
-        Route::get('/', [UserAfterServiceController::class, 'index'])->name('as.index');
-        Route::get('/{id}', [UserAfterServiceController::class, 'show'])->name('as.show');
+        Route::post('/', [AfterServiceController::class, 'store'])->name('user.as.store');
+        Route::patch('/', [AfterServiceController::class, 'update'])->name('user.as.update');
+        Route::delete('/{id}', [AfterServiceController::class, 'destroy'])->name('user.as.destroy');
+        Route::get('/', [AfterServiceController::class, 'index'])->name('as.index');
+        Route::get('/{id}', [AfterServiceController::class, 'show'])->name('as.show');
     });
 
     Route::prefix('meeting-room')->group(function () {
@@ -146,7 +146,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::patch('/', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
             Route::delete('/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
         });
-        Route::patch('/reservation', [AdminSalonReservationController::class, 'update'])->name('salon.reservation.status');
+        Route::patch('/reservation', [SalonReservationController::class, 'update'])->name('salon.reservation.status');
     });
 
     Route::prefix('notice')->group(function() {
@@ -162,7 +162,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     });
 
     Route::prefix('after-service')->group(function () {
-        Route::patch('/status/{id}', [AdminAfterServiceController::class, 'updateStatus'])->name('admin.as.status');
+        Route::patch('/status/{id}', [AfterServiceController::class, 'updateStatus'])->name('admin.as.status');
         Route::post('{id}/comment', [AfterServiceComment::class, 'store'])->name('as.comment.store');
         Route::patch('{id}/comment', [AfterServiceComment::class, 'update'])->name('as.comment.update');
         Route::delete('{id}/comment', [AfterServiceComment::class, 'destroy'])->name('as.comment.destroy');
