@@ -10,7 +10,7 @@ class SemesterMealType extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'meal_type',
         'content',
         'price',
     ];

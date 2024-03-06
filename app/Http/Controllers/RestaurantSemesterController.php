@@ -41,7 +41,7 @@ class RestaurantSemesterController extends Controller
             $validatedData = $request->validate([
                 'user_id' => 'required|exists:users,id',
                 'payment' => 'required|boolean',
-                'id' => 'required|string',
+                'meal_type' => 'required|string',
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -51,18 +51,18 @@ class RestaurantSemesterController extends Controller
             // 데이터베이스에 저장
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $validatedData['user_id'],
-                //'payment' => $validatedData['payment'],
+                
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
 
         try {
-            // $semesterMealTypeId = SemesterMealType::where("id", $validatedData["id"])
-            // ->first();
+            $semesterMealTypeId = SemesterMealType::where("meal_type", $validatedData["meal_type"])
+            ->first();
             RestaurantSemesterMealType::create([
             'restaurant_semester_id' => $restaurantSemester->id,
-            'semester_meal_type_id' => $validatedData["id"]
+            'semester_meal_type_id' => $semesterMealTypeId->id
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
@@ -72,50 +72,64 @@ class RestaurantSemesterController extends Controller
 
     /**
          * @OA\Get (
-         * path="/api/restaurant/semester/payment",
+         * path="/api/restaurant/semester/g/payment/{id}",
          * tags={"식수"},
          * summary="식수 학기 신청 입금여부",
          * description="식수 학기 신청의 입금여부를 확인 합니다",
-         *     @OA\RequestBody(
-         *         description="학생 식사 신청 입금여부",
-         *         required=true,
-         *         @OA\MediaType(
-         *             mediaType="application/json",
-         *             @OA\Schema (
-         *                 @OA\Property (property="user_id", type="string", description="사용자 ID", example="1"),
-         *             )
-         *         )
-         *     ),
+         *    @OA\Parameter(
+     *           name="id",
+     *           description="조회 할 식수 신청 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
          *  @OA\Response(response="200", description="Success"),
          *  @OA\Response(response="500", description="Fail"),
          * )
          */
-    public function getPayment(Request $request)
+    public function getPayment($id)
     {
-        
         try {
-            // 유효성 검사
-            $validatedData = $request->validate([
-                'user_id' => 'required|exists:users,id',
-            ]);
-        } catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
-
-        try {
-            $paymentData = RestaurantSemester::where('user_id', $validatedData['user_id'])->pluck('payment');
+            $paymentData = RestaurantSemester::where('id', $id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
         }
     }
 
-    public function setPayment(Request $request)
+    /**
+     * @OA\Patch (
+     *     path="/api/restaurant/semester/p/payment/{id}",
+     *     tags={"식수"},
+     *     summary="학기 입금여부 수정",
+     *     description="학기 입금여부를 수정",
+     *      @OA\Parameter(
+     *           name="id",
+     *           description="확인할 식수신청 id",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *          ),
+     *     @OA\RequestBody(
+     *         description="수정할 입금여부(true,false), 신청id",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="payment", type="boolean", description="입금여부", example="true"),
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="OK"),
+     *     @OA\Response(response="422", description="Validation Exception"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function setPayment(Request $request, $id)
     {
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'user_id' => 'required|exists:users,id',
                 'payment' => 'required|boolean',
             ]);
         } catch (ValidationException $exception) {
@@ -124,11 +138,9 @@ class RestaurantSemesterController extends Controller
 
 
         try {
-            Log::info('유저 아이디: ' . $validatedData['user_id']);
-            Log::info('페이먼트: ' . $validatedData['payment']);
-                $user = RestaurantSemester::findOrFail($validatedData['user_id']);
-                $user->payment = $validatedData['payment'];
-                $user->save();
+                $apply_id = RestaurantSemester::findOrFail($id);
+                $apply_id->payment = $validatedData['payment'];
+                $apply_id->save();
             } catch (\Exception $exception) {
                 return response()->json(['error' => $exception->getMessage()], 500);
             }

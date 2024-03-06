@@ -181,6 +181,7 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
 });
 
+<<<<<<< Updated upstream
 Route::prefix('bus')->group(function () {
     Route::prefix('schedule')->group(function () {
         Route::post('/', [BusScheduleController::class, 'store']);
@@ -194,5 +195,22 @@ Route::prefix('bus')->group(function () {
         Route::delete('/{id}', [BusScheduleController::class, 'roundDestroy']);
     });
 });
+=======
+Route::get('/admin/qr', [QRController::class, 'generator']);
+Route::post('/upload/excel', [RestaurantMenusController::class, 'import']);
+
+
+Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
+Route::post('/semester/mealtype', [SemesterMealTypeController::class, 'store']);
+Route::get('/restaurant/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
+Route::post('/restaurant/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
+
+Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
+Route::post('/weekend/mealtype', [WeekendMealTypeController::class, 'store']);
+Route::get('/restaurant/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
+Route::post('/restaurant/weekend/p/payment/{id}', [RestaurantWeekendController::class, 'setPayment']);
+
+
+>>>>>>> Stashed changes
 
 
