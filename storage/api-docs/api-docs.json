@@ -2508,25 +2508,65 @@
                 }
             }
         },
-        "/api/restaurant/semester/payment": {
+        "/api/restaurant/semester/g/payment/{id}": {
             "get": {
                 "tags": [
                     "식수"
                 ],
                 "summary": "식수 학기 신청 입금여부",
                 "description": "식수 학기 신청의 입금여부를 확인 합니다",
-                "operationId": "e542515362972e8bb34556bf8b0ba2a0",
+                "operationId": "6728afade97f97cd28f546c3b63c2e2b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "조회 할 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/p/payment/{id}": {
+            "patch": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 입금여부 수정",
+                "description": "학기 입금여부를 수정",
+                "operationId": "7d3a1b6c336b415def16643b18c10358",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
-                    "description": "학생 식사 신청 입금여부",
+                    "description": "수정할 입금여부(true,false), 신청id",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "description": "사용자 ID",
-                                        "type": "string",
-                                        "example": "1"
+                                    "payment": {
+                                        "description": "입금여부",
+                                        "type": "boolean",
+                                        "example": "true"
                                     }
                                 },
                                 "type": "object"
@@ -2536,7 +2576,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
                     },
                     "500": {
                         "description": "Fail"
@@ -2568,21 +2611,131 @@
                                         "description": "식사유형",
                                         "type": "string",
                                         "example": "A"
-                                    },
-                                    "refund": {
-                                        "description": "환불여부",
-                                        "type": "boolean",
-                                        "example": "true"
-                                    },
-                                    "date": {
-                                        "description": "식사시간",
-                                        "type": "string",
-                                        "example": "lunch"
-                                    },
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/g/payment/{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "입금여부 확인",
+                "description": "입금여부 확인",
+                "operationId": "aa0ef8178c1295718ebd495ddc84285e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/p/payment/{id}": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 입금여부 수정",
+                "description": "주말 입금여부를 수정",
+                "operationId": "0836d4e342a4bfd79d16a7d097405085",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 입금여부(true,false), 신청id",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
                                     "payment": {
                                         "description": "입금여부",
                                         "type": "boolean",
                                         "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/semester/mealtype": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유형 생성",
+                "description": "학기 식수 유형을 생성",
+                "operationId": "a557a66425cc24cfdf6479621ff2f366",
+                "requestBody": {
+                    "description": "만들 학기 식수 유형의 데이터",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사 유형",
+                                        "type": "string",
+                                        "example": "C"
+                                    },
+                                    "content": {
+                                        "description": "설명",
+                                        "type": "string",
+                                        "example": "점심+저녁"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "5600"
                                     }
                                 },
                                 "type": "object"

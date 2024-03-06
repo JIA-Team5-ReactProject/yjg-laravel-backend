@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAfterServiceController;
-use App\Http\Controllers\Admin\AdminSalonReservationController;
 use App\Http\Controllers\Administrator\AbsenceController;
 use App\Http\Controllers\Administrator\BusScheduleController;
 use App\Http\Controllers\Administrator\NoticeController;
+use App\Http\Controllers\AfterService\AfterServiceCommentController;
 use App\Http\Controllers\AfterService\AfterServiceController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\UserController;
@@ -21,7 +20,6 @@ use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
 use App\Http\Controllers\Salon\SalonReservationController;
 use App\Http\Controllers\Salon\SalonServiceController;
-use App\Models\AfterServiceComment;
 use Illuminate\Support\Facades\Route;
 
 
@@ -163,9 +161,9 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
 
     Route::prefix('after-service')->group(function () {
         Route::patch('/status/{id}', [AfterServiceController::class, 'updateStatus'])->name('admin.as.status');
-        Route::post('{id}/comment', [AfterServiceComment::class, 'store'])->name('as.comment.store');
-        Route::patch('{id}/comment', [AfterServiceComment::class, 'update'])->name('as.comment.update');
-        Route::delete('{id}/comment', [AfterServiceComment::class, 'destroy'])->name('as.comment.destroy');
+        Route::post('{id}/comment', [AfterServiceCommentController::class, 'store'])->name('as.comment.store');
+        Route::patch('{id}/comment', [AfterServiceCommentController::class, 'update'])->name('as.comment.update');
+        Route::delete('{id}/comment', [AfterServiceCommentController::class, 'destroy'])->name('as.comment.destroy');
     });
     Route::patch('/absence/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
 });
