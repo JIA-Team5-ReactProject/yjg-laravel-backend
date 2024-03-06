@@ -173,8 +173,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::prefix('restaurant')->group(function () {
     Route::post('/menu', [RestaurantMenusController::class, 'import']);
-    Route::get('/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);
-    Route::post('/semester/p/payment', [RestaurantSemesterController::class, 'setPayment']);
+    Route::get('/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
+    Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
+    Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
+    Route::post('/weekend/p/payment/{id}', [RestaurantWeekendController::class, 'setPayment']);
     Route::post('/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/weekend', [RestaurantWeekendController::class, 'store']);
     Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
