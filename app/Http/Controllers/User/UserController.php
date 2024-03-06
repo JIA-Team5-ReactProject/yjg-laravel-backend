@@ -175,7 +175,7 @@ class UserController extends Controller
             ]);
         }
 
-        $token = $this->tokenService->userToken($user, 'google', ['user']);
+        $token = $this->tokenService->userToken($user, 'email', ['user']);
 
         return response()->json(['user' => $user, 'token' => $token]);
     }

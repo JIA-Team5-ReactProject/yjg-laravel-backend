@@ -12,9 +12,9 @@ class UserSalonReservationController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/user/salon-reservation",
-     *     tags={"미용실"},
-     *     summary="예약 정보 가져오기",
+     *     path="/api/salon/reservation/user",
+     *     tags={"미용실 - 예약"},
+     *     summary="현재 유저의 예약 정보 가져오기(수정)",
      *     description="현재 로그인한 유저의 예약 정보를 불러옴",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -24,11 +24,12 @@ class UserSalonReservationController extends Controller
     {
         return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', $request->user()->id)->get()]);
     }
+
     /**
      * @OA\Post (
-     *     path="/api/user/salon-reservation",
-     *     tags={"미용실"},
-     *     summary="예약",
+     *     path="/api/salon/reservation",
+     *     tags={"미용실 - 예약"},
+     *     summary="예약(수정)",
      *     description="학생 미용실 예약",
      *     @OA\RequestBody(
      *         description="예약 관련 정보",
@@ -74,11 +75,12 @@ class UserSalonReservationController extends Controller
 
         return response()->json(['reservation' => $reservation], 201);
     }
+
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-reservation/{id}",
-     *     tags={"미용실"},
-     *     summary="예약 취소",
+     *     path="/api/salon/reservation/{id}",
+     *     tags={"미용실 - 예약"},
+     *     summary="예약 취소(수정)",
      *     description="미용실 예약 취소",
      *      @OA\Parameter(
      *            name="id",

@@ -19,9 +19,9 @@ class SalonBusinessHourController extends Controller
     }
     /**
      * @OA\Get (
-     *     path="/api/admin/salon-hour",
-     *     tags={"미용실"},
-     *     summary="전체 영업시간",
+     *     path="/api/salon/hour",
+     *     tags={"미용실 - 영업시간"},
+     *     summary="전체 영업시간(수정)",
      *     description="모든 요일의 미용실 영업 시간",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="422", description="Validation Error"),
@@ -34,9 +34,9 @@ class SalonBusinessHourController extends Controller
 
     /**
      * @OA\Get (
-     *     path="/api/admin/salon-hour/{day}",
-     *     tags={"미용실"},
-     *     summary="특정 날짜의 영업시간",
+     *     path="/api/salon/hour/{day}",
+     *     tags={"미용실 - 영업시간"},
+     *     summary="특정 날짜의 영업시간(수정)",
      *     description="특정 날짜의 미용실 영업 시간을 한시간 단위로 반환함",
      *      @OA\Parameter(
      *            name="day",
@@ -100,9 +100,9 @@ class SalonBusinessHourController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/admin/salon-hour",
-     *     tags={"미용실"},
-     *     summary="영업시간 생성",
+     *     path="/api/salon/hour",
+     *     tags={"미용실 - 영업시간"},
+     *     summary="영업시간 생성(관리자)(수정)",
      *     description="미용실 영업시간 생성",
      *     @OA\RequestBody(
      *         description="영업시간 관련 정보",
@@ -149,9 +149,9 @@ class SalonBusinessHourController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/salon-hour",
-     *     tags={"미용실"},
-     *     summary="영업시간 업데이트",
+     *     path="/api/salon/hour",
+     *     tags={"미용실 - 영업시간"},
+     *     summary="영업시간 업데이트(관리자)(수정)",
      *     description="미용실 영업시간을 업데이트",
      *     @OA\RequestBody(
      *         description="업데이트할 영업시간 및 아이디",
@@ -201,9 +201,9 @@ class SalonBusinessHourController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-hour/{id}",
-     *     tags={"미용실"},
-     *     summary="영업시간 삭제",
+     *     path="/api/salon/hour/{id}",
+     *     tags={"미용실 - 영업시간"},
+     *     summary="영업시간 삭제(관리자)(수정)",
      *     description="미용실 영업시간 삭제",
      *      @OA\Parameter(
      *            name="id",

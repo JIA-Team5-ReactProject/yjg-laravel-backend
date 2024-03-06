@@ -14,7 +14,7 @@ class AdminAfterServiceController extends Controller
      * @OA\Patch (
      *     path="/api/after-service/status/{id}",
      *     tags={"AS"},
-     *     summary="상태 변경",
+     *     summary="상태 변경(관리자)",
      *     description="AS의 상태를 완료로 변경",
      *     @OA\Parameter(
      *          name="id",

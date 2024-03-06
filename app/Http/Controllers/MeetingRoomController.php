@@ -33,7 +33,7 @@ class MeetingRoomController extends Controller
      * @OA\Post (
      *     path="/api/meeting-room",
      *     tags={"회의실"},
-     *     summary="회의실 추가",
+     *     summary="회의실 추가(관리자)",
      *     description="회의실 추가",
      *     @OA\RequestBody(
      *         description="설명",
@@ -75,7 +75,7 @@ class MeetingRoomController extends Controller
      * @OA\Get (
      *     path="/api/meeting-room/check",
      *     tags={"회의실"},
-     *     summary="예약된 시간 목록",
+     *     summary="회의실의 예약된 시간 목록",
      *     description="특정 날짜 및 특정 회의실의 예약된 시간 목록",
      *     @OA\Parameter(
      *          name="date",
@@ -117,7 +117,7 @@ class MeetingRoomController extends Controller
      * @OA\Delete (
      *     path="/api/meeting-room/{id}",
      *     tags={"회의실"},
-     *     summary="회의실 삭제",
+     *     summary="회의실 삭제(관리자)",
      *     description="특정 회의실 삭제",
      *     @OA\Parameter(
      *          name="id",

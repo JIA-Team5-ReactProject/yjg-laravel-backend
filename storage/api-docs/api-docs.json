@@ -287,7 +287,7 @@
                 "tags": [
                     "AS"
                 ],
-                "summary": "상태 변경",
+                "summary": "상태 변경(관리자)",
                 "description": "AS의 상태를 완료로 변경",
                 "operationId": "a7b9f2082df95b01024c99ffd779f1ec",
                 "parameters": [
@@ -745,14 +745,14 @@
                 }
             }
         },
-        "/api/admin/salon-reservation": {
+        "/api/salon/reservation": {
             "get": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 예약"
                 ],
-                "summary": "예약 검색",
+                "summary": "예약 검색(수정)",
                 "description": "미용실 예약 검색",
-                "operationId": "259e551390c073313c7e33be1e6f7d86",
+                "operationId": "de84bd101d1616c22c864e13a185cbe5",
                 "requestBody": {
                     "description": "검색할 옵션",
                     "required": true,
@@ -794,15 +794,63 @@
                     }
                 }
             },
+            "post": {
+                "tags": [
+                    "미용실 - 예약"
+                ],
+                "summary": "예약(수정)",
+                "description": "학생 미용실 예약",
+                "operationId": "284e62ef8b622894ab4f7f70c97b3901",
+                "requestBody": {
+                    "description": "예약 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "salon_service_id": {
+                                        "description": "미용실 서비스 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "r_date": {
+                                        "description": "예약 날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "r_time": {
+                                        "description": "예약 시간",
+                                        "type": "time",
+                                        "example": "12:12:12"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Failed to save"
+                    }
+                }
+            },
             "patch": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 예약"
                 ],
-                "summary": "예약 정보 업데이트(관리자)",
-                "description": "미용실 예약 상태를 업데이트",
-                "operationId": "b37a047096d300cdb4f8f84849feb261",
+                "summary": "예약 상태 수정(관리자)(수정)",
+                "description": "미용실 예약 상태를 수정",
+                "operationId": "20ae18d046705329791914297a3321a0",
                 "requestBody": {
-                    "description": "업데이트할 상태 및 아이디",
+                    "description": "수정할 상태 및 아이디",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -881,45 +929,14 @@
                         "description": "Server Error"
                     }
                 }
-            }
-        },
-        "/api/notice/{id}": {
-            "get": {
-                "tags": [
-                    "공지사항"
-                ],
-                "summary": "공지사항 검색",
-                "description": "파라미터 값에 맞는 공지사항을 반환",
-                "operationId": "c8d06969068c0b49fcc0ce485e93f520",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "찾을 공지사항의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
-        "/api/admin/notice": {
+            },
             "post": {
                 "tags": [
                     "공지사항"
                 ],
-                "summary": "공지사항 작성",
+                "summary": "공지사항 작성(관리자)(수정)",
                 "description": "공지사항 작성",
-                "operationId": "768a676cbbff9a912cf9749ad2723348",
+                "operationId": "b07e1f2c775cc9607fb9687f5c4b1feb",
                 "requestBody": {
                     "description": "글 내용",
                     "required": true,
@@ -967,14 +984,41 @@
                 }
             }
         },
-        "/api/admin/notice/{id}": {
+        "/api/notice/{id}": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 검색",
+                "description": "파라미터 값에 맞는 공지사항을 반환",
+                "operationId": "c8d06969068c0b49fcc0ce485e93f520",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "찾을 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "공지사항"
                 ],
-                "summary": "공지사항 삭제",
+                "summary": "공지사항 삭제(관리자)(수정)",
                 "description": "공지사항 삭제",
-                "operationId": "22cc57bf01917a6de91a0ea0a1e16305",
+                "operationId": "85e58892384d30d7b648946078aed504",
                 "parameters": [
                     {
                         "name": "id",
@@ -999,9 +1043,9 @@
                 "tags": [
                     "공지사항"
                 ],
-                "summary": "공지사항 수정",
+                "summary": "공지사항 수정(관리자)(수정)",
                 "description": "공지사항 수정",
-                "operationId": "3dca9ef62241d93b7a54f47ded74e1f5",
+                "operationId": "3f8ae3ef1c62dedd018a60b592c22b5e",
                 "parameters": [
                     {
                         "name": "id",
@@ -1071,14 +1115,14 @@
                 }
             }
         },
-        "/api/admin/salon-break": {
+        "/api/salon/break": {
             "post": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 예약불가 시간"
                 ],
-                "summary": "예약불가 시간 생성",
+                "summary": "예약불가 시간 생성(관리자)",
                 "description": "미용실 예약불가 시간 생성",
-                "operationId": "52ecb833b9a6df070383d99b22a39d2e",
+                "operationId": "e7f4bf19d62b0bc65f6f36942879567f",
                 "requestBody": {
                     "description": "예약불가 시간 관련 정보",
                     "required": true,
@@ -1118,11 +1162,11 @@
             },
             "delete": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 예약불가 시간"
                 ],
-                "summary": "예약불가 시간 삭제",
+                "summary": "예약불가 시간 삭제(관리자)(수정)",
                 "description": "미용실 예약불가 시간 삭제",
-                "operationId": "48e5d6302d31c25e801f2e8689ec7a08",
+                "operationId": "fb26428f992f4003816a725bb9646683",
                 "requestBody": {
                     "description": "예약불가 시간 관련 정보",
                     "required": true,
@@ -1162,14 +1206,14 @@
                 }
             }
         },
-        "/api/admin/salon-hour": {
+        "/api/salon/hour": {
             "get": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 영업시간"
                 ],
-                "summary": "전체 영업시간",
+                "summary": "전체 영업시간(수정)",
                 "description": "모든 요일의 미용실 영업 시간",
-                "operationId": "e5a1fa849ebec6c0c6e793fe275b7701",
+                "operationId": "5ea959787014cc996246b6382dfa0383",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -1181,11 +1225,11 @@
             },
             "post": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 영업시간"
                 ],
-                "summary": "영업시간 생성",
+                "summary": "영업시간 생성(관리자)(수정)",
                 "description": "미용실 영업시간 생성",
-                "operationId": "c8eca7e18f01818dc7b2c55b429f3f1c",
+                "operationId": "cfdcaae96af7a8648b056b177c557495",
                 "requestBody": {
                     "description": "영업시간 관련 정보",
                     "required": true,
@@ -1229,11 +1273,11 @@
             },
             "patch": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 영업시간"
                 ],
-                "summary": "영업시간 업데이트",
+                "summary": "영업시간 업데이트(관리자)(수정)",
                 "description": "미용실 영업시간을 업데이트",
-                "operationId": "0b5f8fdf523f60db21c8583b62c2bc0b",
+                "operationId": "fc50e3fcb09463486ef32ca961bcd039",
                 "requestBody": {
                     "description": "업데이트할 영업시간 및 아이디",
                     "required": true,
@@ -1275,14 +1319,14 @@
                 }
             }
         },
-        "/api/admin/salon-hour/{day}": {
+        "/api/salon/hour/{day}": {
             "get": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 영업시간"
                 ],
-                "summary": "특정 날짜의 영업시간",
+                "summary": "특정 날짜의 영업시간(수정)",
                 "description": "특정 날짜의 미용실 영업 시간을 한시간 단위로 반환함",
-                "operationId": "4d4f7d458a217ebc1a86cedf1ef0ba63",
+                "operationId": "3973bae98dda92f4aca20331ebccffa4",
                 "parameters": [
                     {
                         "name": "day",
@@ -1304,14 +1348,14 @@
                 }
             }
         },
-        "/api/admin/salon-hour/{id}": {
+        "/api/salon/hour/{id}": {
             "delete": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 영업시간"
                 ],
-                "summary": "영업시간 삭제",
+                "summary": "영업시간 삭제(관리자)(수정)",
                 "description": "미용실 영업시간 삭제",
-                "operationId": "3718f8de345a7d020f0c7c3fcb346f3d",
+                "operationId": "e60d04b5fd27833c42a6000cec33ddb5",
                 "parameters": [
                     {
                         "name": "id",
@@ -1336,14 +1380,14 @@
                 }
             }
         },
-        "/api/salon-category": {
+        "/api/salon/category": {
             "get": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 카테고리"
                 ],
-                "summary": "카테고리 목록",
+                "summary": "카테고리 목록(수정)",
                 "description": "미용실 카테고리 목록",
-                "operationId": "30ee3c7e4a99e8e91578630a3003e97a",
+                "operationId": "dc2c9539697d67b8d4d53bb61e2db951",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -1352,16 +1396,14 @@
                         "description": "Fail"
                     }
                 }
-            }
-        },
-        "/api/admin/salon-category": {
+            },
             "post": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 카테고리"
                 ],
-                "summary": "카테고리 생성",
+                "summary": "카테고리 생성(관리자)(수정)",
                 "description": "미용실 카테고리 생성",
-                "operationId": "8b173f291381060088f2a1c72fc4c6ae",
+                "operationId": "c2c29c8bd55a5f35001e08840608c328",
                 "requestBody": {
                     "description": "카테고리 관련 정보",
                     "required": true,
@@ -1394,11 +1436,11 @@
             },
             "patch": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 카테고리"
                 ],
-                "summary": "카테고리 수정",
+                "summary": "카테고리 수정(관리자)(수정)",
                 "description": "카테고리 이름 수정",
-                "operationId": "94588bf364a879d920a7a0b38c7d8209",
+                "operationId": "cda4c2920a602730e0baf45f9d54a179",
                 "requestBody": {
                     "description": "카테고리 수정을 위한 정보",
                     "required": true,
@@ -1438,14 +1480,14 @@
                 }
             }
         },
-        "/api/admin/salon-category/{id}": {
+        "/api/salon/category/{id}": {
             "delete": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 카테고리"
                 ],
-                "summary": "카테고리 삭제",
+                "summary": "카테고리 삭제(관리자)(수정)",
                 "description": "미용실 카테고리 삭제",
-                "operationId": "54ec001bf01edbcb9f588441c5213f6a",
+                "operationId": "be7ccbf53468142bff35bb8203fd9169",
                 "parameters": [
                     {
                         "name": "id",
@@ -1467,14 +1509,14 @@
                 }
             }
         },
-        "/api/salon-service": {
+        "/api/salon/service": {
             "get": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 서비스"
                 ],
-                "summary": "카테고리 서비스 목록",
+                "summary": "카테고리 서비스 목록(수정)",
                 "description": "미용실 특정 카테고리의 서비스 목록",
-                "operationId": "0cb5f3adfdfb991e0a3940cc353c706f",
+                "operationId": "a0ee9a8cae9f4699cbdddb966de79eef",
                 "parameters": [
                     {
                         "name": "category_id",
@@ -1503,16 +1545,14 @@
                         "description": "Fail"
                     }
                 }
-            }
-        },
-        "/api/admin/salon-service": {
+            },
             "post": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 서비스"
                 ],
-                "summary": "서비스 생성",
+                "summary": "서비스 생성(관리자)(수정)",
                 "description": "미용실 서비스 생성",
-                "operationId": "1edceb78f24fc12d1c7d15c1331e036d",
+                "operationId": "2740c2fa0f31cd29f5d0fb92e64ff73a",
                 "requestBody": {
                     "description": "서비스 관련 정보",
                     "required": true,
@@ -1560,11 +1600,11 @@
             },
             "patch": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 서비스"
                 ],
-                "summary": "서비스 수정",
+                "summary": "서비스 수정(관리자)(수정)",
                 "description": "미용실 서비스 수정",
-                "operationId": "05437688b4092e9670640a331519a89c",
+                "operationId": "4ae2d0a13b9e4d24ec7147d23122788d",
                 "requestBody": {
                     "description": "서비스 수정을 위한 정보",
                     "required": true,
@@ -1614,14 +1654,14 @@
                 }
             }
         },
-        "/api/admin/salon-service/{id}": {
+        "/api/salon/service/{id}": {
             "delete": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 서비스"
                 ],
-                "summary": "서비스 삭제",
+                "summary": "서비스 삭제(관리자)(수정)",
                 "description": "미용실 서비스 삭제",
-                "operationId": "765665a1df52406f7a2430b0b5ddb2ed",
+                "operationId": "de5620b118cca24f5f6eb60e5742ec36",
                 "parameters": [
                     {
                         "name": "id",
@@ -1643,14 +1683,14 @@
                 }
             }
         },
-        "/api/after-service/comment/{id}": {
+        "/api/after-service/{id}/comment": {
             "post": {
                 "tags": [
                     "AS 댓글"
                 ],
-                "summary": "생성",
+                "summary": "작성(관리자)",
                 "description": "댓글 작성",
-                "operationId": "935379ea675bcbe81e250483729474f3",
+                "operationId": "4bb10efecf5eceec454468a4c9c23875",
                 "parameters": [
                     {
                         "name": "id",
@@ -1696,9 +1736,9 @@
                 "tags": [
                     "AS 댓글"
                 ],
-                "summary": "삭제",
+                "summary": "삭제(관리자)",
                 "description": "아이디에 해당하는 댓글 삭제",
-                "operationId": "d1829ee74e15669ca23cb2ae2633c1fb",
+                "operationId": "c623ad9ae2b115e4f5dc4e7ce8d3f813",
                 "parameters": [
                     {
                         "name": "id",
@@ -1723,9 +1763,9 @@
                 "tags": [
                     "AS 댓글"
                 ],
-                "summary": "수정",
+                "summary": "수정(관리자)",
                 "description": "댓글 수정",
-                "operationId": "786816c3a93c008ea356df88e67500cb",
+                "operationId": "0d8f2a16a9bdbc46c1a69b641ff25efd",
                 "parameters": [
                     {
                         "name": "id",
@@ -1783,25 +1823,10 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-<<<<<<< Updated upstream
-                                    "weekend": {
-                                        "description": "주말/평일",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "semester": {
-                                        "description": "학기/방학",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "round": {
-                                        "description": "버스회차",
-=======
                                     "round_id": {
                                         "description": "버스회차id",
->>>>>>> Stashed changes
                                         "type": "string",
-                                        "example": "1회차"
+                                        "example": "1"
                                     },
                                     "station": {
                                         "description": "정류장",
@@ -1847,13 +1872,8 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-<<<<<<< Updated upstream
-                                    "station": {
-                                        "description": "정류장",
-=======
                                     "round": {
                                         "description": "회차",
->>>>>>> Stashed changes
                                         "type": "string",
                                         "example": "3회차"
                                     }
@@ -1905,36 +1925,24 @@
                 }
             }
         },
-        "/api/bus/getRound": {
-            "get": {
+        "/api/bus/addRound": {
+            "post": {
                 "tags": [
                     "버스"
                 ],
-                "summary": "해당 버스 회차 가져오기",
-                "description": "해당하는 id의 버스 회차 리스트 가져오기",
-                "operationId": "d1e0c8cc053e346bf5612dea2ad52d97",
+                "summary": "버스 회차 추가",
+                "description": "버스 회차 추가 ",
+                "operationId": "45856546d87a6c90548d307623949314",
                 "requestBody": {
-                    "description": "가져오고 싶은 회차의 bus_route값",
-                    "required": false,
+                    "description": "추가할 버스 회차",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "weekend": {
-                                        "description": "주말/평일",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "semester": {
-                                        "description": "학기/방학",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "bus_route_direction": {
-                                        "description": "버스 노선 ",
+                                    "round": {
+                                        "description": "회차",
                                         "type": "string",
-<<<<<<< Updated upstream
-=======
                                         "example": "1"
                                     },
                                     "weekend": {
@@ -1950,7 +1958,6 @@
                                     "bus_route_direction": {
                                         "description": "버스 방향",
                                         "type": "string",
->>>>>>> Stashed changes
                                         "example": "B"
                                     }
                                 },
@@ -1961,8 +1968,6 @@
                 },
                 "responses": {
                     "200": {
-<<<<<<< Updated upstream
-=======
                         "description": "OK"
                     },
                     "422": {
@@ -2012,7 +2017,6 @@
                 },
                 "responses": {
                     "200": {
->>>>>>> Stashed changes
                         "description": "Success"
                     },
                     "500": {
@@ -2100,7 +2104,7 @@
                 "tags": [
                     "회의실"
                 ],
-                "summary": "회의실 추가",
+                "summary": "회의실 추가(관리자)",
                 "description": "회의실 추가",
                 "operationId": "8390beedb467bb18e0bfbd3e14f93a2f",
                 "requestBody": {
@@ -2139,7 +2143,7 @@
                 "tags": [
                     "회의실"
                 ],
-                "summary": "예약된 시간 목록",
+                "summary": "회의실의 예약된 시간 목록",
                 "description": "특정 날짜 및 특정 회의실의 예약된 시간 목록",
                 "operationId": "87d6c363a95637dcd77b3c2609905b2c",
                 "parameters": [
@@ -2177,7 +2181,7 @@
                 "tags": [
                     "회의실"
                 ],
-                "summary": "회의실 삭제",
+                "summary": "회의실 삭제(관리자)",
                 "description": "특정 회의실 삭제",
                 "operationId": "954823889b93ba8e407764993339bcca",
                 "parameters": [
@@ -2207,7 +2211,7 @@
         "/api/meeting-room/reservation": {
             "get": {
                 "tags": [
-                    "회의실"
+                    "회의실 - 예약"
                 ],
                 "summary": "예약 검색",
                 "description": "주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색",
@@ -2246,7 +2250,7 @@
             },
             "post": {
                 "tags": [
-                    "회의실"
+                    "회의실 - 예약"
                 ],
                 "summary": "예약하기",
                 "description": "회의실 예약하기",
@@ -2301,7 +2305,7 @@
         "/api/meeting-room/reservation/user": {
             "get": {
                 "tags": [
-                    "회의실"
+                    "회의실 - 예약"
                 ],
                 "summary": "유저의 예약",
                 "description": "로그인한 유저의 회의실 예약 목록을 반환",
@@ -2319,7 +2323,7 @@
         "/api/meeting-room/reservation/{id}": {
             "get": {
                 "tags": [
-                    "회의실"
+                    "회의실 - 예약"
                 ],
                 "summary": "특정 예약",
                 "description": "아이디에 해당하는 예약 정보를 받아옴",
@@ -2346,7 +2350,7 @@
             },
             "delete": {
                 "tags": [
-                    "회의실"
+                    "회의실 - 예약"
                 ],
                 "summary": "회의실 예약 삭제",
                 "description": "",
@@ -2375,9 +2379,9 @@
         "/api/meeting-room/reservation/reject/{id}": {
             "patch": {
                 "tags": [
-                    "회의실"
+                    "회의실 - 예약"
                 ],
-                "summary": "예약 거절",
+                "summary": "예약 거절(관리자)",
                 "description": "관리자의 사유에 의해 예약 거절",
                 "operationId": "4fd7eff9a4979db9382015ac6000b0e9",
                 "parameters": [
@@ -2404,20 +2408,56 @@
                 }
             }
         },
-        "/api/admin/qr": {
+        "/api/user/qr": {
             "get": {
                 "tags": [
-                    "관리자"
+                    "QR코드"
                 ],
                 "summary": "QR코드 생성",
                 "description": "QR코드 생성해서 이미지로 반환",
-                "operationId": "e226390d94736fbc202f93f996e5de19",
+                "operationId": "d65f357ad241ec05238bb7de17bfdbf8",
                 "responses": {
                     "200": {
                         "description": "Success"
                     },
                     "422": {
                         "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식단표 업로드",
+                "description": "바디에 엑셀 파일 담아서 보내면 됩니다.",
+                "operationId": "3806b677133a88dffd8c172e1ba0564f",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "excel_file": {
+                                        "description": "식단표 엑셀 파일",
+                                        "type": "file",
+                                        "example": "1월.xsl"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
                     }
                 }
             }
@@ -3121,14 +3161,14 @@
                 }
             }
         },
-        "/api/user/salon-reservation": {
+        "/api/salon/reservation/user": {
             "get": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 예약"
                 ],
-                "summary": "예약 정보 가져오기",
+                "summary": "현재 유저의 예약 정보 가져오기(수정)",
                 "description": "현재 로그인한 유저의 예약 정보를 불러옴",
-                "operationId": "55d9748d14e02505a759ddd22951e498",
+                "operationId": "584d793256b2fa9c86683da35cb115ec",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3137,64 +3177,16 @@
                         "description": "Fail"
                     }
                 }
-            },
-            "post": {
-                "tags": [
-                    "미용실"
-                ],
-                "summary": "예약",
-                "description": "학생 미용실 예약",
-                "operationId": "c2d8397953aa3c0e3b8c890e2ad26b2c",
-                "requestBody": {
-                    "description": "예약 관련 정보",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "salon_service_id": {
-                                        "description": "미용실 서비스 아이디",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "r_date": {
-                                        "description": "예약 날짜",
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2024-01-01"
-                                    },
-                                    "r_time": {
-                                        "description": "예약 시간",
-                                        "type": "time",
-                                        "example": "12:12:12"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Success"
-                    },
-                    "422": {
-                        "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Failed to save"
-                    }
-                }
             }
         },
-        "/api/admin/salon-reservation/{id}": {
+        "/api/salon/reservation/{id}": {
             "delete": {
                 "tags": [
-                    "미용실"
+                    "미용실 - 예약"
                 ],
-                "summary": "예약 취소",
+                "summary": "예약 취소(수정)",
                 "description": "미용실 예약 취소",
-                "operationId": "23e2c8be7b062c0ab82206bdf2d1cc5c",
+                "operationId": "de4392f063a439e9a144177d3da7cb45",
                 "parameters": [
                     {
                         "name": "id",
