@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Salon;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalonBusinessHour;
 use Carbon\Carbon;
-use Faker\Provider\PhoneNumber;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Restaurant;
 
+use App\Http\Controllers\Controller;
 use App\Imports\RestaurantMenuImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
