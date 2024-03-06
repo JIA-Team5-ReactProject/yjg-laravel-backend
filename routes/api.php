@@ -49,6 +49,67 @@ Route::prefix('admin')->group(function () {
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
 });
 
+// 관리자
+Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
+    Route::prefix('admin')->group(function() {
+        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+        Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
+        Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
+        Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
+        Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
+        Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
+        Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
+        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
+    });
+
+    Route::prefix('salon')->group(function () {
+        Route::prefix('break')->group(function () {
+            Route::post('/', [SalonBreakTimeController::class, 'store'])->name('admin.salon.break.store');
+            Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
+        });
+        Route::prefix('hour')->group(function () {
+            Route::post('/', [SalonBusinessHourController::class, 'store'])->name('admin.salon.hour.store');
+            Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('admin.salon.hour.update');
+            Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
+        });
+        Route::prefix('category')->group(function() {
+            Route::post('/', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
+            Route::patch('/', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
+            Route::delete('/{id}', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
+        });
+        Route::prefix('service')->group(function () {
+            Route::post('/', [SalonServiceController::class, 'store'])->name('admin.salon.service.store');
+            Route::patch('/', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
+            Route::delete('/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
+        });
+        Route::patch('/reservation', [SalonReservationController::class, 'update'])->name('salon.reservation.status');
+    });
+
+    Route::prefix('notice')->group(function() {
+        Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
+        Route::patch('/{id}', [NoticeController::class, 'update'])->name('admin.notice.update');
+        Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
+    });
+
+    Route::prefix('meeting-room')->group(function () {
+        Route::get('/reservation', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
+        Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
+        Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');
+    });
+
+    Route::prefix('after-service')->group(function () {
+        Route::patch('/status/{id}', [AfterServiceController::class, 'updateStatus'])->name('admin.as.status');
+        Route::post('{id}/comment', [AfterServiceCommentController::class, 'store'])->name('as.comment.store');
+        Route::patch('{id}/comment', [AfterServiceCommentController::class, 'update'])->name('as.comment.update');
+        Route::delete('{id}/comment', [AfterServiceCommentController::class, 'destroy'])->name('as.comment.destroy');
+    });
+
+    Route::prefix('absence')->group(function () {
+        Route::get('/count', [AbsenceController::class, 'absenceCount'])->name('absence.count');
+        Route::patch('/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
+    });
+});
+
 // 유저 및 공용
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('user')->group(function () {
@@ -109,65 +170,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{id}', [NoticeController::class, 'show'])->name('admin.notice.show');
     });
 });
-
-
-// 관리자
-Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
-    Route::prefix('admin')->group(function() {
-        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-        Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
-        Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
-        Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
-        Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
-        Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
-        Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
-        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
-    });
-
-    Route::prefix('salon')->group(function () {
-        Route::prefix('break')->group(function () {
-            Route::post('/', [SalonBreakTimeController::class, 'store'])->name('admin.salon.break.store');
-            Route::delete('/', [SalonBreakTimeController::class, 'destroy'])->name('admin.salon.break.destroy');
-        });
-        Route::prefix('hour')->group(function () {
-            Route::post('/', [SalonBusinessHourController::class, 'store'])->name('admin.salon.hour.store');
-            Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('admin.salon.hour.update');
-            Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('admin.salon.hour.destroy');
-        });
-        Route::prefix('category')->group(function() {
-            Route::post('/', [SalonCategoryController::class, 'store'])->name('admin.salon.category.store');
-            Route::patch('/', [SalonCategoryController::class, 'update'])->name('admin.salon.category.update');
-            Route::delete('/{id}', [SalonCategoryController::class, 'destroy'])->name('admin.salon.category.destroy');
-        });
-        Route::prefix('service')->group(function () {
-            Route::post('/', [SalonServiceController::class, 'store'])->name('admin.salon.service.store');
-            Route::patch('/', [SalonServiceController::class, 'update'])->name('admin.salon.service.update');
-            Route::delete('/{id}', [SalonServiceController::class, 'destroy'])->name('admin.salon.service.destroy');
-        });
-        Route::patch('/reservation', [SalonReservationController::class, 'update'])->name('salon.reservation.status');
-    });
-
-    Route::prefix('notice')->group(function() {
-        Route::post('/', [NoticeController::class, 'store'])->name('admin.notice.store');
-        Route::patch('/{id}', [NoticeController::class, 'update'])->name('admin.notice.update');
-        Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
-    });
-
-    Route::prefix('meeting-room')->group(function () {
-        Route::get('/reservation', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
-        Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
-        Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');
-    });
-
-    Route::prefix('after-service')->group(function () {
-        Route::patch('/status/{id}', [AfterServiceController::class, 'updateStatus'])->name('admin.as.status');
-        Route::post('{id}/comment', [AfterServiceCommentController::class, 'store'])->name('as.comment.store');
-        Route::patch('{id}/comment', [AfterServiceCommentController::class, 'update'])->name('as.comment.update');
-        Route::delete('{id}/comment', [AfterServiceCommentController::class, 'destroy'])->name('as.comment.destroy');
-    });
-    Route::patch('/absence/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
-});
-
 
 Route::prefix('restaurant')->group(function () {
     Route::post('/menu', [RestaurantMenusController::class, 'import']);

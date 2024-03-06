@@ -14,6 +14,34 @@ class AbsenceController extends Controller
 {
     /**
      * @OA\Get (
+     *     path="/api/absence/count",
+     *     tags={"외출/외박"},
+     *     summary="외출/외박 신청 인원 수",
+     *     description="파라미터로 받은 날짜의 신청한 인원 수",
+     *     @OA\Parameter(
+     *          name="date",
+     *          description="조회할 날짜",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(type="date"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="Validation Exception"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function absenceCount(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $validated = $request->validate([
+            'date' => 'required|date-format:Y-m-d',
+        ]);
+        $sleep = AbsenceList::where('type', 'sleep')->whereDate('created_at', $validated['date'])->count();
+        $go    = AbsenceList::where('type', 'go')->whereDate('created_at', $validated['date'])->count();
+        return response()->json(['sleep_count' => $sleep, 'go_count' => $go]);
+    }
+
+    /**
+     * @OA\Get (
      *     path="/api/absence",
      *     tags={"외출/외박"},
      *     summary="전체 목록",
