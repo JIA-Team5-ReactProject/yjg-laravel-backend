@@ -9,32 +9,16 @@ use Illuminate\Validation\ValidationException;
 
 class SalonBreakTimeController extends Controller
 {
-
     private $validationRule = [
         'break_time' => 'required|array',
         'date'   => 'required|date',
     ];
 
-
-    public function index()
-    {
-        $dayList = $this->dayList;
-
-        $breakTimes = SalonBreakTime::all(['break_time', 'date']);
-
-        foreach ($breakTimes as $breakTime) {
-            $breakTime->day = $dayList[date('w', strtotime($breakTime->date))];
-            $breakTime->break_time = date('H:i', strtotime($breakTime->break_time));
-        }
-
-        return $breakTimes;
-    }
-
     /**
      * @OA\Post (
-     *     path="/api/admin/salon-break",
-     *     tags={"미용실"},
-     *     summary="예약불가 시간 생성",
+     *     path="/api/salon/break",
+     *     tags={"미용실 - 예약불가 시간"},
+     *     summary="예약불가 시간 생성(관리자)",
      *     description="미용실 예약불가 시간 생성",
      *     @OA\RequestBody(
      *         description="예약불가 시간 관련 정보",
@@ -80,9 +64,9 @@ class SalonBreakTimeController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-break",
-     *     tags={"미용실"},
-     *     summary="예약불가 시간 삭제",
+     *     path="/api/salon/break",
+     *     tags={"미용실 - 예약불가 시간"},
+     *     summary="예약불가 시간 삭제(관리자)(수정)",
      *     description="미용실 예약불가 시간 삭제",
      *     @OA\RequestBody(
      *         description="예약불가 시간 관련 정보",

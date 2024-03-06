@@ -15,9 +15,9 @@ class SalonServiceController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/salon-service",
-     *     tags={"미용실"},
-     *     summary="카테고리 서비스 목록",
+     *     path="/api/salon/service",
+     *     tags={"미용실 - 서비스"},
+     *     summary="카테고리 서비스 목록(수정)",
      *     description="미용실 특정 카테고리의 서비스 목록",
      *     @OA\Parameter(
      *          name="category_id",
@@ -62,9 +62,9 @@ class SalonServiceController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/admin/salon-service",
-     *     tags={"미용실"},
-     *     summary="서비스 생성",
+     *     path="/api/salon/service",
+     *     tags={"미용실 - 서비스"},
+     *     summary="서비스 생성(관리자)(수정)",
      *     description="미용실 서비스 생성",
      *     @OA\RequestBody(
      *         description="서비스 관련 정보",
@@ -111,9 +111,9 @@ class SalonServiceController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/salon-service",
-     *     tags={"미용실"},
-     *     summary="서비스 수정",
+     *     path="/api/salon/service",
+     *     tags={"미용실 - 서비스"},
+     *     summary="서비스 수정(관리자)(수정)",
      *     description="미용실 서비스 수정",
      *     @OA\RequestBody(
      *         description="서비스 수정을 위한 정보",
@@ -168,9 +168,9 @@ class SalonServiceController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-service/{id}",
-     *     tags={"미용실"},
-     *     summary="서비스 삭제",
+     *     path="/api/salon/service/{id}",
+     *     tags={"미용실 - 서비스"},
+     *     summary="서비스 삭제(관리자)(수정)",
      *     description="미용실 서비스 삭제",
      *      @OA\Parameter(
      *            name="id",

@@ -13,7 +13,7 @@ class MeetingRoomReservationController extends Controller
     /**
      * @OA\Get (
      *     path="/api/meeting-room/reservation",
-     *     tags={"회의실"},
+     *     tags={"회의실 - 예약"},
      *     summary="예약 검색",
      *     description="주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색",
      *     @OA\Parameter(
@@ -62,7 +62,7 @@ class MeetingRoomReservationController extends Controller
     /**
      * @OA\Get (
      *     path="/api/meeting-room/reservation/user",
-     *     tags={"회의실"},
+     *     tags={"회의실 - 예약"},
      *     summary="유저의 예약",
      *     description="로그인한 유저의 회의실 예약 목록을 반환",
      *     @OA\Response(response="200", description="Success"),
@@ -77,7 +77,7 @@ class MeetingRoomReservationController extends Controller
     /**
      * @OA\Post (
      *     path="/api/meeting-room/reservation",
-     *     tags={"회의실"},
+     *     tags={"회의실 - 예약"},
      *     summary="예약하기",
      *     description="회의실 예약하기",
      *     @OA\RequestBody(
@@ -134,7 +134,7 @@ class MeetingRoomReservationController extends Controller
     /**
      * @OA\Get (
      *     path="/api/meeting-room/reservation/{id}",
-     *     tags={"회의실"},
+     *     tags={"회의실 - 예약"},
      *     summary="특정 예약",
      *     description="아이디에 해당하는 예약 정보를 받아옴",
      *     @OA\Parameter(
@@ -168,8 +168,8 @@ class MeetingRoomReservationController extends Controller
     /**
      * @OA\Patch (
      *     path="/api/meeting-room/reservation/reject/{id}",
-     *     tags={"회의실"},
-     *     summary="예약 거절",
+     *     tags={"회의실 - 예약"},
+     *     summary="예약 거절(관리자)",
      *     description="관리자의 사유에 의해 예약 거절",
      *     @OA\Parameter(
      *          name="id",
@@ -209,7 +209,7 @@ class MeetingRoomReservationController extends Controller
     /**
      * @OA\Delete (
      *     path="/api/meeting-room/reservation/{id}",
-     *     tags={"회의실"},
+     *     tags={"회의실 - 예약"},
      *     summary="회의실 예약 삭제",
      *     description="",
      *     @OA\Parameter(

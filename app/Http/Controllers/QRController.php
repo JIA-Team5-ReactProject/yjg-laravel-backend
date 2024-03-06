@@ -12,8 +12,8 @@ class QRController extends Controller
 {
     /**
      * @OA\GET (
-     *     path="/api/admin/qr",
-     *     tags={"관리자"},
+     *     path="/api/user/qr",
+     *     tags={"QR코드"},
      *     summary="QR코드 생성",
      *     description="QR코드 생성해서 이미지로 반환",
      *     @OA\Response(response="200", description="Success"),
@@ -38,7 +38,7 @@ class QRController extends Controller
     // {
     //     $user = User::findOrFail(1); //$request->id
 
-        
+
     //     $userId = $user->id;
 
     //     //QR 생성

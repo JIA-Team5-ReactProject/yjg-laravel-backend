@@ -13,9 +13,9 @@ class AfterServiceCommentController extends Controller
 {
     /**
      * @OA\Post (
-     *     path="/api/after-service/comment/{id}",
+     *     path="/api/after-service/{id}/comment",
      *     tags={"AS 댓글"},
-     *     summary="생성",
+     *     summary="작성(관리자)",
      *     description="댓글 작성",
      *     @OA\Parameter(
      *          name="id",
@@ -69,9 +69,9 @@ class AfterServiceCommentController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/after-service/comment/{id}",
+     *     path="/api/after-service/{id}/comment",
      *     tags={"AS 댓글"},
-     *     summary="수정",
+     *     summary="수정(관리자)",
      *     description="댓글 수정",
      *     @OA\Parameter(
      *          name="id",
@@ -122,9 +122,9 @@ class AfterServiceCommentController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/after-service/comment/{id}",
+     *     path="/api/after-service/{id}/comment",
      *     tags={"AS 댓글"},
-     *     summary="삭제",
+     *     summary="삭제(관리자)",
      *     description="아이디에 해당하는 댓글 삭제",
      *     @OA\Parameter(
      *          name="id",

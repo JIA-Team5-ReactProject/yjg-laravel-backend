@@ -13,9 +13,9 @@ class AdminSalonReservationController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/admin/salon-reservation",
-     *     tags={"미용실"},
-     *     summary="예약 검색",
+     *     path="/api/salon/reservation",
+     *     tags={"미용실 - 예약"},
+     *     summary="예약 검색(수정)",
      *     description="미용실 예약 검색",
      *     @OA\RequestBody(
      *         description="검색할 옵션",
@@ -80,12 +80,12 @@ class AdminSalonReservationController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/salon-reservation",
-     *     tags={"미용실"},
-     *     summary="예약 정보 업데이트(관리자)",
-     *     description="미용실 예약 상태를 업데이트",
+     *     path="/api/salon/reservation",
+     *     tags={"미용실 - 예약"},
+     *     summary="예약 상태 수정(관리자)(수정)",
+     *     description="미용실 예약 상태를 수정",
      *     @OA\RequestBody(
-     *         description="업데이트할 상태 및 아이디",
+     *         description="수정할 상태 및 아이디",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",

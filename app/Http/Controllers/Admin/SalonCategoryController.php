@@ -13,9 +13,9 @@ class SalonCategoryController extends Controller
 {
     /**
      * @OA\Get (
-     *     path="/api/salon-category",
-     *     tags={"미용실"},
-     *     summary="카테고리 목록",
+     *     path="/api/salon/category",
+     *     tags={"미용실 - 카테고리"},
+     *     summary="카테고리 목록(수정)",
      *     description="미용실 카테고리 목록",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -28,9 +28,9 @@ class SalonCategoryController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/admin/salon-category",
-     *     tags={"미용실"},
-     *     summary="카테고리 생성",
+     *     path="/api/salon/category",
+     *     tags={"미용실 - 카테고리"},
+     *     summary="카테고리 생성(관리자)(수정)",
      *     description="미용실 카테고리 생성",
      *     @OA\RequestBody(
      *         description="카테고리 관련 정보",
@@ -69,9 +69,9 @@ class SalonCategoryController extends Controller
     }
     /**
      * @OA\Patch (
-     *     path="/api/admin/salon-category",
-     *     tags={"미용실"},
-     *     summary="카테고리 수정",
+     *     path="/api/salon/category",
+     *     tags={"미용실 - 카테고리"},
+     *     summary="카테고리 수정(관리자)(수정)",
      *     description="카테고리 이름 수정",
      *     @OA\RequestBody(
      *         description="카테고리 수정을 위한 정보",
@@ -119,9 +119,9 @@ class SalonCategoryController extends Controller
     }
     /**
      * @OA\Delete (
-     *     path="/api/admin/salon-category/{id}",
-     *     tags={"미용실"},
-     *     summary="카테고리 삭제",
+     *     path="/api/salon/category/{id}",
+     *     tags={"미용실 - 카테고리"},
+     *     summary="카테고리 삭제(관리자)(수정)",
      *     description="미용실 카테고리 삭제",
      *      @OA\Parameter(
      *            name="id",

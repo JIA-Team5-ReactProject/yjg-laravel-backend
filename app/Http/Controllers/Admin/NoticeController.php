@@ -98,9 +98,9 @@ class NoticeController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/admin/notice",
+     *     path="/api/notice",
      *     tags={"공지사항"},
-     *     summary="공지사항 작성",
+     *     summary="공지사항 작성(관리자)(수정)",
      *     description="공지사항 작성",
      *     @OA\RequestBody(
      *         description="글 내용",
@@ -179,9 +179,9 @@ class NoticeController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/notice/{id}",
+     *     path="/api/notice/{id}",
      *     tags={"공지사항"},
-     *     summary="공지사항 수정",
+     *     summary="공지사항 수정(관리자)(수정)",
      *     description="공지사항 수정",
      *     @OA\Parameter(
      *          name="id",
@@ -280,9 +280,9 @@ class NoticeController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/notice/{id}",
+     *     path="/api/notice/{id}",
      *     tags={"공지사항"},
-     *     summary="공지사항 삭제",
+     *     summary="공지사항 삭제(관리자)(수정)",
      *     description="공지사항 삭제",
      *     @OA\Parameter(
      *           name="id",
