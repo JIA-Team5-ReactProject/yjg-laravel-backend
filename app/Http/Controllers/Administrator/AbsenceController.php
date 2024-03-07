@@ -62,7 +62,7 @@ class AbsenceController extends Controller
      *     ),
      *     @OA\Parameter(
      *          name="date",
-     *          description="조회할 날짜",
+     *          description="조회할 날짜(예약 생성일 기준)",
      *          required=true,
      *          in="query",
      *          @OA\Schema(type="date"),
@@ -97,7 +97,7 @@ class AbsenceController extends Controller
         }
 
         $absenceLists = AbsenceList::with('user')->where('type', $validated['type'])
-            ->where('start_date', $validated['date'])->where('status', true);
+            ->whereDate('created_at', $validated['date'])->where('status', true);
 
         if (isset($validated['user_name'])) {
             $absenceLists = $absenceLists->whereHas('user', function (Builder $query) use($validated) {
