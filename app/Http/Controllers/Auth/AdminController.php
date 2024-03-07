@@ -80,7 +80,7 @@ class AdminController extends Controller
      */
     public function unregister(Request $request)
     {
-        $adminId = $request->user()->id;
+        $adminId = auth('admins')->id();
         if (!Admin::destroy($adminId)) {
             throw new DestroyException('Failed to destroy user');
         }
@@ -149,22 +149,31 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        try {
-            $admin = Admin::where('email', $credentials['email'])->firstOrFail();
-        } catch(modelNotFoundException $modelNotFoundException) {
-            $errorMessage = $modelNotFoundException->getMessage();
-            return response()->json(['error' => '일치하는 유저가 없습니다.'], 404);
+//        try {
+//            $admin = Admin::where('email', $credentials['email'])->firstOrFail();
+//        } catch(modelNotFoundException $modelNotFoundException) {
+//            $errorMessage = $modelNotFoundException->getMessage();
+//            return response()->json(['error' => '일치하는 유저가 없습니다.'], 404);
+//        }
+//
+//        if (! $admin || ! Hash::check($credentials['password'], $admin->password)) {
+//            throw validationexception::withMessages([
+//                'email' => ['비밀번호가 일치하지 않습니다.'],
+//            ]);
+//        }
+//
+//        $token = $this->tokenService->adminToken($admin, 'admin', ['admin']);
+
+        if (! $token = auth('admins')->setTTL(180)->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        if (! $admin || ! Hash::check($credentials['password'], $admin->password)) {
-            throw validationexception::withMessages([
-                'email' => ['비밀번호가 일치하지 않습니다.'],
-            ]);
-        }
+        return response()->json([
+            'user' => auth('admins')->user(),
+            'access_token' => $token,
+            'token_type' => 'access',
+        ]);
 
-        $token = $this->tokenService->adminToken($admin, 'admin', ['admin']);
-
-        return response()->json(['admin' => $admin, 'token' => $token]);
     }
 
     /**
@@ -179,11 +188,8 @@ class AdminController extends Controller
      */
     public function logout(Request $request)
     {
-        $deleteToken = $this->tokenService->revokeToken($request);
-
-        if(!$deleteToken) return response()->json(['error' => '로그아웃에 실패하였습니다.'], 500);
-
-        return response()->json(['message' => 'logout successfully']);
+        auth('admins')->logout();
+        return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
     }
 
     /**
@@ -198,7 +204,6 @@ class AdminController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *             @OA\Property (property="admin_id", type="number", description="권한을 부여할 유저 아이디", example=1),
      *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
      *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
      *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
@@ -212,7 +217,6 @@ class AdminController extends Controller
     public function privilege(Request $request) {
         try {
             $validated = $request->validate([
-                'admin_id'               => 'required|numeric',
                 'salon_privilege'       => 'required|boolean',
                 'admin_privilege'       => 'required|boolean',
                 'restaurant_privilege'  => 'required|boolean',
@@ -224,14 +228,12 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::findOrFail($validated['admin_id']);
+            $admin = Admin::findOrFail(auth('admins')->id());
         } catch(ModelNotFoundException $modelException) {
             $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
-
-        unset($validated['admin_id']);
 
         foreach($validated as $key => $value) {
             $admin->$key = $value;
@@ -330,7 +332,7 @@ class AdminController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $adminId = $request->user()->id;
+        $adminId = auth('admins')->id();
 
         try {
             $admin = Admin::findOrFail($adminId);
@@ -421,7 +423,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if(!Hash::check($validated['password'], $request->user()->password)) return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
+        if(!Hash::check($validated['password'], auth('admins')->user()->password)) return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
 
         return response()->json(['success' => '비밀번호가 일치합니다.']);
     }

@@ -77,7 +77,7 @@ class UserController extends Controller
      */
     public function unregister(Request $request)
     {
-        $userId = $request->user()->id;
+        $userId = auth('users')->id();
         if (!User::destroy($userId)) {
             throw new destroyException('Failed to destroy user', 500);
         }
@@ -110,7 +110,7 @@ class UserController extends Controller
     public function googleRegisterOrLogin(Request $request)
     {
         try {
-            $validated = $request->validate([
+            $credentials = $request->validate([
                 'email' => 'required|email',
                 'displayName'  => 'required|string',
             ]);
@@ -119,17 +119,23 @@ class UserController extends Controller
             $errorMessage = $exception->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
-
-
+        // TODO : 토큰 받게되면 그거 인증하도록 수정
         $user = User::updateOrCreate([
-            'email' => $validated['email'],
+            'email' => $credentials['email'],
         ], [
-            'name' => $validated['displayName'],
+            'name' => $credentials['displayName'],
         ]);
 
-        $token = $this->tokenService->userToken($user, 'google', ['user']);
+        if (! $token = auth('users')->setTTL(180)->login($user)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-        return response()->json(['user' => $user, 'token' => $token]);
+        return response()->json([
+            'user' => auth('users')->user(),
+            'access_token' => $token,
+            'token_type' => 'access',
+        ]);
+
     }
 
     /**
@@ -167,17 +173,15 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            throw validationexception::withMessages([
-                'email' => ['비밀번호가 일치하지 않습니다.'],
-            ]);
+        if (! $token = auth('users')->setTTL(180)->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $token = $this->tokenService->userToken($user, 'email', ['user']);
-
-        return response()->json(['user' => $user, 'token' => $token]);
+        return response()->json([
+            'user' => auth('users')->user(),
+            'access_token' => $token,
+            'token_type' => 'access',
+        ]);
     }
 
     /**
@@ -192,10 +196,7 @@ class UserController extends Controller
      */
     public function logout(Request $request)
     {
-        $response = $request->user()->tokens()->delete();
-
-        if(!$response) return response()->json(['error' => '로그아웃에 실패하였습니다.'], 500);
-
+        auth('users')->logout();
         return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
     }
 
@@ -239,7 +240,7 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $userId = $request->user()->id;
+        $userId = auth('users')->id();
 
         try {
             $user = User::findOrFail($userId);
@@ -295,7 +296,7 @@ class UserController extends Controller
             return response()->json(['error'=>$request], $errorStatus);
         }
 
-        $userId = $request->user()->id;
+        $userId = auth('users')->id();
 
         try {
             $user = User::findOrFail($userId);

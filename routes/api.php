@@ -34,6 +34,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
 // 토큰 불필요
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
@@ -50,7 +52,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // 관리자
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:admins'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
@@ -111,7 +113,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // 유저 및 공용
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:users,admins'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/qr', [QRController::class, 'generator']);
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');

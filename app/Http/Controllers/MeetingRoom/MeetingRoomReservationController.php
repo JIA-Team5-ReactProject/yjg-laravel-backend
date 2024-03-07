@@ -78,7 +78,7 @@ class MeetingRoomReservationController extends Controller
      */
     public function userIndex(Request $request): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['meeting_room_reservations' => MeetingRoomReservation::with('user')->where('user_id', $request->user()->id)->get()]);
+        return response()->json(['meeting_room_reservations' => MeetingRoomReservation::with('user')->where('user_id', auth('users')->id())->get()]);
     }
 
     /**
@@ -120,7 +120,7 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $validated['user_id'] = $request->user()->id;
+        $validated['user_id'] = auth('users')->id();
 
         $reservedTimes = new ReservedTimeService($validated['reservation_date'], $validated['meeting_room_number']);
 
