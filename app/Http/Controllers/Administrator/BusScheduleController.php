@@ -93,7 +93,14 @@ class BusScheduleController extends Controller
      *     path="/api/bus/round/{id}",
      *     tags={"버스"},
      *     summary="버스 회차 수정",
-     *     description="버스 시간표를 수정",
+     *     description="버스 회차를 수정",
+     *      @OA\Parameter(
+     *           name="id",
+     *           description="수정할 회차 id",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *          ),
      *     @OA\RequestBody(
      *         description="수정할 회차 내용, 회차id",
      *         required=true,
@@ -163,7 +170,7 @@ class BusScheduleController extends Controller
     }
 
 
-#ok
+
     /**
      * @OA\Post (
      *     path="/api/bus/round",
