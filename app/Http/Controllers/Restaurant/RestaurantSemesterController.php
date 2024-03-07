@@ -145,8 +145,40 @@ class RestaurantSemesterController extends Controller
                 return response()->json(['error' => $exception->getMessage()], 500);
             }
             if($validatedData['payment'] == true)
-                return response()->json(['message' => '입금이 확인 되었습니다.']);
+                return response()->json(['message' => '입금 확인 수정완료.']);
             else
-            return response()->json(['message' => '입금이 확인되지 않았습니다']);
+            return response()->json(['message' => 'false값이 확인됨']);
+    }
+
+    /**
+     * @OA\Delete (
+     *     path="/api/restaurant/semester/delete/{id}",
+     *     tags={"식수"},
+     *     summary="학기 식수 신청 삭제",
+     *     description="학기 식수 신청 삭제",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="삭제할 학기 식수 신청 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function delete($id)
+    {
+        try {
+            $RestaurantSemester = RestaurantSemester::findOrFail($id);
+            $RestaurantSemester->delete();
+
+            // $RestaurantSemesterMealType = RestaurantSemesterMealType::where("restaurant_semester_id", $id)->first();
+            // $RestaurantSemesterMealType->delete();
+
+            return response()->json(['message' => '학기 식수 신청이 삭제되었습니다.']);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
     }
 }

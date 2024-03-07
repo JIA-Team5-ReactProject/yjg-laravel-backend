@@ -396,8 +396,19 @@
                     "버스"
                 ],
                 "summary": "버스 회차 수정",
-                "description": "버스 시간표를 수정",
+                "description": "버스 회차를 수정",
                 "operationId": "c219275d35cac0ba4e1932e5f326d7c7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 회차 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "수정할 회차 내용, 회차id",
                     "required": true,
@@ -2483,6 +2494,35 @@
                 }
             }
         },
+        "/api/restaurant/semester/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 신청 삭제",
+                "description": "학기 식수 신청 삭제",
+                "operationId": "2a0bf69d8561082237eeb76058ed04ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 학기 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/weekend": {
             "post": {
                 "tags": [
@@ -2603,6 +2643,35 @@
                 }
             }
         },
+        "/api/restaurant/weekend/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 삭제",
+                "description": "주말 식수 신청 삭제",
+                "operationId": "a6a527f56ec109744dc05d0334b068ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 주말 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/semester/meal-type": {
             "post": {
                 "tags": [
@@ -2639,6 +2708,35 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/m/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유형 삭제",
+                "description": "학기 식수 유형 삭제",
+                "operationId": "944ecd35c9632d3972d6b37c334ccaa9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 학기 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -2690,6 +2788,35 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/m/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 유형 삭제",
+                "description": "주말 식수 유형 삭제",
+                "operationId": "81499f0ccb46c1808826bc5a8ff2e96f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 주말 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
