@@ -142,7 +142,7 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $adminId = $request->user()->id;
+        $adminId = auth('admins')->id();
 
         try {
             Admin::findOrFail($adminId);

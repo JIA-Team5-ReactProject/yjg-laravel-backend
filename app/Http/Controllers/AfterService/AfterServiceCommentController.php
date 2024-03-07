@@ -59,7 +59,7 @@ class AfterServiceCommentController extends Controller
         }
 
         $comment = $afterService->afterServiceComments()->create([
-            'admin_id' => $request->user()->id,
+            'admin_id' => auth('admins')->id(),
             'comment'  => $validated['comment'],
         ]);
 

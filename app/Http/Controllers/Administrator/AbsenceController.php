@@ -132,7 +132,7 @@ class AbsenceController extends Controller
     {
         // 유저
         // 유저의 외박, 외출 목록 (페이지네이션)
-        $userId = $request->user()->id;
+        $userId = auth('users')->id();
 
         $absenceList = AbsenceList::where('user_id', $userId)->paginate(8);
 
@@ -180,7 +180,7 @@ class AbsenceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $validated['user_id'] = $request->user()->id;
+        $validated['user_id'] = auth('users')->id();
 
         $absence = AbsenceList::create($validated);
 

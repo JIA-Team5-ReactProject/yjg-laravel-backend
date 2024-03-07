@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 
 class AfterServiceController extends Controller
 {
+    // 유저의 AS 목록 구현하기
     /**
      * @OA\Get (
      *     path="/api/after-service",
@@ -127,7 +128,7 @@ class AfterServiceController extends Controller
 
         $afterService = new AfterService();
 
-        $afterService->user_id = $request->user()->id;
+        $afterService->user_id = auth('users')->id();
         $afterService->title = $validated['title'];
         $afterService->content = $validated['content'];
         $afterService->visit_place = $validated['visit_place'];

@@ -23,7 +23,7 @@ class SalonReservationController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', $request->user()->id)->get()]);
+        return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', auth('users')->id())->get()]);
     }
 
     /**
@@ -130,7 +130,7 @@ class SalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $userId = $request->user()->id;
+        $userId = auth('users')->id();
 
         $reservation = SalonReservation::create([
             'salon_service_id' => $validated['salon_service_id'],
@@ -214,8 +214,10 @@ class SalonReservationController extends Controller
      */
     public function destroy(Request $request)
     {
-        $userId = $request->user()->id;
-        if(!SalonReservation::destroy($userId)) return response()->json(['error' => 'Failed to cancel reservation'], 500);
+        $validated = $request->validate([
+            'id' => 'required|numeric',
+        ]);
+        if(!SalonReservation::destroy($validated['id'])) return response()->json(['error' => 'Failed to cancel reservation'], 500);
 
         return response()->json(['success' => 'Reservation canceled successfully']);
     }
