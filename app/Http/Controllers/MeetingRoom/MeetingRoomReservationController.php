@@ -49,10 +49,16 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $reservations = MeetingRoomReservation::where('reservation_date', $validated['date']);
+        $reservations = MeetingRoomReservation::with('user')->where('reservation_date', $validated['date']);
 
         if(isset($validated['room_number'])) {
             $reservations = $reservations->where('meeting_room_number', $validated['room_number']);
+        }
+
+        foreach ($reservations as $reservation) {
+            $userName = $reservation->user['name'];
+            $reservation['user_name'] = $userName;
+            unset($reservation['user']);
         }
 
         $reservations = $reservations->paginate(8);
