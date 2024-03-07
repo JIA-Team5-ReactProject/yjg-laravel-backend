@@ -204,10 +204,10 @@ class BusScheduleController extends Controller
               'round' => 'required|string',
               'weekend' => 'required|boolean',
               'semester' => 'required|boolean',
-              'bus_route_direction' => 'required|string|size:1',
+              'bus_route_direction' => 'required|string',
 
             ]);
-            Log::info('파라미터 라운드: ' . $validatedData['round']);
+            Log::info('방향: ' . $validatedData['bus_route_direction']);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }

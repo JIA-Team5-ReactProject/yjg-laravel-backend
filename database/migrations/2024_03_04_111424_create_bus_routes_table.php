@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('weekend');
             $table->boolean('semester');
-            $table->char('bus_route_direction',1);
+            $table->string('bus_route_direction',10);
             $table->timestamps();
         });
     }
