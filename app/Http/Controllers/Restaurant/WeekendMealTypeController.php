@@ -65,4 +65,34 @@ class WeekendMealTypeController extends Controller
         // 성공 메시지
         return response()->json(['message' => '주말 식사 유형 저장 완료']);
     }
+
+
+    /**
+     * @OA\Delete (
+     *     path="/api/restaurant/weekend/m/delete/{id}",
+     *     tags={"식수"},
+     *     summary="주말 식수 유형 삭제",
+     *     description="주말 식수 유형 삭제",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="삭제할 주말 식수 유형 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function delete($id)
+    {
+        try {
+            $RestaurantWeekend = WeekendMealType::findOrFail($id);
+            $RestaurantWeekend->delete();
+
+            return response()->json(['message' => '주말 식수 유형이 삭제되었습니다.']);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
 }

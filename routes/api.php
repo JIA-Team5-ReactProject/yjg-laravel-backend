@@ -181,9 +181,10 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/weekend', [RestaurantWeekendController::class, 'store']);
     Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
     Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
-
-    Route::delete('/semester/delete{id}', [RestaurantSemesterController::class, 'delete']);
-    Route::delete('/weekend/delete', [RestaurantWeekendController::class, 'delete']);
+    Route::delete('/semester/m/delete/{id}', [SemesterMealTypeController::class, 'delete']);
+    Route::delete('/weekend/m/delete/{id}', [WeekendMealTypeController::class, 'delete']);
+    Route::delete('/semester/delete/{id}', [RestaurantSemesterController::class, 'delete']);
+    Route::delete('/weekend/delete/{id}', [RestaurantWeekendController::class, 'delete']);
 });
 
 Route::prefix('bus')->group(function () {
