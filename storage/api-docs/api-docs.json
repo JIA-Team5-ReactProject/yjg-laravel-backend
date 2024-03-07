@@ -2123,9 +2123,9 @@
                         }
                     },
                     {
-                        "name": "id",
+                        "name": "room_number",
                         "in": "query",
-                        "description": "예약 아이디",
+                        "description": "회의실의 번호",
                         "required": false,
                         "schema": {
                             "type": "integer"
