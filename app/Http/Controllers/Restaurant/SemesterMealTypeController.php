@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
 use App\Models\SemesterMealType;
+use App\Models\WeekendMealType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -58,5 +59,36 @@ class SemesterMealTypeController extends Controller
 
         // 성공 메시지
         return response()->json(['message' => '학기 식사 유형 저장 완료']);
+    }
+
+
+    /**
+     * @OA\Delete (
+     *     path="/api/restaurant/semester/m/delete/{id}",
+     *     tags={"식수"},
+     *     summary="학기 식수 유형 삭제",
+     *     description="학기 식수 유형 삭제",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="삭제할 학기 식수 유형 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function delete($id)
+    {
+        try {
+            $SemesterMealType = SemesterMealType::findOrFail($id);
+
+            $SemesterMealType->delete();
+
+            return response()->json(['message' => '학기 식수 유형이 삭제되었습니다.']);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
     }
 }
