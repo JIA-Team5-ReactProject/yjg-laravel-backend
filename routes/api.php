@@ -50,7 +50,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // 관리자
-Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
@@ -150,7 +150,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('reservation')->group(function () {
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
             Route::post('/', [MeetingRoomReservationController::class, 'store']);
-            Route::patch('/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
+            Route::patch('/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
             Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
             Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
         });
@@ -181,7 +181,7 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/weekend', [RestaurantWeekendController::class, 'store']);
     Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
     Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
-    
+
     Route::delete('/semester/delete{id}', [RestaurantSemesterController::class, 'delete']);
     Route::delete('/weekend/delete', [RestaurantWeekendController::class, 'delete']);
 });
