@@ -2,22 +2,23 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TokenService
 {
-    public function userToken($userData, string $tokenName, array $ability)
+    public function createAccessToken(string $guard, array $credentials)
     {
-        return $userData->createToken($tokenName, $ability)->plainTextToken;
+        return auth($guard)->claims(['typ' => 'access'])->attempt($credentials);
     }
 
-    public function adminToken($adminData, string $tokenName, array $ability)
+    public function createAccessTokenByModel(string $guard, User $user)
     {
-        return $adminData->createToken($tokenName, $ability)->plainTextToken;
+        return auth($guard)->claims(['typ' => 'access'])->login($user);
     }
 
-    public function revokeToken(Request $request)
+    public function createRefreshToken(string $guard, array $credentials)
     {
-        return $request->user()->tokens()->delete();
+        return auth($guard)->claims(['typ' => 'refresh'])->setTTL(1440 * 7)->attempt($credentials);
     }
 }

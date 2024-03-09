@@ -149,31 +149,17 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-//        try {
-//            $admin = Admin::where('email', $credentials['email'])->firstOrFail();
-//        } catch(modelNotFoundException $modelNotFoundException) {
-//            $errorMessage = $modelNotFoundException->getMessage();
-//            return response()->json(['error' => '일치하는 유저가 없습니다.'], 404);
-//        }
-//
-//        if (! $admin || ! Hash::check($credentials['password'], $admin->password)) {
-//            throw validationexception::withMessages([
-//                'email' => ['비밀번호가 일치하지 않습니다.'],
-//            ]);
-//        }
-//
-//        $token = $this->tokenService->adminToken($admin, 'admin', ['admin']);
-
-        if (! $token = auth('admins')->setTTL(180)->attempt($credentials)) {
+        if (! $token = $this->tokenService->createAccessToken('admins', $credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+//        $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
 
         return response()->json([
             'user' => auth('admins')->user(),
             'access_token' => $token,
-            'token_type' => 'access',
+//            'refresh_token' => $refreshToken,
         ]);
-
     }
 
     /**

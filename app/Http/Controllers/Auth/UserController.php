@@ -126,14 +126,15 @@ class UserController extends Controller
             'name' => $credentials['displayName'],
         ]);
 
-        if (! $token = auth('users')->setTTL(180)->login($user)) {
+        if (! $token = $this->tokenService->createAccessTokenByModel('users', $user)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+//        $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
 
         return response()->json([
             'user' => auth('users')->user(),
             'access_token' => $token,
-            'token_type' => 'access',
+//            'refresh_token' => $refreshToken,
         ]);
 
     }
@@ -173,14 +174,16 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        if (! $token = auth('users')->setTTL(180)->attempt($credentials)) {
+        if (! $token = $this->tokenService->createAccessToken('users', $credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
 
         return response()->json([
             'user' => auth('users')->user(),
             'access_token' => $token,
-            'token_type' => 'access',
+            'refresh_token' => $refreshToken,
         ]);
     }
 
