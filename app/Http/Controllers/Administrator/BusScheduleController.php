@@ -40,7 +40,7 @@ class BusScheduleController extends Controller
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'round_id' => 'required|string',
+                
                 'station' => 'required|string',
                 'bus_time' => 'required|date_format:H:i'
             ]);
@@ -74,7 +74,7 @@ class BusScheduleController extends Controller
         //    $busRound = $validatedData['round_id'];
         // }
 
-        $busRoute = BusRound::where('id', $validatedData['round_id'])
+        $busRoute = BusRound::where('id', $request->round_id)
             ->first();
 
         try{
