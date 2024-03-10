@@ -13,7 +13,6 @@ use Illuminate\Validation\ValidationException;
 
 class AfterServiceController extends Controller
 {
-    // 유저의 AS 목록 구현하기
     /**
      * @OA\Get (
      *     path="/api/after-service",
@@ -78,6 +77,23 @@ class AfterServiceController extends Controller
         }
 
         return response()->json(['after_services' => $afterServices]);
+    }
+
+    /**
+     * @OA\Get (
+     *     path="/api/after-service/user",
+     *     tags={"AS"},
+     *     summary="유저의 AS 검색",
+     *     description="유저 아이디와 일치하는 AS 검색",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function userIndex(): \Illuminate\Http\JsonResponse
+    {
+        $userId = auth('users')->id();
+
+        return response()->json(['after_services' => AfterService::with('user')->where('user_id', $userId)]);
     }
 
     /**

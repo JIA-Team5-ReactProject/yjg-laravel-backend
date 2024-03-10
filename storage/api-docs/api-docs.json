@@ -68,7 +68,7 @@
                     {
                         "name": "date",
                         "in": "query",
-                        "description": "조회할 날짜",
+                        "description": "조회할 날짜(예약 생성일 기준)",
                         "required": true,
                         "schema": {
                             "type": "date"
@@ -1060,6 +1060,24 @@
                 }
             }
         },
+        "/api/after-service/user": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "유저의 AS 검색",
+                "description": "유저 아이디와 일치하는 AS 검색",
+                "operationId": "69d73d642fe4b2cf9ad4ecfba94b14c0",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
         "/api/after-service/{id}": {
             "get": {
                 "tags": [
@@ -1443,11 +1461,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "admin_id": {
-                                        "description": "권한을 부여할 유저 아이디",
-                                        "type": "number",
-                                        "example": 1
-                                    },
                                     "salon_privilege": {
                                         "description": "미용실 권한",
                                         "type": "boolean",
