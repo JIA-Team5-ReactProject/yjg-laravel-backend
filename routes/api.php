@@ -143,6 +143,7 @@ Route::middleware(['auth:users,admins'])->group(function () {
         Route::patch('/', [AfterServiceController::class, 'update'])->name('user.as.update');
         Route::delete('/{id}', [AfterServiceController::class, 'destroy'])->name('user.as.destroy');
         Route::get('/', [AfterServiceController::class, 'index'])->name('as.index');
+        Route::get('/user', [AfterServiceController::class, 'userIndex'])->name('as.user.index');
         Route::get('/{id}', [AfterServiceController::class, 'show'])->name('as.show');
     });
 
