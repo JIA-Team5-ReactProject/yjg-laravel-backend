@@ -69,7 +69,7 @@ class AfterServiceController extends Controller
                 $query->where('name', $validated['name']);
             });
         }
-        $afterServices = $afterServices->paginate(8);
+        $afterServices = $afterServices->orderByDesc('created_at')->paginate(8);
 
         foreach ($afterServices as $afterService) {
             $userName = $afterService->user['name'];
@@ -94,7 +94,8 @@ class AfterServiceController extends Controller
     {
         $userId = auth('users')->id();
 
-        return response()->json(['after_services' => AfterService::with($this->relations)->where('user_id', $userId)->get()]);
+        return response()->json(['after_services' => AfterService::with($this->relations)
+            ->where('user_id', $userId)->orderByDesc('created_at')->get()]);
     }
 
     /**

@@ -212,12 +212,9 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(Request $request)
+    public function destroy(string $id)
     {
-        $validated = $request->validate([
-            'id' => 'required|numeric',
-        ]);
-        if(!SalonReservation::destroy($validated['id'])) return response()->json(['error' => 'Failed to cancel reservation'], 500);
+        if(!SalonReservation::destroy($id)) return response()->json(['error' => 'Failed to cancel reservation'], 500);
 
         return response()->json(['success' => 'Reservation canceled successfully']);
     }
