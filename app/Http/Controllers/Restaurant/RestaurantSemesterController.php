@@ -26,7 +26,6 @@ class RestaurantSemesterController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="user_id", type="string", description="사용자 ID", example="1"),
      *                 @OA\Property (property="payment", type="boolean", description="입금 확인", example=false),
  *                     @OA\Property (property="meal_type", type="string", description="식사 유형", example="C"),
      *             )
@@ -41,7 +40,6 @@ class RestaurantSemesterController extends Controller
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'user_id' => 'required|exists:users,id',
                 'payment' => 'required|boolean',
                 'meal_type' => 'required|string',
             ]);
@@ -54,8 +52,9 @@ class RestaurantSemesterController extends Controller
             ->first();
 
             $restaurantSemester = RestaurantSemester::create([
-                'user_id' => $validatedData['user_id'],
+                'user_id' => auth()->id(),
             ]);
+            Log::info('유저 아이디: ' . $restaurantSemester->user_id);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
