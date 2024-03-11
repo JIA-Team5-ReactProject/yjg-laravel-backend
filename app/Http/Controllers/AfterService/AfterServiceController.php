@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 
 class AfterServiceController extends Controller
 {
+    protected $relations = ['user', 'afterServiceComments', 'afterServiceImages'];
     /**
      * @OA\Get (
      *     path="/api/after-service",
@@ -57,7 +58,7 @@ class AfterServiceController extends Controller
             $errorMessage = $exception->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
-        $afterServices = AfterService::query();
+        $afterServices = AfterService::query()->with($this->relations);
 
         if(isset($request['status'])) {
             $afterServices = $afterServices->where('status', $validated['status']);
@@ -93,7 +94,7 @@ class AfterServiceController extends Controller
     {
         $userId = auth('users')->id();
 
-        return response()->json(['after_services' => AfterService::with('user')->where('user_id', $userId)->get()]);
+        return response()->json(['after_services' => AfterService::with($this->relations)->where('user_id', $userId)->get()]);
     }
 
     /**
@@ -187,7 +188,7 @@ class AfterServiceController extends Controller
     public function show(string $id)
     {
         try {
-            $afterService = AfterService::with(['afterServiceImages', 'afterServiceComments', 'user'])->findOrFail($id);
+            $afterService = AfterService::with($this->relations)->findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
             return response()->json(['error' => '해당하는 AS 정보가 없습니다.'], 404);
         }
