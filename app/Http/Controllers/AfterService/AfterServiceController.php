@@ -89,11 +89,11 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function userIndex(): \Illuminate\Http\JsonResponse
+    public function userIndex()
     {
         $userId = auth('users')->id();
 
-        return response()->json(['after_services' => AfterService::with('user')->where('user_id', $userId)]);
+        return response()->json(['after_services' => AfterService::with('user')->where('user_id', $userId)->get()]);
     }
 
     /**
