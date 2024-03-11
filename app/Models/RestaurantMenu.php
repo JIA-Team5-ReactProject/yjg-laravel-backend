@@ -12,7 +12,10 @@ class RestaurantMenu extends Model
     protected $fillable = [
         'date',
         'menu',
-        'meal_type',
+        'meal_time',
     ];
+    public function restaurantMenuMonth() {
+        $this->belongsTo(RestaurantMenuMonth::class);
+    }
     
 }
