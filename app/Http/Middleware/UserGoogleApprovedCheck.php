@@ -18,7 +18,7 @@ class UserGoogleApprovedCheck
     {
         $user = User::where('email', $request->email)->first();
 
-        if($user && !$user->approved) return response()->json(['error' => '아직 승인되지 않은 유저입니다.'], 500);
+        if($user && !$user->approved) return response()->json(['error' => '아직 승인되지 않은 유저입니다.'], 403);
         return $next($request);
     }
 }
