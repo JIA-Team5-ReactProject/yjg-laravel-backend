@@ -2397,11 +2397,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "description": "사용자 ID",
-                                        "type": "string",
-                                        "example": "1"
-                                    },
                                     "payment": {
                                         "description": "입금 확인",
                                         "type": "boolean",

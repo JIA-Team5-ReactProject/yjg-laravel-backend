@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('restaurant_menus', function (Blueprint $table) {
+        Schema::create('restaurant_menu_months', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->string('menu')->nullable();
-            $table->char('meal_time',1);
+            $table->string('month');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('restaurant_menus');
+        Schema::dropIfExists('restaurant_menu_months');
     }
 };

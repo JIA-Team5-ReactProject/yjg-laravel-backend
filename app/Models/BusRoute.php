@@ -19,5 +19,6 @@ class BusRoute extends Model
     public function bus_round(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(BusSchedule::class);
+        //return $this->hasMany(BusRound::class); 이게 맞지 않나? 왜 동작이 잘됨?
     }
 }
