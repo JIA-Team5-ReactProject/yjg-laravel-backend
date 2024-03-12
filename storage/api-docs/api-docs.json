@@ -695,6 +695,35 @@
                 }
             }
         },
+        "/api/notice/recent": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "최근 3건의 공지사항",
+                "description": "가장 최신 공지사항 3개를 반환",
+                "operationId": "cbcdfc23b6bb7395b90a1cf7f8687b4a",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "찾을 공지사항의 태그",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
         "/api/notice/{id}": {
             "get": {
                 "tags": [
