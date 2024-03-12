@@ -53,7 +53,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // 관리자
-Route::middleware(['auth:admins'])->group(function () {
+Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
@@ -114,11 +114,11 @@ Route::middleware(['auth:admins'])->group(function () {
 });
 
 // 유저 및 공용
-Route::middleware(['auth:users,admins'])->group(function () {
+Route::middleware(['auth:users,admins', 'token.type:access'])->group(function () {
     Route::get('/me', function () {
         return auth('users')->user();
     });
-    Route::get('/refresh', RefreshController::class)->middleware('token.type');
+    Route::get('/refresh', RefreshController::class)->middleware('token.type:refresh');
     Route::prefix('user')->group(function () {
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
@@ -145,7 +145,7 @@ Route::middleware(['auth:users,admins'])->group(function () {
 
     Route::prefix('after-service')->group(function () {
         Route::post('/', [AfterServiceController::class, 'store'])->name('as.store');
-        Route::patch('/', [AfterServiceController::class, 'update'])->name('as.update');
+        Route::patch('/{id}', [AfterServiceController::class, 'update'])->name('as.update');
         Route::delete('/{id}', [AfterServiceController::class, 'destroy'])->name('as.destroy');
         Route::get('/', [AfterServiceController::class, 'index'])->name('as.index');
         Route::get('/user', [AfterServiceController::class, 'userIndex'])->name('as.index.user');
