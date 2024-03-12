@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Salon;
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\SalonService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -36,7 +37,7 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function show(Request $request)
+    public function show(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -83,8 +84,14 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'category_id' => 'required|numeric',
@@ -133,8 +140,14 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request)
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('update');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'service_id' => 'required|numeric',
@@ -182,8 +195,14 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         if (!SalonService::destroy($id)) {
             throw new DestroyException('Failed to destroy category');
         }

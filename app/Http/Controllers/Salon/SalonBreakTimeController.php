@@ -4,17 +4,18 @@ namespace App\Http\Controllers\Salon;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalonBreakTime;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class SalonBreakTimeController extends Controller
 {
-    private $validationRule = [
+    private array $validationRule = [
         'break_time' => 'required|array',
         'date'   => 'required|date',
     ];
 
-    public function index()
+    public function index(): \Illuminate\Database\Eloquent\Collection
     {
         $dayList = $this->dayList;
 
@@ -56,8 +57,14 @@ class SalonBreakTimeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate($this->validationRule);
         } catch (ValidationException $validationException) {
@@ -103,8 +110,14 @@ class SalonBreakTimeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate($this->validationRule);
         } catch (ValidationException $validationException) {

@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        // 모든 정책은 컨벤션에 맞게 작성하여, DI 하도록 함
     ];
 
     /**
