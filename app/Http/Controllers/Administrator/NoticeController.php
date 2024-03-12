@@ -15,7 +15,6 @@ use Illuminate\Validation\ValidationException;
 class NoticeController extends Controller
 {
     private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
-
     /**
      * @OA\Get (
      *     path="/api/notice",
@@ -63,6 +62,39 @@ class NoticeController extends Controller
         }
 
         $notices = $notices->orderByDesc('created_at')->paginate(8);
+
+        return response()->json(['notices' => $notices]);
+    }
+
+    /**
+     * @OA\Get (
+     *     path="/api/notice/recent",
+     *     tags={"공지사항"},
+     *     summary="최근 3건의 공지사항",
+     *     description="가장 최신 공지사항 3개를 반환",
+     *     @OA\Parameter(
+     *          name="tag",
+     *          description="찾을 공지사항의 태그",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(type="string"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function recentIndex(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'tag' => [Rule::in($this->tagRules)],
+            ]);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+        $notices = Notice::with('noticeImages')->where('tag', $validated['tag'])->latest()->take(3)->get();
 
         return response()->json(['notices' => $notices]);
     }
