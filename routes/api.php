@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\MeetingRoom\MeetingRoomController;
 use App\Http\Controllers\MeetingRoom\MeetingRoomReservationController;
 use App\Http\Controllers\QRController;
+use App\Http\Controllers\RefreshController;
 use App\Http\Controllers\Restaurant\RestaurantMenusController;
 use App\Http\Controllers\Restaurant\RestaurantSemesterController;
 use App\Http\Controllers\Restaurant\RestaurantWeekendController;
@@ -114,6 +115,10 @@ Route::middleware(['auth:admins'])->group(function () {
 
 // 유저 및 공용
 Route::middleware(['auth:users,admins'])->group(function () {
+    Route::get('/me', function () {
+        return auth('users')->user();
+    });
+    Route::get('/refresh', RefreshController::class);
     Route::prefix('user')->group(function () {
         Route::get('/qr', [QRController::class, 'generator']);
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
