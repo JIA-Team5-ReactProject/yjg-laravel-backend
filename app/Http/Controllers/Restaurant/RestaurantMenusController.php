@@ -15,19 +15,40 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RestaurantMenusController extends Controller
 {
-
+/**
+     * @OA\Post (
+     * path="/api/restaurant/menu/date",
+     * tags={"식수"},
+     * summary="식수 식단표 날짜 추가",
+     * description="식수 식단표 날짜 추가를 합니다",
+     *     @OA\RequestBody(
+     *         description="추가할 날짜(년,월)",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="month", type="string", description="월", example="03"),
+ *                     @OA\Property (property="year", type="string", description="년", example="23"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function store(Request $request)
     {
         try {
             // 유효성 검사
             $validatedData = $request->validate([
                 'month' => 'required|string',
+                'year' => 'required|string'
             ]);
         } catch (ValidationException $exception) {
             // 유효성 검사 실패시 애러 메세지
             return response()->json(['error' => $exception->getMessage()], 422);
         }
-
+       
         try {
             // 데이터베이스에 저장
             RestaurantMenuDate::create([
@@ -39,7 +60,7 @@ class RestaurantMenusController extends Controller
         }
 
         // 성공 메시지
-        return response()->json(['message' => `식단표 월 저장 완료`]);
+        return response()->json(['message' => '식단표 날짜 저장 완료']);
     }
 
 
@@ -78,11 +99,64 @@ class RestaurantMenusController extends Controller
     }
 
 
-    public function getMonthMenu($id)
+/**
+     * @OA\Get (
+     * path="/api/restaurant/menu/get/m",
+     * tags={"식수"},
+     * summary="식수 식단표 1달치 가져오기",
+     * description="식수 식단표 1달치를 가져옵니다",
+     *     @OA\RequestBody(
+     *         description="받고싶은 날짜(년,월)",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="month", type="string", description="월", example="03"),
+ *                     @OA\Property (property="year", type="string", description="년", example="23"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getMonthMenu(Request $request)
+    {
+        $month = RestaurantMenuDate::where('year', $request->year)->where('month', $request->month)->first();
+        try {
+            $monthMenus = RestaurantMenu::where('date_id', $month->id)->get();
+            return response()->json(['month_menus' => $monthMenus]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
+
+
+
+    /**
+     * @OA\Get (
+     * path="/api/restaurant/menu/get/d",
+     * tags={"식수"},
+     * summary="식수 식단표 하루치 가져오기",
+     * description="식수 식단표 하루치를 가져옵니다",
+     *     @OA\RequestBody(
+     *         description="받고싶은 날짜(년,월,일)",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="date", type="string", description="년-월-일", example="2023-11-14"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getDayMenu(Request $request)
     {
         try {
-            $monthMenus = RestaurantMenu::where('month_id', $id)->get();
-            $ids = $monthMenus->pluck('id')->toArray();
+            $monthMenus = RestaurantMenu::where('date', $request->date)->get();
             return response()->json(['month_menus' => $monthMenus]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);

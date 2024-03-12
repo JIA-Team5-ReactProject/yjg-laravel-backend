@@ -2401,6 +2401,47 @@
                 }
             }
         },
+        "/api/restaurant/menu/date": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 식단표 날짜 추가",
+                "description": "식수 식단표 날짜 추가를 합니다",
+                "operationId": "1f23b0545afeac11741e76d7873619f2",
+                "requestBody": {
+                    "description": "추가할 날짜(년,월)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "month": {
+                                        "description": "월",
+                                        "type": "string",
+                                        "example": "03"
+                                    },
+                                    "year": {
+                                        "description": "년",
+                                        "type": "string",
+                                        "example": "23"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/menu": {
             "post": {
                 "tags": [
@@ -2420,6 +2461,83 @@
                                         "description": "식단표 엑셀 파일",
                                         "type": "file",
                                         "example": "1월.xsl"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/get/m": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 식단표 1달치 가져오기",
+                "description": "식수 식단표 1달치를 가져옵니다",
+                "operationId": "7c5d7b4dd545f4a62e2ded2979422208",
+                "requestBody": {
+                    "description": "받고싶은 날짜(년,월)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "month": {
+                                        "description": "월",
+                                        "type": "string",
+                                        "example": "03"
+                                    },
+                                    "year": {
+                                        "description": "년",
+                                        "type": "string",
+                                        "example": "23"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/get/d": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 식단표 하루치 가져오기",
+                "description": "식수 식단표 하루치를 가져옵니다",
+                "operationId": "3b26d245c4ec9a032d80e4373639a043",
+                "requestBody": {
+                    "description": "받고싶은 날짜(년,월,일)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "description": "년-월-일",
+                                        "type": "string",
+                                        "example": "2023-11-14"
                                     }
                                 },
                                 "type": "object"

@@ -325,8 +325,11 @@ class BusScheduleController extends Controller
             // bus_round_id에 해당하는 모든 bus_schedule 데이터를 조회합니다.
             $schedules = BusSchedule::where('bus_round_id', $id)->get();
 
-            // 조회된 데이터를 로그에 기록합니다.
-            Log::info('조회된 스케줄: ', ['schedules' => $schedules->toArray()]);
+            if ($schedules->isEmpty()) {
+                return response()->json(['error' => '해당하는 버스 일정을 찾을 수 없습니다.'], 404);
+            }
+           
+            //Log::info('조회된 스케줄: ', ['schedules' => $schedules->toArray()]);
 
             // 조회된 데이터를 JSON 형태로 반환합니다.
             return response()->json(['schedules' => $schedules]);

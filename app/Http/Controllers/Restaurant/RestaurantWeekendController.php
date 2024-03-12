@@ -161,7 +161,6 @@ class RestaurantWeekendController extends Controller
     {
         try {
             $RestaurantWeekend = RestaurantWeekend::findOrFail($id);
-
             $RestaurantWeekend->delete();
 
             return response()->json(['message' => '주말 식수 신청이 삭제되었습니다.']);
