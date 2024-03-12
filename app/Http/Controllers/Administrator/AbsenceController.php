@@ -13,6 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class AbsenceController extends Controller
 {
+    public function authorize($ability, $arguments = [AbsenceList::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/absence/count",

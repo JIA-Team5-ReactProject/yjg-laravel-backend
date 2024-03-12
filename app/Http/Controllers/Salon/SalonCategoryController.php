@@ -12,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class SalonCategoryController extends Controller
 {
+    public function authorize($ability, $arguments = [SalonCategory::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/salon/category",

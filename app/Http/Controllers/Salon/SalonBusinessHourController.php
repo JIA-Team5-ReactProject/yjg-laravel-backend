@@ -17,6 +17,12 @@ class SalonBusinessHourController extends Controller
     public function __construct(protected  SalonBreakTimeController $salonBreakTimeController)
     {
     }
+
+    public function authorize($ability, $arguments = [SalonBusinessHour::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
+
     /**
      * @OA\Get (
      *     path="/api/salon/hour",

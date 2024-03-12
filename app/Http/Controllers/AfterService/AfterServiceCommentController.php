@@ -13,6 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class AfterServiceCommentController extends Controller
 {
+    public function authorize($ability, $arguments = [AfterServiceComment::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Post (
      *     path="/api/after-service/{id}/comment",
@@ -41,7 +45,7 @@ class AfterServiceCommentController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request, string $id)
+    public function store(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $this->authorize('store');

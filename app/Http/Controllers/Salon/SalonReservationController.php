@@ -12,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class SalonReservationController extends Controller
 {
+    public function authorize($ability, $arguments = [SalonReservation::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/salon/reservation/user",

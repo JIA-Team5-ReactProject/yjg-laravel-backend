@@ -15,6 +15,11 @@ use Illuminate\Validation\ValidationException;
 class AfterServiceController extends Controller
 {
     protected array $relations = ['user', 'afterServiceComments', 'afterServiceImages'];
+
+    public function authorize($ability, $arguments = [AfterService::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/after-service",
