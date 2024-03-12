@@ -182,6 +182,9 @@ Route::middleware(['auth:users,admins'])->group(function () {
 
 Route::prefix('restaurant')->group(function () {
     Route::post('/menu', [RestaurantMenusController::class, 'import']);
+    Route::post('/menu/date', [RestaurantMenusController::class, 'store']);
+    Route::get('/menu/get/{id}', [RestaurantMenusController::class, 'getMonthMenu']);
+
     Route::get('/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
     Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);

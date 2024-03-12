@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('restaurant_menus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('month_id')->constrained('restaurant_menu_months')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('date_id')->constrained('restaurant_menu_dates')->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('date');
             $table->string('menu')->nullable();
             $table->char('meal_time',1);
@@ -27,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('restaurant_menus', function (Blueprint $table) {
-            $table->dropForeign(['restaurant_menu_months']);
+            $table->dropForeign(['restaurant_menu_dates']);
             // $table->dropIfExists();
         });
         Schema::dropIfExists('restaurant_menus');

@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\BusRound;
 use App\Models\BusRoute;
 use App\Models\BusSchedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class BusScheduleController extends Controller
@@ -76,6 +78,8 @@ class BusScheduleController extends Controller
 
         $busRoute = BusRound::where('id', $request->round_id)
             ->first();
+        $busTime = Carbon::createFromFormat('H:i', $validatedData['bus_time'])->format('H:i');
+        Log::info('시간: '.$busTime );
 
         try{
             BusSchedule::create([
@@ -259,12 +263,12 @@ class BusScheduleController extends Controller
     {
 
         try {
-            // 유효성 검사
-            $validatedData = $request->validate([
+            // 유효성 검사//쿼리파라미터 형식
+            $validatedData = Validator::make($request->query(),[
               'weekend' => 'required|boolean',
               'semester' => 'required|boolean',
               'bus_route_direction' => 'required|string',
-            ]);
+            ])->validate();
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }

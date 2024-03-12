@@ -5,11 +5,45 @@ namespace App\Http\Controllers\Restaurant;
 use App\Exports\RestaurantMenuExport;
 use App\Http\Controllers\Controller;
 use App\Imports\RestaurantMenuImport;
+use App\Models\RestaurantMenu;
+use App\Models\RestaurantMenuDate;
+use App\Models\RestaurantMenuMonth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RestaurantMenusController extends Controller
 {
+
+    public function store(Request $request)
+    {
+        try {
+            // 유효성 검사
+            $validatedData = $request->validate([
+                'month' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            // 유효성 검사 실패시 애러 메세지
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+        try {
+            // 데이터베이스에 저장
+            RestaurantMenuDate::create([
+                'month' => $validatedData['month'],
+                'year' => $validatedData['year'],
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+
+        // 성공 메시지
+        return response()->json(['message' => `식단표 월 저장 완료`]);
+    }
+
+
+
     /**
      * @OA\Post (
      * path="/api/restaurant/menu",
@@ -43,12 +77,15 @@ class RestaurantMenusController extends Controller
         
     }
 
-    public function getMenu() 
-    {
-        try{
-            
-        }catch(\Exception $exception){
 
+    public function getMonthMenu($id)
+    {
+        try {
+            $monthMenus = RestaurantMenu::where('month_id', $id)->get();
+            $ids = $monthMenus->pluck('id')->toArray();
+            return response()->json(['month_menus' => $monthMenus]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
 }
