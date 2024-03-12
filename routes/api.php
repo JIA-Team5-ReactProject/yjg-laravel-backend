@@ -114,11 +114,12 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
 });
 
 // 유저 및 공용
+Route::get('/refresh', RefreshController::class)->middleware(['auth:users,admins', 'token.type:refresh']);
+
 Route::middleware(['auth:users,admins', 'token.type:access'])->group(function () {
     Route::get('/me', function () {
         return auth('users')->user();
     });
-    Route::get('/refresh', RefreshController::class)->middleware('token.type:refresh');
     Route::prefix('user')->group(function () {
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
