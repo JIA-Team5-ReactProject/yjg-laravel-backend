@@ -50,9 +50,11 @@ class RestaurantSemesterController extends Controller
         try {
             $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
             ->first();
+            $user_id = auth()->id();
 
             $restaurantSemester = RestaurantSemester::create([
-                'user_id' => auth()->id(),
+                // 'user_id' => $user_id,
+                'user_id' => 1,
             ]);
             Log::info('유저 아이디: ' . $restaurantSemester->user_id);
         } catch (\Exception $exception) {
@@ -171,9 +173,6 @@ class RestaurantSemesterController extends Controller
         try {
             $RestaurantSemester = RestaurantSemester::findOrFail($id);
             $RestaurantSemester->delete();
-
-            // $RestaurantSemesterMealType = RestaurantSemesterMealType::where("restaurant_semester_id", $id)->first();
-            // $RestaurantSemesterMealType->delete();
 
             return response()->json(['message' => '학기 식수 신청이 삭제되었습니다.']);
         } catch (\Exception $exception) {

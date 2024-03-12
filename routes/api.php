@@ -182,7 +182,8 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
 Route::prefix('restaurant')->group(function () {
     Route::post('/menu', [RestaurantMenusController::class, 'import']);
     Route::post('/menu/date', [RestaurantMenusController::class, 'store']);
-    Route::get('/menu/get/{id}', [RestaurantMenusController::class, 'getMonthMenu']);
+    Route::get('/menu/get/m', [RestaurantMenusController::class, 'getMonthMenu']);
+    Route::get('/menu/get/d', [RestaurantMenusController::class, 'getDayMenu']);
 
     Route::get('/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
