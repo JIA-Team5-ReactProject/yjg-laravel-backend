@@ -95,7 +95,7 @@ class AfterServiceController extends Controller
         $userId = auth('users')->id();
 
         return response()->json(['after_services' => AfterService::with($this->relations)
-            ->where('user_id', $userId)->orderByDesc('created_at')->get()]);
+            ->where('user_id', $userId)->orderByDesc('visit_date')->get()]);
     }
 
     /**
