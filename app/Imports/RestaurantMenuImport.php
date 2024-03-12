@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\RestaurantMenu;
+use App\Models\RestaurantMenuDate;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -17,6 +18,7 @@ class RestaurantMenuImport implements ToCollection
     */
     public function collection (Collection $rows)
     {
+        
         try {
             for ($j = 1; $j < 6; $j++) {
                 $i = 5;
@@ -36,24 +38,32 @@ class RestaurantMenuImport implements ToCollection
                     $menu = $menu . " " . $rows[$i][$j];
 
                     if ($i % 6 === 0) {
+                        
                         switch ($i) {
                             case 12:
-                                $meal_type = 'b';
+                                $meal_time = 'b';
                                 break;
                             case 18:
-                                $meal_type = 'l';
+                                $meal_time = 'l';
                                 break;
                             case 24:
-                                $meal_type = 'd';
+                                $meal_time = 'd';
                                 break;
                             default:
-                                $meal_type = "error";
+                                $meal_time = "error";
                         }
+                        
                         //식단표 모델로 보내서 db에 저장
+                        $year = date('y', strtotime($date));
+                        Log::info('년도 : ' . $year);
+                        $month = date('m', strtotime($date));
+                        $restaurantMenuDate = RestaurantMenuDate::where('month', $month)->where('year', $year)->first();
+                        Log::info('날짜 : ' . $restaurantMenuDate->id);
                         $menuData = new RestaurantMenu([
+                            'date_id' => $restaurantMenuDate->id,
                             'date' => $date,
                             'menu' => $menu,
-                            'meal_type' => $meal_type,
+                            'meal_time' => $meal_time,
                         ]);
                         $menuData->save();
                         $menu = "";

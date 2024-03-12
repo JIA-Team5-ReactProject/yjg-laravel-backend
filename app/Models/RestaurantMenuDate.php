@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RestaurantMenuMonth extends Model
+class RestaurantMenuDate extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'month'
+        'month',
+        'year'
     ];
 
     public function restaurant_menu(): \Illuminate\Database\Eloquent\Relations\HasMany

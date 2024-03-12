@@ -10,12 +10,13 @@ class RestaurantMenu extends Model
     use HasFactory;
 
     protected $fillable = [
+        'date_id',
         'date',
         'menu',
         'meal_time',
     ];
-    public function restaurantMenuMonth() {
-        $this->belongsTo(RestaurantMenuMonth::class);
-    }
+    public function restaurantMenuDate() {
+        $this->belongsTo(RestaurantMenuDate::class);
+    }//asd
     
 }
