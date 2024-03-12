@@ -118,7 +118,7 @@ Route::middleware(['auth:users,admins'])->group(function () {
     Route::get('/me', function () {
         return auth('users')->user();
     });
-    Route::get('/refresh', RefreshController::class);
+    Route::get('/refresh', RefreshController::class)->middleware('token.type');
     Route::prefix('user')->group(function () {
         Route::get('/qr', [QRController::class, 'generator']);
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
