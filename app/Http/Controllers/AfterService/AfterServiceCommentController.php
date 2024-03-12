@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AfterService;
 use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceComment;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -42,6 +43,12 @@ class AfterServiceCommentController extends Controller
      */
     public function store(Request $request, string $id)
     {
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'comment' => 'required|string',
@@ -99,6 +106,12 @@ class AfterServiceCommentController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+            $this->authorize('update');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
+        try {
             $validated = $request->validate([
                 'comment' => 'required|string',
             ]);
@@ -140,6 +153,12 @@ class AfterServiceCommentController extends Controller
      */
     public function destroy(string $id)
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         $validator = Validator::make([$id], [
             'id' => 'required|exists:after_service_comments,id|numeric'
         ]);

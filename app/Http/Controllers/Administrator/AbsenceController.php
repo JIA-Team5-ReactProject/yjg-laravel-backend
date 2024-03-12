@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\AbsenceList;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -32,6 +33,11 @@ class AbsenceController extends Controller
      */
     public function absenceCount(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('absenceCount');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
         $validated = $request->validate([
             'date' => 'required|date-format:Y-m-d',
         ]);
@@ -128,7 +134,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function userIndex(Request $request)
+    public function userIndex(Request $request): \Illuminate\Http\JsonResponse
     {
         // 유저
         // 유저의 외박, 외출 목록 (페이지네이션)
@@ -163,7 +169,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         // 유저
         // 외박, 외출 신청
@@ -204,7 +210,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\Http\JsonResponse
     {
         // 공용
         // 특정 아이디를 가진 외박, 외출 목록
@@ -247,7 +253,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         // 유저
         // 외박, 외출 수정 (내용)
@@ -300,10 +306,14 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function reject(string $id)
+    public function reject(string $id): \Illuminate\Http\JsonResponse
     {
-        // 관리자
-        // 외박, 외출 거절 (status 업데이트)
+        try {
+            $this->authorize('reject');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $stayOut = AbsenceList::findOrFail($id);
         } catch (ModelNotFoundException $modelException) {
@@ -334,10 +344,8 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        // 유저
-        // 외박, 외출 취소(삭제)
         try {
             $stayOut = AbsenceList::findOrFail($id);
         } catch (ModelNotFoundException $modelException) {

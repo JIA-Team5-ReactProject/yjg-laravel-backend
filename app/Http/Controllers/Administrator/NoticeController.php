@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Notice;
 use App\Models\NoticeImage;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -15,6 +17,7 @@ use Illuminate\Validation\ValidationException;
 class NoticeController extends Controller
 {
     private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
+
     /**
      * @OA\Get (
      *     path="/api/notice",
@@ -37,7 +40,7 @@ class NoticeController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -116,7 +119,7 @@ class NoticeController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $notice = Notice::with(['noticeImages', 'admin'])->findOrFail($id);
@@ -155,9 +158,16 @@ class NoticeController extends Controller
      *     @OA\Response(response="422", description="Validation Exception"),
      *     @OA\Response(response="500", description="Fail"),
      * )
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         // 태그를 가지고 있는 테이블을 생성해서 그에 맞는 테이블을 참조하게 하기
         try {
             $validated = $request->validate([
@@ -250,8 +260,13 @@ class NoticeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(string $id, Request $request)
+    public function update(string $id, Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('update');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
         // 태그를 가지고 있는 테이블을 생성해서 그에 맞는 테이블을 참조하게 하기
         try {
             $validated = $request->validate([
@@ -327,8 +342,13 @@ class NoticeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
         $notice = Notice::destroy($id);
 
         if(!$notice) return response()->json(['error' => '삭제에 실패하였습니다.'], 500);

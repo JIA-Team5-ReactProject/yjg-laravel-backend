@@ -73,7 +73,6 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
         Route::prefix('hour')->group(function () {
             Route::post('/', [SalonBusinessHourController::class, 'store'])->name('salon.hour.store');
             Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('salon.hour.update');
-            Route::get('/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
             Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('salon.hour.destroy');
         });
         Route::prefix('category')->group(function() {
@@ -96,7 +95,7 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     });
 
     Route::prefix('meeting-room')->group(function () {
-        Route::get('/reservation', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
+        Route::patch('/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
         Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');
     });
@@ -138,6 +137,7 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
             Route::delete('/', [SalonReservationController::class, 'destroy'])->name('salon.reservation.destroy');
         });
         Route::get('/hour', [SalonBusinessHourController::class, 'index'])->name('salon.hour.index');
+        Route::get('/hour/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
         Route::get('/category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
         Route::get('/service', [SalonServiceController::class, 'show'])->name('salon.service.show');
     });
@@ -157,7 +157,7 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         Route::prefix('reservation')->group(function () {
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
             Route::post('/', [MeetingRoomReservationController::class, 'store']);
-            Route::patch('/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
+            Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
             Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
             Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
         });
