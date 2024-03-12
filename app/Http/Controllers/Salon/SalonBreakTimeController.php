@@ -14,6 +14,20 @@ class SalonBreakTimeController extends Controller
         'date'   => 'required|date',
     ];
 
+    public function index()
+    {
+        $dayList = $this->dayList;
+
+        $breakTimes = SalonBreakTime::all(['break_time', 'date']);
+
+        foreach ($breakTimes as $breakTime) {
+            $breakTime->day = $dayList[date('w', strtotime($breakTime->date))];
+            $breakTime->break_time = date('H:i', strtotime($breakTime->break_time));
+        }
+
+        return $breakTimes;
+    }
+
     /**
      * @OA\Post (
      *     path="/api/salon/break",
