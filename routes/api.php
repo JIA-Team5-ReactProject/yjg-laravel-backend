@@ -73,6 +73,7 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
         Route::prefix('hour')->group(function () {
             Route::post('/', [SalonBusinessHourController::class, 'store'])->name('salon.hour.store');
             Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('salon.hour.update');
+            Route::get('/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
             Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('salon.hour.destroy');
         });
         Route::prefix('category')->group(function() {
@@ -136,10 +137,7 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
             Route::post('/', [SalonReservationController::class, 'store'])->name('salon.reservation.store');
             Route::delete('/', [SalonReservationController::class, 'destroy'])->name('salon.reservation.destroy');
         });
-        Route::prefix('hour')->group(function () {
-            Route::get('/', [SalonBusinessHourController::class, 'index'])->name('salon.hour.index');
-            Route::get('/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
-        });
+        Route::get('/hour', [SalonBusinessHourController::class, 'index'])->name('salon.hour.index');
         Route::get('/category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
         Route::get('/service', [SalonServiceController::class, 'show'])->name('salon.service.show');
     });
