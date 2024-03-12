@@ -30,4 +30,9 @@ class Controller extends BaseController
         'email' => 'required|string|unique:admins',
         'password' => 'required|string',
     ];
+
+    protected function denied(string $message = '권한이 없습니다.'): \Illuminate\Http\JsonResponse
+    {
+        return response()->json(['error' => $message], 403);
+    }
 }
