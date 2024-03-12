@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // Sanctum Middleware
             \Illuminate\Session\Middleware\StartSession::class, // sanctum Middleware
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -71,5 +71,19 @@ class Kernel extends HttpKernel
         'user.google.approve' => \App\Http\Middleware\UserGoogleApprovedCheck::class,
         'admin.approve' => \App\Http\Middleware\AdminApprovedCheck::class,
         'admin.master' => \App\Http\Middleware\AdminMasterCheck::class,
+        'admin.privilege' => \App\Http\Middleware\Adminprivilege::class,
+        'token.type' => \App\Http\Middleware\TokenType::class,
+    ];
+
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * This forces non-global middleware to always be in the given order.
+     *
+     * @var string[]
+     */
+    protected $middlewarePriority = [
+        \App\Http\Middleware\Authenticate::class,
+        \App\Http\Middleware\Adminprivilege::class,
     ];
 }

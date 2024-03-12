@@ -90,13 +90,13 @@ class AdminController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/admin/master",
+     *     path="/api/admin/master/{id}",
      *     tags={"관리자"},
      *     summary="탈퇴(마스터)",
      *     description="관리자 탈퇴",
      *     @OA\Parameter(
-     *          name="email",
-     *          description="중복을 확인할 관리자의 이메일",
+     *          name="id",
+     *          description="삭제할 관리자의 아이디",
      *          required=true,
      *          in="path",
      *          @OA\Schema(type="string"),
@@ -152,13 +152,12 @@ class AdminController extends Controller
         if (! $token = $this->tokenService->createAccessToken('admins', $credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-//        $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
+        $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
 
         return response()->json([
             'user' => auth('admins')->user(),
             'access_token' => $token,
-//            'refresh_token' => $refreshToken,
+            'refresh_token' => $refreshToken,
         ]);
     }
 
@@ -190,6 +189,7 @@ class AdminController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
+     *             @OA\Property (property="admin_id", type="integer", description="관리자 아이디", example=1),
      *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
      *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
      *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
@@ -203,6 +203,7 @@ class AdminController extends Controller
     public function privilege(Request $request) {
         try {
             $validated = $request->validate([
+                'admin_id'              => 'required|numeric',
                 'salon_privilege'       => 'required|boolean',
                 'admin_privilege'       => 'required|boolean',
                 'restaurant_privilege'  => 'required|boolean',
@@ -214,11 +215,10 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::findOrFail(auth('admins')->id());
+            $admin = Admin::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException $modelException) {
-            $errorStatus = $modelException->status;
             $errorMessage = $modelException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error'=>'아이디에 해당하는 관리자가 없습니다.'], 404);
         }
 
         foreach($validated as $key => $value) {
@@ -267,9 +267,7 @@ class AdminController extends Controller
         try {
             $admin = Admin::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException $modelException) {
-            $errorStatus = $modelException->status;
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error'=> '해당하는 관리자가 없습니다.'], 404);
         }
 
         $admin->approved = true;
@@ -323,7 +321,6 @@ class AdminController extends Controller
         try {
             $admin = Admin::findOrFail($adminId);
         } catch(ModelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
             return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
@@ -452,8 +449,7 @@ class AdminController extends Controller
         try {
             $admin = Admin::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
         } catch (ModelNotFoundException $modelNotFoundException) {
-            $errorMessage = $modelNotFoundException->getMessage();
-            return response()->json(['error'=>$errorMessage], 404);
+            return response()->json(['error'=>'해당하는 관리자가 없습니다.'], 404);
         }
         return response()->json(['admin' => $admin]);
     }

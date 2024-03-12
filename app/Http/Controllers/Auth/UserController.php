@@ -126,15 +126,15 @@ class UserController extends Controller
             'name' => $credentials['displayName'],
         ]);
 
-        if (! $token = $this->tokenService->createAccessTokenByModel('users', $user)) {
+        if (! $token = $this->tokenService->createAccessToken('users', $credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-//        $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
+        $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
 
         return response()->json([
             'user' => auth('users')->user(),
             'access_token' => $token,
-//            'refresh_token' => $refreshToken,
+            'refresh_token' => $refreshToken,
         ]);
 
     }
