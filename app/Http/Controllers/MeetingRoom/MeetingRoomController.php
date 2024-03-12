@@ -15,6 +15,11 @@ class MeetingRoomController extends Controller
     private array $messages = [
         'exists' => '해당하는 회의실이 존재하지 않습니다.',
     ];
+
+    public function authorize($ability, $arguments = [MeetingRoom::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/meeting-room",

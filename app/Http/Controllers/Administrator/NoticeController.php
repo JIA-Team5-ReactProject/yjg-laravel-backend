@@ -9,7 +9,6 @@ use App\Models\NoticeImage;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -17,6 +16,11 @@ use Illuminate\Validation\ValidationException;
 class NoticeController extends Controller
 {
     private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
+
+    public function authorize($ability, $arguments = [Notice::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
 
     /**
      * @OA\Get (

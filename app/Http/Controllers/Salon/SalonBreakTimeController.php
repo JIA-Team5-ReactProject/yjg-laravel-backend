@@ -15,6 +15,11 @@ class SalonBreakTimeController extends Controller
         'date'   => 'required|date',
     ];
 
+    public function authorize($ability, $arguments = [SalonBreakTime::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
+
     public function index(): \Illuminate\Database\Eloquent\Collection
     {
         $dayList = $this->dayList;
