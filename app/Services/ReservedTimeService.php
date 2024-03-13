@@ -35,6 +35,8 @@ class ReservedTimeService
             }
         }
 
+        sort($reservedTimes);
+
         return $reservedTimes;
     }
 }
