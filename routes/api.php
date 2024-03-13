@@ -135,7 +135,7 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
             Route::get('/user', [SalonReservationController::class, 'index'])->name('salon.reservation.index.user');
             Route::get('/', [SalonReservationController::class, 'show'])->name('salon.reservation.show');
             Route::post('/', [SalonReservationController::class, 'store'])->name('salon.reservation.store');
-            Route::delete('/', [SalonReservationController::class, 'destroy'])->name('salon.reservation.destroy');
+            Route::delete('/{id}', [SalonReservationController::class, 'destroy'])->name('salon.reservation.destroy');
         });
         Route::get('/hour', [SalonBusinessHourController::class, 'index'])->name('salon.hour.index');
         Route::get('/hour/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
