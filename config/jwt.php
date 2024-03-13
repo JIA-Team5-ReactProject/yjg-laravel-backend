@@ -100,7 +100,7 @@ return [
     | Notice: If you set this to null you should remove 'exp' element from 'required_claims' list.
     |
     */
-//TODO : 배포할때 수정하기
+    //TODO : 배포할때 수정하기
     'ttl' => env('JWT_TTL', 600),
 
     /*
@@ -217,7 +217,7 @@ return [
     |
     */
 
-    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', false),
+    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
 
     /*
     | -------------------------------------------------------------------------
