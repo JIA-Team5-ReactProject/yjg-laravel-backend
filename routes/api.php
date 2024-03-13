@@ -211,6 +211,7 @@ Route::prefix('bus')->group(function () {
         Route::get('/', [BusScheduleController::class, 'getRound']);
         Route::get('/schedule/{id}', [BusScheduleController::class, 'getRoundSchedule']);
         Route::delete('/{id}', [BusScheduleController::class, 'roundDestroy']);
+        Route::get('/appSchedule', [BusScheduleController::class, 'getRoundAndSchedule']);
     });
 });
 

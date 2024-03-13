@@ -596,6 +596,52 @@
                 }
             }
         },
+        "/api/bus/round/appSchedule": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "app 에서 해당 버스 회차, 스케줄 가져오기",
+                "description": "해당하는 버스의 회차, 스케줄 리스트 가져오기",
+                "operationId": "1fc5cb3ce01bfff1da4272d47b4aaf4b",
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 bus_route값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "s_english"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
         "/api/notice": {
             "get": {
                 "tags": [
@@ -2555,6 +2601,35 @@
                 }
             }
         },
+        "/api/restaurant/weekend/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 삭제",
+                "description": "주말 식수 신청 삭제",
+                "operationId": "872f779cdc108842fbf0c39db294cb7b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 주말 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/semester": {
             "post": {
                 "tags": [
@@ -2750,8 +2825,8 @@
                 "tags": [
                     "식수"
                 ],
-                "summary": "주말 식수 입금여부 확인",
-                "description": "주말 식수 입금여부 확인",
+                "summary": "주말 식수 삭제 확인",
+                "description": "주말 식수 삭제 확인",
                 "operationId": "054cc9d10ec30323087e31bcfa00868c",
                 "parameters": [
                     {
@@ -2817,35 +2892,6 @@
                     },
                     "422": {
                         "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/weekend/delete/{id}": {
-            "delete": {
-                "tags": [
-                    "식수"
-                ],
-                "summary": "주말 식수 신청 삭제",
-                "description": "주말 식수 신청 삭제",
-                "operationId": "a6a527f56ec109744dc05d0334b068ca",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 주말 식수 신청 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
                     },
                     "500": {
                         "description": "Fail"

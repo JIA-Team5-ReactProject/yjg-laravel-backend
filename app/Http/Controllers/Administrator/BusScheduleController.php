@@ -211,7 +211,6 @@ class BusScheduleController extends Controller
               'bus_route_direction' => 'required|string',
 
             ]);
-            Log::info('방향: ' . $validatedData['bus_route_direction']);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
@@ -284,14 +283,14 @@ class BusScheduleController extends Controller
                 throw new \Exception('해당하는 노선을 찾을 수 없습니다.');
             }
 
-            $matchingRouund = BusRound::where('bus_route_id', $RouteId)
+            $matchingRound = BusRound::where('bus_route_id', $RouteId)
                                     ->select('id', 'round')
                                     ->get();
 
-            if ($matchingRouund->isEmpty()) {
+            if ($matchingRound->isEmpty()) {
                 throw new \Exception('해당하는 회차를 찾을 수 없습니다.');
             }
-            return response()->json(['roundDate' => $matchingRouund]);
+            return response()->json(['roundDate' => $matchingRound]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '버스 회차 데이터 조회 중 오류가 발생했습니다.'], 500);
         }
@@ -369,6 +368,83 @@ class BusScheduleController extends Controller
             return response()->json(['message' => '버스 시간표가 성공적으로 삭제되었습니다.']);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
+
+
+    /**
+     * @OA\Get (
+     *     path="/api/bus/round/appSchedule",
+     *     tags={"버스"},
+     *     summary="app 에서 해당 버스 회차, 스케줄 가져오기",
+     *     description="해당하는 버스의 회차, 스케줄 리스트 가져오기",
+     *     @OA\RequestBody(
+     *     description="가져오고 싶은 회차의 bus_route값",
+     *     required=false,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="weekend", type="boolean", description="주말/평일", example=true),
+     *                  @OA\Property (property="semester", type="boolean", description="학기/방학", example=true),
+     *                  @OA\Property (property="bus_route_direction", type="string", description="버스 노선 ", example="s_english"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function getRoundAndSchedule(Request $request)
+    {
+
+        try {
+            // 유효성 검사//쿼리파라미터 형식
+            $validatedData = Validator::make($request->query(),[
+              'weekend' => 'required|boolean',
+              'semester' => 'required|boolean',
+              'bus_route_direction' => 'required|string',
+            ])->validate();
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+
+        try {
+            $RouteId = BusRoute::where('weekend', $validatedData['weekend'])
+                                  ->where('semester', $validatedData['semester'])
+                                  ->where('bus_route_direction', $validatedData['bus_route_direction'])
+                                  ->first();
+
+            $matchingRound = BusRound::where('bus_route_id', $RouteId->id)
+                                    ->select('id', 'round')
+                                    ->pluck('id');
+                                    Log::info('라운드드 아이디: ' . $matchingRound);
+            
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+        try{
+            $matchingSchedule = BusSchedule::whereIn('bus_round_id', $matchingRound)->select('station', 'bus_time','bus_round_id')->get();
+            //$exGroupedSchedules = $matchingSchedule->groupBy('bus_round_id');
+
+              // 그룹화된 결과를 담을 배열 초기화
+            $groupedSchedules = [];
+
+            foreach ($matchingSchedule as $schedule) {
+                // BusRound 모델을 사용하여 라운드 정보를 가져옴
+                $round = BusRound::find($schedule->bus_round_id);
+                // BusRound 모델의 round 값으로 그룹화된 결과에 추가
+                $groupedSchedules[$round->round][] = [
+                    'station' => $schedule->station,
+                    'bus_time' => $schedule->bus_time,
+                    'bus_round_id' => $schedule->bus_round_id,
+                ];
+            }
+
+            return response()->json(['schedules' => $groupedSchedules]);
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
         }
     }
 }
