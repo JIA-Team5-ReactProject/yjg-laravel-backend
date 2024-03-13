@@ -42,7 +42,8 @@ Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.google.approve')->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin']);
+//        ->middleware('user.google.approve')->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
@@ -155,10 +156,10 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         Route::get('/check', [MeetingRoomController::class, 'checkReservation'])->name('meeting.check.reservation');
         Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
         Route::prefix('reservation')->group(function () {
+            Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
             Route::post('/', [MeetingRoomReservationController::class, 'store']);
             Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
-            Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
             Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
         });
     });
