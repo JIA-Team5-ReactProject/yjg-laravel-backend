@@ -45,6 +45,6 @@ class RefreshController extends Controller
         }
 
 
-        return response()->json(['refresh_token' => $this->tokenService->createRefreshTokenByModel($guard, $model)]);
+        return response()->json(['refresh_token' => $this->tokenService->createAccessTokenByModel($guard, $model)]);
     }
 }
