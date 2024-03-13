@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AfterService;
 use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceImage;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,12 @@ use Illuminate\Validation\ValidationException;
 
 class AfterServiceController extends Controller
 {
-    protected $relations = ['user', 'afterServiceComments', 'afterServiceImages'];
+    protected array $relations = ['user', 'afterServiceComments', 'afterServiceImages'];
+
+    public function authorize($ability, $arguments = [AfterService::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/after-service",
@@ -46,7 +52,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -90,7 +96,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function userIndex()
+    public function userIndex(): \Illuminate\Http\JsonResponse
     {
         $userId = auth('users')->id();
 
@@ -127,7 +133,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -186,7 +192,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $afterService = AfterService::with($this->relations)->findOrFail($id);
@@ -215,8 +221,14 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function updateStatus(string $id)
+    public function updateStatus(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('updateStatus');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:after_services,id|numeric'
         ]);
@@ -281,7 +293,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -302,7 +314,7 @@ class AfterServiceController extends Controller
 
         try {
             $afterService = AfterService::findOrFail($id);
-        } catch (ModelNotFoundException $modelException) {
+        } catch (ModelNotFoundException) {
             return response()->json(['error' => 'id에 해당하는 AS 이력이 없습니다.'], 404);
         }
 
@@ -311,7 +323,7 @@ class AfterServiceController extends Controller
                 try {
                     //TODO: 연관관계 메서드 이용하여 수정하기
                     $asImage = AfterServiceImage::findOrFail($deleteImage);
-                } catch (ModelNotFoundException $modelException) {
+                } catch (ModelNotFoundException) {
                     return response()->json(['error' => '해당하는 이미지가 존재하지 않습니다.'], 404);
                 }
                 $deleteDb = $asImage->delete();
@@ -357,9 +369,9 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        if(AfterService::destroy($id)) {
+        if(!AfterService::destroy($id)) {
             return response()->json(['error' => 'AS 요청을 삭제하는데 실패하였습니다.'], 500);
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Salon;
 use App\Http\Controllers\Controller;
 use App\Models\SalonBusinessHour;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,12 @@ class SalonBusinessHourController extends Controller
     public function __construct(protected  SalonBreakTimeController $salonBreakTimeController)
     {
     }
+
+    public function authorize($ability, $arguments = [SalonBusinessHour::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
+
     /**
      * @OA\Get (
      *     path="/api/salon/hour",
@@ -26,7 +33,7 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="422", description="Validation Error"),
      * )
      */
-    public function index(Request $request)
+    public function index(): \Illuminate\Http\JsonResponse
     {
         return response()->json(['business_hours' => SalonBusinessHour::all(['s_time', 'e_time', 'date'])]);
     }
@@ -48,7 +55,7 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="422", description="Validation Error"),
      * )
      */
-    public function show(string $date)
+    public function show(string $date): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make(['date' => $date], [
             'date' => 'required|date_format:Y-m-d',
@@ -120,9 +127,13 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
 
         try {
             $validated = $request->validate([
@@ -169,8 +180,14 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request)
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('update');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'b_hour_id' => 'required|numeric',
@@ -216,8 +233,14 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:salon_business_hours,id',
         ]);

@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Salon;
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\SalonCategory;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class SalonCategoryController extends Controller
 {
+    public function authorize($ability, $arguments = [SalonCategory::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/salon/category",
@@ -21,7 +26,7 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         return response()->json(['categories' => SalonCategory::all()]);
     }
@@ -47,8 +52,14 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'category_name' => 'required|string'
@@ -90,8 +101,14 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request)
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('update');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'category_id' => 'required|numeric',
@@ -134,8 +151,14 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(String $id)
+    public function destroy(String $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         if (!SalonCategory::destroy($id)) {
             throw new DestroyException('Failed to destroy category');
         }

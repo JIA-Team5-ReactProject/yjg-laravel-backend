@@ -5,12 +5,17 @@ namespace App\Http\Controllers\MeetingRoom;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingRoomReservation;
 use App\Services\ReservedTimeService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class MeetingRoomReservationController extends Controller
 {
+    public function authorize($ability, $arguments = [MeetingRoomReservation::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/meeting-room/reservation",
@@ -105,7 +110,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -190,8 +195,14 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function reject(string $id)
+    public function reject(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('reject');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         $validator = Validator::make(['id'=> $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'
         ]);
@@ -230,7 +241,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Salon;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalonReservation;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -11,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class SalonReservationController extends Controller
 {
+    public function authorize($ability, $arguments = [SalonReservation::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/salon/reservation/user",
@@ -166,8 +171,14 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request)
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('update');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'id' => 'required|numeric',

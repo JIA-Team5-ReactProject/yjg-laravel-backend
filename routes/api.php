@@ -42,7 +42,8 @@ Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.google.approve')->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin']);
+//        ->middleware('user.google.approve')->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
@@ -73,7 +74,6 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
         Route::prefix('hour')->group(function () {
             Route::post('/', [SalonBusinessHourController::class, 'store'])->name('salon.hour.store');
             Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('salon.hour.update');
-            Route::get('/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
             Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('salon.hour.destroy');
         });
         Route::prefix('category')->group(function() {
@@ -96,7 +96,7 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     });
 
     Route::prefix('meeting-room')->group(function () {
-        Route::get('/reservation', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
+        Route::patch('/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
         Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');
     });
@@ -135,9 +135,10 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
             Route::get('/user', [SalonReservationController::class, 'index'])->name('salon.reservation.index.user');
             Route::get('/', [SalonReservationController::class, 'show'])->name('salon.reservation.show');
             Route::post('/', [SalonReservationController::class, 'store'])->name('salon.reservation.store');
-            Route::delete('/', [SalonReservationController::class, 'destroy'])->name('salon.reservation.destroy');
+            Route::delete('/{id}', [SalonReservationController::class, 'destroy'])->name('salon.reservation.destroy');
         });
         Route::get('/hour', [SalonBusinessHourController::class, 'index'])->name('salon.hour.index');
+        Route::get('/hour/{day}', [SalonBusinessHourController::class, 'show'])->name('salon.hour.show');
         Route::get('/category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
         Route::get('/service', [SalonServiceController::class, 'show'])->name('salon.service.show');
     });
@@ -155,10 +156,10 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         Route::get('/check', [MeetingRoomController::class, 'checkReservation'])->name('meeting.check.reservation');
         Route::get('/', [MeetingRoomController::class, 'index'])->name('meeting.index');
         Route::prefix('reservation')->group(function () {
+            Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
             Route::get('/{id}', [MeetingRoomReservationController::class, 'show'])->name('meeting.reservation.show');
             Route::post('/', [MeetingRoomReservationController::class, 'store']);
-            Route::patch('/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
-            Route::get('/user', [MeetingRoomReservationController::class, 'userIndex'])->name('meeting.reservation.index.user');
+            Route::get('/', [MeetingRoomReservationController::class, 'index'])->name('meeting.reservation.index');
             Route::delete('/{id}', [MeetingRoomReservationController::class, 'destroy'])->name('meeting.reservation.destroy');
         });
     });

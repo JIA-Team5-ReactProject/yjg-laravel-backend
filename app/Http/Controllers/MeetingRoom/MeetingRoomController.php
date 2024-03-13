@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MeetingRoom;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingRoom;
 use App\Services\ReservedTimeService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -14,6 +15,11 @@ class MeetingRoomController extends Controller
     private array $messages = [
         'exists' => '해당하는 회의실이 존재하지 않습니다.',
     ];
+
+    public function authorize($ability, $arguments = [MeetingRoom::class])
+    {
+        return Parent::authorize($ability, $arguments);
+    }
     /**
      * @OA\Get (
      *     path="/api/meeting-room",
@@ -52,6 +58,12 @@ class MeetingRoomController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('store');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         try {
             $validated = $request->validate([
                 'room_number' => 'required|string',
@@ -133,6 +145,12 @@ class MeetingRoomController extends Controller
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('destroy');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_rooms,room_number|string'
         ], $this->messages);
@@ -144,7 +162,7 @@ class MeetingRoomController extends Controller
             $errorMessage = $exception->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
-
+        // TODO: try-catch 추가하기
         $meetingRoom = MeetingRoom::findOrFail($id);
 
         if(!$meetingRoom->delete()) return response()->json(['error' => '회의실 삭제에 실패하였습니다.'], 500);

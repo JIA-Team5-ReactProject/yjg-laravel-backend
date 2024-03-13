@@ -32,19 +32,19 @@ class RefreshController extends Controller
 
         if($guard == 'users') {
             try {
-                $model = User::findOrFail(auth()->id());
+                $model = User::findOrFail(auth('users')->id());
             } catch (ModelNotFoundException $modelException) {
                 return response()->json(['error' => '해당하는 유저가 없습니다.'], 404);
             }
         } else if ($guard == 'admins') {
             try {
-                $model = Admin::findOrFail(auth()->id());
+                $model = Admin::findOrFail(auth('admins')->id());
             } catch (ModelNotFoundException $modelException) {
                 return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
             }
         }
 
 
-        return response()->json(['refresh_token' => $this->tokenService->createRefreshTokenByModel($guard, $model)]);
+        return response()->json(['refresh_token' => $this->tokenService->createAccessTokenByModel($guard, $model)]);
     }
 }
