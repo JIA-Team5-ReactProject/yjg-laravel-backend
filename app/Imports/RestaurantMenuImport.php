@@ -23,6 +23,7 @@ class RestaurantMenuImport implements ToCollection
             for ($j = 1; $j < 6; $j++) {
                 $i = 5;
                 $menu = "";
+                
                 for ($i; $i < 25; $i++) {
                     if (!isset($rows[$i][$j])) {
                         // 셀이 비어있는 경우 무시
@@ -54,9 +55,10 @@ class RestaurantMenuImport implements ToCollection
                         }
                         
                         //식단표 모델로 보내서 db에 저장
-                        $year = date('y', strtotime($date));
+                        $year = date('Y', strtotime($date));
                         Log::info('년도 : ' . $year);
                         $month = date('m', strtotime($date));
+                        Log::info('년도 : ' . $month);
                         $restaurantMenuDate = RestaurantMenuDate::where('month', $month)->where('year', $year)->first();
                         Log::info('날짜 : ' . $restaurantMenuDate->id);
                         $menuData = new RestaurantMenu([
