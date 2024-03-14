@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Salon;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
+use App\Models\SalonCategory;
 use App\Models\SalonService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -77,13 +78,14 @@ class SalonServiceController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="category_id", type="integer", description="카테고리 아이디", example=1),
-     *                 @OA\Property (property="service_name", type="string", description="서비스 명", example="커트"),
+     *                 @OA\Property (property="service", type="string", description="서비스 명", example="커트"),
      *                 @OA\Property (property="gender", type="string", description="성별", example="male"),
      *                 @OA\Property (property="price", type="string", description="가격", example="10000"),
      *             )
      *         )
      *     ),
      *     @OA\Response(response="201", description="Created"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
      *     @OA\Response(response="422", description="ValidationException"),
      *     @OA\Response(response="500", description="ServerError"),
      * )
@@ -99,7 +101,7 @@ class SalonServiceController extends Controller
         try {
             $validated = $request->validate([
                 'category_id' => 'required|numeric',
-                'service_name' => 'required|string',
+                'service' => 'required|string',
                 'gender' => 'required|string',
                 'price' => 'required|string',
             ]);
@@ -109,7 +111,15 @@ class SalonServiceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $salonService = SalonService::create($validated);
+        try {
+            $salonCategory = SalonCategory::findOrFail($validated['category_id']);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
+
+        unset($validated['category_id']);
+
+        $salonService = $salonCategory->salonServices()->create($validated);
 
         return response()->json(['service' => $salonService]);
     }
