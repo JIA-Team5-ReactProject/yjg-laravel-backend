@@ -53,8 +53,8 @@ class RestaurantSemesterController extends Controller
             $user_id = auth()->id();
 
             $restaurantSemester = RestaurantSemester::create([
-                // 'user_id' => $user_id,
-                'user_id' => 1,
+                'user_id' => $user_id,
+                //'user_id' => 1,
             ]);
             Log::info('유저 아이디: ' . $restaurantSemester->user_id);
         } catch (\Exception $exception) {
