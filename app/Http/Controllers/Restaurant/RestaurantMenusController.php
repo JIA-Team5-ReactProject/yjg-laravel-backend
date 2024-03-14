@@ -42,7 +42,7 @@ class RestaurantMenusController extends Controller
             // 유효성 검사
             $validatedData = $request->validate([
                 'month' => 'required|string',
-                'year' => 'required|string'
+                'week' => 'required|string',
             ]);
         } catch (ValidationException $exception) {
             // 유효성 검사 실패시 애러 메세지
@@ -53,7 +53,8 @@ class RestaurantMenusController extends Controller
             // 데이터베이스에 저장
             RestaurantMenuDate::create([
                 'month' => $validatedData['month'],
-                'year' => $validatedData['year'],
+                'year' => date('Y'),
+                'week' => $validatedData['week'],
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
@@ -62,7 +63,6 @@ class RestaurantMenusController extends Controller
         // 성공 메시지
         return response()->json(['message' => '식단표 날짜 저장 완료']);
     }
-
 
 
     /**
@@ -101,10 +101,10 @@ class RestaurantMenusController extends Controller
 
 /**
      * @OA\Get (
-     * path="/api/restaurant/menu/get/m",
+     * path="/api/restaurant/menu/get/w",
      * tags={"식수"},
-     * summary="식수 식단표 1달치 가져오기",
-     * description="식수 식단표 1달치를 가져옵니다",
+     * summary="식단표 그 달의 모든 주차 가져오기",
+     * description="식단표 달의 모든 주차 가져오기",
      *     @OA\RequestBody(
      *         description="받고싶은 날짜(년,월)",
      *         required=true,
@@ -120,12 +120,49 @@ class RestaurantMenusController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getMonthMenu(Request $request)
-    {
-        $month = RestaurantMenuDate::where('year', $request->year)->where('month', $request->month)->first();
+    public function getWeek(Request $request)
+    { 
         try {
-            $monthMenus = RestaurantMenu::where('date_id', $month->id)->get();
-            return response()->json(['month_menus' => $monthMenus]);
+            $month_ids = RestaurantMenuDate::where('year', $request->year)
+                                            ->where('month', $request->month)
+                                            ->pluck('id');
+                                            Log::info('먼스 아이디: ' .$month_ids); 
+            $weeks = [];
+            foreach ($month_ids as $month_id) {
+                $week = RestaurantMenuDate::find($month_id)->week;
+                $weeks[] = $week;
+            }
+                
+            return response()->json(['month_menus' => $weeks]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
+
+
+
+/**
+     * @OA\Get (
+     *     path="/api/restaurant/menu/get/w/{id}",
+     *     tags={"식수"},
+     *     summary="식단표 1주치 가져오기",
+     *     description="식단표 1주치 가져오기",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="가져올 식단표의 date_id 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getWeekMenu($id)
+    {
+        try {
+            $weekDay = RestaurantMenu::where('date_id', $id)->get();
+            return response()->json(['week_menus' => $weekDay]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -156,8 +193,48 @@ class RestaurantMenusController extends Controller
     public function getDayMenu(Request $request)
     {
         try {
-            $monthMenus = RestaurantMenu::where('date', $request->date)->get();
-            return response()->json(['month_menus' => $monthMenus]);
+            $monthDay = RestaurantMenu::where('date', $request->date)->get();
+            return response()->json(['month_menus' => $monthDay]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
+
+
+ 
+    public function deleteDate($id)// year, month 값으로 받을지
+    {
+        try {
+            $menuDate = RestaurantMenuDate::findOrFail($id);
+            $menuDate->delete();
+            return response()->json(['message' => '식단표 날짜가 삭제되었습니다.']);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
+    
+ /**
+     * @OA\Delete (
+     *     path="/api/restaurant/menu/d/{id}",
+     *     tags={"식수"},
+     *     summary="식단표 삭제",
+     *     description="식단표 삭제",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="삭제할 식단표의 date_id 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function deleteMenu($id)//삭제할 date_id
+    {
+        try {
+            RestaurantMenu::where('date_id',$id)->delete();
+            return response()->json(['message' => '식단표가 삭제되었습니다.']);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
