@@ -95,4 +95,33 @@ class WeekendMealTypeController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
+
+
+     /**
+     * @OA\Get (
+     *     path="/api/restaurant/weekend/meal-type/{id}",
+     *     tags={"식수"},
+     *     summary="주말 식수 유형 가져오기",
+     *     description="주말 식수 유형 가져오기",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="가져올 주말 식수 유형 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getMealType($id)
+    {
+        try{
+            $mealType = weekendMealType::where('id', $id)->select('id', 'meal_type', 'date', 'content', 'price')->first();
+            return response()->json(['semester_meal_type' => $mealType]);
+        }catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
+
 }
