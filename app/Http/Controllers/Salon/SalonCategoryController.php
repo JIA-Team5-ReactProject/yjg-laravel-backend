@@ -62,7 +62,7 @@ class SalonCategoryController extends Controller
 
         try {
             $validated = $request->validate([
-                'category_name' => 'required|string'
+                'category' => 'required|string'
             ]);
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -72,7 +72,7 @@ class SalonCategoryController extends Controller
 
         $salonCategory = SalonCategory::create($validated);
 
-        if(!$salonCategory) return response()->json(['카테고리 생성에 실패하였습니다.'], 500);
+        if(!$salonCategory) return response()->json(['error' => '카테고리 생성에 실패하였습니다.'], 500);
 
         return response()->json(['salon_category' => $salonCategory], 201);
     }
