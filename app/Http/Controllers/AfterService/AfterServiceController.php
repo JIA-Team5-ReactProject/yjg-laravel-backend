@@ -11,10 +11,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Metadata\After;
 
 class AfterServiceController extends Controller
 {
-    protected array $relations = ['user', 'afterServiceComments', 'afterServiceImages'];
+    protected array $relations = ['user:id,name,created_at', 'afterServiceComments', 'afterServiceImages'];
 
     public function authorize($ability, $arguments = [AfterService::class])
     {
@@ -25,7 +26,7 @@ class AfterServiceController extends Controller
      *     path="/api/after-service",
      *     tags={"AS"},
      *     summary="AS 검색",
-     *     description="조건에 맞게 AS 검색",
+     *     description="Query string의 조건에 맞게 AS 검색",
      *     @OA\Parameter(
      *          name="name",
      *          description="신청인",
@@ -64,6 +65,8 @@ class AfterServiceController extends Controller
             $errorMessage = $exception->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
+
+        // 클래스의 정의한 연관관계와 함께 불러옴
         $afterServices = AfterService::query()->with($this->relations);
 
         if(isset($request['status'])) {
@@ -75,8 +78,12 @@ class AfterServiceController extends Controller
                 $query->where('name', $validated['name']);
             });
         }
+
+        // 최신순으로 정렬하여 페이지네이션
+        // TODO: latest 메서드를 사용할 것
         $afterServices = $afterServices->orderByDesc('created_at')->paginate(8);
 
+        // 프론트엔드에서 필요한 정보만 반환하도록 구현
         foreach ($afterServices as $afterService) {
             $userName = $afterService->user['name'];
             $afterService->user_name = $userName;
@@ -100,8 +107,9 @@ class AfterServiceController extends Controller
     {
         $userId = auth('users')->id();
 
-        return response()->json(['after_services' => AfterService::with($this->relations)
-            ->where('user_id', $userId)->orderBy('visit_date')->get()]);
+        return response()->json([
+            'after_services' => AfterService::where('user_id', $userId)->orderBy('visit_date')->get()
+        ]);
     }
 
     /**
@@ -109,7 +117,7 @@ class AfterServiceController extends Controller
      *     path="/api/after-service",
      *     tags={"AS"},
      *     summary="AS 작성",
-     *     description="새로운 AS를 생성함",
+     *     description="새로운 AS를 신청할 때 사용합니다.",
      *     @OA\RequestBody(
      *         description="생성할 AS의 내용",
      *         required=true,
@@ -130,7 +138,7 @@ class AfterServiceController extends Controller
      *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="Server Error"),
      * )
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -150,25 +158,23 @@ class AfterServiceController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $afterService = new AfterService();
+        $validated['user_id'] = auth('users')->id();
 
-        $afterService->user_id = auth('users')->id();
-        $afterService->title = $validated['title'];
-        $afterService->content = $validated['content'];
-        $afterService->visit_place = $validated['visit_place'];
-        if(isset($validated['visit_date'])) $afterService->visit_date = $validated['visit_date'];
+        // AS 신청
+        $afterService = AfterService::create($validated);
 
         if(!$afterService->save()) {
-            return response()->json(['error' => 'Failed to save after service'], 500);
+            return response()->json(['error' => 'A/S 신청에 실패하였습니다.'], 500);
         }
 
+        // 연관관계를 이용하여 이미지 저장
         if(isset($validated['images'])) {
             foreach ($validated['images'] as $image) {
                 $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
 
                 $saveImage = $afterService->afterServiceImages()->save(new AfterServiceImage(['image' => $url]));
 
-                if(!$saveImage) return response()->json(['Failed to save image'], 500);
+                if(!$saveImage) return response()->json(['A/S 관련 이미지 저장에 실패하였습니다.'], 500);
             }
         }
 
@@ -179,8 +185,8 @@ class AfterServiceController extends Controller
      * @OA\Get (
      *     path="/api/after-service/{id}",
      *     tags={"AS"},
-     *     summary="AS 읽기",
-     *     description="아이디에 해당하는 AS 정보 받아옴",
+     *     summary="특정 AS 불러오기",
+     *     description="아이디에 해당하는 AS 정보를 받아옵니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="as의 id",
@@ -208,7 +214,7 @@ class AfterServiceController extends Controller
      *     path="/api/after-service/status/{id}",
      *     tags={"AS"},
      *     summary="상태 변경(관리자)",
-     *     description="AS의 상태를 완료로 변경",
+     *     description="AS의 상태를 완료로 변경할 때 사용합니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="상태를 변경할 AS의 아이디",
@@ -217,8 +223,9 @@ class AfterServiceController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function updateStatus(string $id): \Illuminate\Http\JsonResponse
@@ -241,7 +248,11 @@ class AfterServiceController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $afterService = AfterService::findOrFail($id);
+        try {
+            $afterService = AfterService::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
 
         $afterService->status = true;
 
@@ -249,7 +260,7 @@ class AfterServiceController extends Controller
             return response()->json(['error' => 'AS 상태 변경에 실패하였습니다.'], 500);
         }
 
-        return response()->json(['success' => 'AS가 완료되었습니다.']);
+        return response()->json(['message' => 'AS가 완료되었습니다.']);
     }
 
     /**
@@ -257,7 +268,7 @@ class AfterServiceController extends Controller
      *     path="/api/after-service/{id}",
      *     tags={"AS"},
      *     summary="수정",
-     *     description="아이디에 해당하는 AS를 수정",
+     *     description="아이디에 해당하는 AS를 수정할 때 사용합니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="아이디",
@@ -289,8 +300,9 @@ class AfterServiceController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
@@ -315,20 +327,16 @@ class AfterServiceController extends Controller
         try {
             $afterService = AfterService::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => 'id에 해당하는 AS 이력이 없습니다.'], 404);
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
+        // TODO: 효율적으로 삭제 가능한지 좀 생각해봐야 함
+        // delete_images 배열을 확인하여, 해당하는 이미지의 아이디로 삭제
         if(isset($validated['delete_images'])) {
             foreach ($validated['delete_images'] as $deleteImage) {
-                try {
-                    //TODO: 연관관계 메서드 이용하여 수정하기
-                    $asImage = AfterServiceImage::findOrFail($deleteImage);
-                } catch (ModelNotFoundException) {
-                    return response()->json(['error' => '해당하는 이미지가 존재하지 않습니다.'], 404);
-                }
-                $deleteDb = $asImage->delete();
-                $fileName = basename($asImage->image);
-                $deleteS3 = Storage::delete('images/'.$fileName);
+                $imageURL = $afterService->afterServiceImages()->where('id', $deleteImage)->get('image');
+                $deleteDb = $afterService->afterServiceImages()->where('id', $deleteImage)->delete();
+                $deleteS3 = Storage::delete('images/'.$imageURL);
                 if(!$deleteS3 || !$deleteDb) return response()->json(['error' => '이미지 삭제에 실패하였습니다.'], 500);
             }
             unset($validated['delete_images']);
@@ -366,7 +374,7 @@ class AfterServiceController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
@@ -375,6 +383,6 @@ class AfterServiceController extends Controller
             return response()->json(['error' => 'AS 요청을 삭제하는데 실패하였습니다.'], 500);
         }
 
-        return response()->json(['success' => 'AS 요청이 성공적으로 삭제되었습니다']);
+        return response()->json(['message' => 'AS 요청이 성공적으로 삭제되었습니다']);
     }
 }

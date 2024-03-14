@@ -20,13 +20,13 @@ class SalonReservationController extends Controller
      * @OA\Get (
      *     path="/api/salon/reservation/user",
      *     tags={"미용실 - 예약"},
-     *     summary="현재 유저의 예약 정보 가져오기(수정)",
-     *     description="현재 로그인한 유저의 예약 정보를 불러옴",
+     *     summary="현재 유저의 예약 정보 가져오기",
+     *     description="현재 로그인한 유저의 예약 정보를 불러옵니다.",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function index(Request $request)
+    public function index(): \Illuminate\Http\JsonResponse
     {
         return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', auth('users')->id())->get()]);
     }
@@ -36,7 +36,7 @@ class SalonReservationController extends Controller
      *     path="/api/salon/reservation",
      *     tags={"미용실 - 예약"},
      *     summary="예약 검색(수정)",
-     *     description="미용실 예약 검색",
+     *     description="미용실 예약을 검색할 때 사용합니다.",
      *     @OA\RequestBody(
      *         description="검색할 옵션",
      *         required=true,
@@ -50,11 +50,11 @@ class SalonReservationController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="OK"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function show(Request $request)
+    public function show(Request $request): \Illuminate\Http\JsonResponse
     {
         $statusRule = ['submit', 'confirm', 'reject'];
         try {
@@ -69,7 +69,9 @@ class SalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
+        // 존재하는 값만 필터링하여 검색하도록 구현
         $query = SalonReservation::with(['user:id,name,phone_number', 'salonService:id,service,price,gender']);
+
         if(isset($validated['status'])) {
             $query = $query->where('status', $validated['status']);
         }
@@ -86,6 +88,7 @@ class SalonReservationController extends Controller
 
         $reservations = $query->get();
 
+        // TODO: 효율적으로 구현하도록 수정할 필요 있음
         $reservations->map(function ($item) {
             $item['user_name'] = $item->user['name'];
             $item['service_name'] = $item->salonService['service'];
@@ -102,8 +105,8 @@ class SalonReservationController extends Controller
      * @OA\Post (
      *     path="/api/salon/reservation",
      *     tags={"미용실 - 예약"},
-     *     summary="예약(수정)",
-     *     description="학생 미용실 예약",
+     *     summary="예약",
+     *     description="학생 미용실 예약 시 사용",
      *     @OA\RequestBody(
      *         description="예약 관련 정보",
      *         required=true,
@@ -117,11 +120,11 @@ class SalonReservationController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="201", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Failed to save"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -135,16 +138,11 @@ class SalonReservationController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $userId = auth('users')->id();
+        $validated['user_id'] = auth('users')->id();
 
-        $reservation = SalonReservation::create([
-            'salon_service_id' => $validated['salon_service_id'],
-            'user_id' => $userId,
-            'reservation_date' => $validated['r_date'],
-            'reservation_time' => $validated['r_time'],
-        ]);
+        $reservation = SalonReservation::create($validated);
 
-        if(!$reservation) return response()->json(['error' => 'Failed to reservation'], 500);
+        if(!$reservation) return response()->json(['error' => '미용실 예약에 실패하였습니다.'], 500);
 
         return response()->json(['reservation' => $reservation], 201);
     }
@@ -153,8 +151,8 @@ class SalonReservationController extends Controller
      * @OA\Patch (
      *     path="/api/salon/reservation",
      *     tags={"미용실 - 예약"},
-     *     summary="예약 상태 수정(관리자)(수정)",
-     *     description="미용실 예약 상태를 수정",
+     *     summary="예약 상태 수정(관리자)",
+     *     description="미용실 예약 상태를 수정할 때 사용합니다.",
      *     @OA\RequestBody(
      *         description="수정할 상태 및 아이디",
      *         required=true,
@@ -162,13 +160,14 @@ class SalonReservationController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="id", type="integer", description="예약 아이디", example=1),
-     *                 @OA\Property (property="status", type="boolean", description="true로 보내면 승인, false로 보내면 거절", example=true),
+     *                 @OA\Property (property="status", type="boolean",
+     *                 description="true로 보내면 승인(confirm), false로 보내면 거절(reject)", example=true),
      *             )
      *         )
      *     ),
      *     @OA\Response(response="200", description="OK"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function update(Request $request): \Illuminate\Http\JsonResponse
@@ -192,25 +191,24 @@ class SalonReservationController extends Controller
 
         try {
             $reservation = SalonReservation::findOrFail($validated['id']);
-        } catch (ModelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error' => $errorMessage], 404);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         if($validated['status']) $reservation->status = 'confirm';
         else $reservation->status = 'reject';
 
-        if(!$reservation->save()) return response()->json(['error' => 'Failed to update reservation status'], 500);
+        if(!$reservation->save()) return response()->json(['error' => '미용실 예약 상태 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => 'Reservation status updated successfully']);
+        return response()->json(['message' => '미용실 예약 상태를 성공적으로 수정하였습니다.']);
     }
 
     /**
      * @OA\Delete (
      *     path="/api/salon/reservation/{id}",
      *     tags={"미용실 - 예약"},
-     *     summary="예약 취소(수정)",
-     *     description="미용실 예약 취소",
+     *     summary="예약 취소",
+     *     description="유저가 미용실 예약 취소 시 사용합니다.",
      *      @OA\Parameter(
      *            name="id",
      *            description="취소할 예약의 아이디",
@@ -219,14 +217,14 @@ class SalonReservationController extends Controller
      *            @OA\Schema(type="integer"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function destroy(string $id)
     {
-        if(!SalonReservation::destroy($id)) return response()->json(['error' => 'Failed to cancel reservation'], 500);
+        if(!SalonReservation::destroy($id)) return response()->json(['error' => '미용실 예약 취소에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => 'Reservation canceled successfully']);
+        return response()->json(['message' => '미용실 예약이 취소되었습니다.']);
     }
 }

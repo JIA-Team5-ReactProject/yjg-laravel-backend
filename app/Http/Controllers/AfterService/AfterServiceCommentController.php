@@ -22,7 +22,7 @@ class AfterServiceCommentController extends Controller
      *     path="/api/after-service/{id}/comment",
      *     tags={"AS 댓글"},
      *     summary="작성(관리자)",
-     *     description="댓글 작성",
+     *     description="AS에 대한 댓글을 작성할 때 사용하는 기능입니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="댓글을 작성할 AS의 아이디",
@@ -31,7 +31,7 @@ class AfterServiceCommentController extends Controller
      *     @OA\Schema(type="integer"),
      *     ),
      *     @OA\RequestBody(
-     *         description="작성할 댓글의 내용과 AS 글 아이디",
+     *         description="작성할 댓글의 내용",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -41,8 +41,9 @@ class AfterServiceCommentController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function store(Request $request, string $id): \Illuminate\Http\JsonResponse
@@ -65,26 +66,28 @@ class AfterServiceCommentController extends Controller
 
         try {
             $afterService = AfterService::findOrFail($id);
-        } catch (ModelNotFoundException $modelException) {
-            return response()->json(['error' => '아이디에 해당하는 AS 요청이 없습니다.'], 404);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
+        // 위에서 찾은 모델의 연관관계를 이용하여 새 댓글을 작성
         $comment = $afterService->afterServiceComments()->create([
             'admin_id' => auth('admins')->id(),
             'comment'  => $validated['comment'],
         ]);
 
+        // TODO: if문 제거하도록 수정
         if(!$comment) return response()->json(['error' => '댓글 작성에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '성공적으로 댓글이 작성되었습니다.'], 201);
+        return response()->json(['message' => '성공적으로 댓글이 작성되었습니다.'], 201);
     }
 
     /**
      * @OA\Patch (
-     *     path="/api/after-service/{id}/comment",
+     *     path="/api/after-service/comment/{id}",
      *     tags={"AS 댓글"},
      *     summary="수정(관리자)",
-     *     description="댓글 수정",
+     *     description="AS의 댓글을 수정할 때 사용하는 기능입니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="수정할 댓글의 아이디",
@@ -103,11 +106,11 @@ class AfterServiceCommentController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $this->authorize('update');
@@ -131,19 +134,21 @@ class AfterServiceCommentController extends Controller
             return response()->json(['error' => '해당하는 댓글이 존재하지 않습니다.'], 404);
         }
 
+        // TODO: if문 제거
+        // 위 모델의 연관관계를 이용하여 수정
         $asComment->comment = $validated['comment'];
 
         if(!$asComment->save()) return response()->json(['error' => '댓글을 수정하는데 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '댓글이 성공적으로 수정되었습니다.']);
+        return response()->json(['message' => '댓글이 성공적으로 수정되었습니다.']);
     }
 
     /**
      * @OA\Delete (
-     *     path="/api/after-service/{id}/comment",
+     *     path="/api/after-service/comment/{id}",
      *     tags={"AS 댓글"},
      *     summary="삭제(관리자)",
-     *     description="아이디에 해당하는 댓글 삭제",
+     *     description="아이디에 해당하는 AS의 댓글 삭제할 때 사용합니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="삭제할 댓글의 아이디",
@@ -152,10 +157,11 @@ class AfterServiceCommentController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $this->authorize('destroy');
@@ -179,6 +185,6 @@ class AfterServiceCommentController extends Controller
 
         if(!$asComment->delete()) return response()->json(['error' => '댓글 삭제에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '댓글이 삭제되었습니다.']);
+        return response()->json(['message' => '댓글이 삭제되었습니다.']);
     }
 }

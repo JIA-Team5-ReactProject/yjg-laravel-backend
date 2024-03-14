@@ -104,8 +104,8 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     Route::prefix('after-service')->group(function () {
         Route::patch('/status/{id}', [AfterServiceController::class, 'updateStatus'])->name('as.status');
         Route::post('{id}/comment', [AfterServiceCommentController::class, 'store'])->name('as.comment.store');
-        Route::patch('{id}/comment', [AfterServiceCommentController::class, 'update'])->name('as.comment.update');
-        Route::delete('{id}/comment', [AfterServiceCommentController::class, 'destroy'])->name('as.comment.destroy');
+        Route::patch('/comment/{id}', [AfterServiceCommentController::class, 'update'])->name('as.comment.update');
+        Route::delete('/comment/{id}', [AfterServiceCommentController::class, 'destroy'])->name('as.comment.destroy');
     });
 
     Route::prefix('absence')->group(function () {

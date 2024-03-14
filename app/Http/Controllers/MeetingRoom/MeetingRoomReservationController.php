@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MeetingRoomReservation;
 use App\Services\ReservedTimeService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -21,7 +22,7 @@ class MeetingRoomReservationController extends Controller
      *     path="/api/meeting-room/reservation",
      *     tags={"회의실 - 예약"},
      *     summary="예약 검색",
-     *     description="주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색",
+     *     description="주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색합니다.",
      *     @OA\Parameter(
      *          name="date",
      *          description="조회할 날짜",
@@ -37,8 +38,8 @@ class MeetingRoomReservationController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Vaildation Exception"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="422", description="VaildationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function index(Request $request): \Illuminate\Http\JsonResponse
@@ -54,12 +55,14 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $reservations = MeetingRoomReservation::with('user')->where('reservation_date', $validated['date']);
+        // reservation_date는 필수 값
+        $reservations = MeetingRoomReservation::with('user:id,name')->where('reservation_date', $validated['date']);
 
         if(isset($validated['room_number'])) {
             $reservations = $reservations->where('meeting_room_number', $validated['room_number']);
         }
 
+        // 유저 정보 중 이름만 객체에서 빼서, user_name 키로 저장
         foreach ($reservations as $reservation) {
             $userName = $reservation->user['name'];
             $reservation['user_name'] = $userName;
@@ -76,9 +79,9 @@ class MeetingRoomReservationController extends Controller
      *     path="/api/meeting-room/reservation/user",
      *     tags={"회의실 - 예약"},
      *     summary="유저의 예약",
-     *     description="로그인한 유저의 회의실 예약 목록을 반환",
+     *     description="로그인한 유저의 회의실 예약 목록을 불러올 때 사용합니다.",
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function userIndex(Request $request): \Illuminate\Http\JsonResponse
@@ -91,7 +94,7 @@ class MeetingRoomReservationController extends Controller
      *     path="/api/meeting-room/reservation",
      *     tags={"회의실 - 예약"},
      *     summary="예약하기",
-     *     description="회의실 예약하기",
+     *     description="회의실 예약 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="예약 관련 정보",
      *         required=true,
@@ -106,8 +109,8 @@ class MeetingRoomReservationController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -127,12 +130,13 @@ class MeetingRoomReservationController extends Controller
 
         $validated['user_id'] = auth('users')->id();
 
+        // 기존에 예약된 시간 예외처리
         $reservedTimes = new ReservedTimeService($validated['reservation_date'], $validated['meeting_room_number']);
 
         foreach ($reservedTimes() as $reservedTime) {
             if($reservedTime == $validated['reservation_s_time'] ||
                 $reservedTime == $validated['reservation_e_time']) {
-                return response()->json(['error' => '이미 예약된 시간입니다.'], 409);
+                return response()->json(['error' => '이미 예약된 시간입니다.'], 409); // conflict 에러
             }
         }
 
@@ -140,7 +144,7 @@ class MeetingRoomReservationController extends Controller
 
         if(!$reservation) return response()->json(['error' => '예약에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '성공적으로 예약되었습니다.', 'reservation' => $reservation], 201);
+        return response()->json(['message' => '성공적으로 예약되었습니다.', 'reservation' => $reservation], 201);
     }
 
     /**
@@ -148,7 +152,7 @@ class MeetingRoomReservationController extends Controller
      *     path="/api/meeting-room/reservation/{id}",
      *     tags={"회의실 - 예약"},
      *     summary="특정 예약",
-     *     description="아이디에 해당하는 예약 정보를 받아옴",
+     *     description="특정 아이디에 해당하는 예약 정보를 받아올 때 사용합니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="예약 아이디",
@@ -157,7 +161,7 @@ class MeetingRoomReservationController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function show(string $id): \Illuminate\Http\JsonResponse
@@ -182,7 +186,7 @@ class MeetingRoomReservationController extends Controller
      *     path="/api/meeting-room/reservation/reject/{id}",
      *     tags={"회의실 - 예약"},
      *     summary="예약 거절(관리자)",
-     *     description="관리자의 사유에 의해 예약 거절",
+     *     description="관리자의 사유에 의해 예약을 거절할 때 사용합니다. status를 false로 바꿉니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="예약을 거절할 ID",
@@ -191,8 +195,9 @@ class MeetingRoomReservationController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function reject(string $id): \Illuminate\Http\JsonResponse
@@ -215,20 +220,24 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $reservation = MeetingRoomReservation::findOrFail($id);
+        try {
+            $reservation = MeetingRoomReservation::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
 
         $reservation->status = false;
 
         if(!$reservation->save()) return response()->json(['error' => '예약 상태 변경에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '예약 상태 변경에 성공하였습니다.']);
+        return response()->json(['message' => '예약 상태 변경에 성공하였습니다.']);
     }
 
     /**
      * @OA\Delete (
      *     path="/api/meeting-room/reservation/{id}",
      *     tags={"회의실 - 예약"},
-     *     summary="회의실 예약 삭제",
+     *     summary="회의실의 예약을 삭제할 때 사용합니다.",
      *     description="",
      *     @OA\Parameter(
      *          name="id",
@@ -238,7 +247,7 @@ class MeetingRoomReservationController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
@@ -255,10 +264,14 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $reservation = MeetingRoomReservation::findOrFail($id);
+        try {
+            $reservation = MeetingRoomReservation::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
 
         if(!$reservation->delete()) return response()->json(['error' => '예약 삭제에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '예약이 삭제되었습니다.']);
+        return response()->json(['message' => '예약이 삭제되었습니다.']);
     }
 }

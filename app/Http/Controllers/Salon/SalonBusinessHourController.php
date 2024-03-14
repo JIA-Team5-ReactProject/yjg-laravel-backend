@@ -28,9 +28,8 @@ class SalonBusinessHourController extends Controller
      *     path="/api/salon/hour",
      *     tags={"미용실 - 영업시간"},
      *     summary="전체 영업시간(수정)",
-     *     description="모든 요일의 미용실 영업 시간",
+     *     description="모든 요일의 미용실 영업 시간을 불러올 때 사용합니다.",
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Error"),
      * )
      */
     public function index(): \Illuminate\Http\JsonResponse
@@ -43,7 +42,7 @@ class SalonBusinessHourController extends Controller
      *     path="/api/salon/hour/{day}",
      *     tags={"미용실 - 영업시간"},
      *     summary="특정 날짜의 영업시간(수정)",
-     *     description="특정 날짜의 미용실 영업 시간을 한시간 단위로 반환함",
+     *     description="특정 날짜의 미용실 영업 시간을 한시간 단위로 얻을 때 사용합니다.",
      *      @OA\Parameter(
      *            name="day",
      *            description="2024-01-01",
@@ -52,7 +51,8 @@ class SalonBusinessHourController extends Controller
      *            @OA\Schema(type="date"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Error"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function show(string $date): \Illuminate\Http\JsonResponse
@@ -69,9 +69,10 @@ class SalonBusinessHourController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        // 해당하는 날짜의 영업시간을 불러옴
+        // 해당 날짜의 요일을 얻어옵니다.
         $day_of_week = $this->dayList[date('w', strtotime($date))];
 
+        // 요일과 일치하는 날짜의 영업 시간을 불러옵니다.
         $b_hour = SalonBusinessHour::where('date' , $day_of_week)->first();
 
         // UNIX 타임스탬프로 변경
@@ -79,21 +80,26 @@ class SalonBusinessHourController extends Controller
         $end = $b_hour->e_time;
         $business_hours = [];
 
+        // 영업 시간을 30분 단위로 쪼개어, 배열에 객체형태로 저장합니다.
         while ($current <= $end) {
             $business_hours[] = (object) ['time' => $current, 'available' => true];
             $current = Carbon::parse($current)->addMinutes(30)->format('H:i');
         }
 
-        // 예약 불가 시간 필터링
+        // 예약불가 시간 필터링
         $salonBreakTimes = $this->salonBreakTimeController->index()->where('date', $validated['date']);
 
+        // 예약불가 시간이 있을 경우, 동작합니다.
+        // TODO: 효율적으로 만들 필요 있음
         if($salonBreakTimes->isNotEmpty()) {
             $breakTimes = [];
 
+            // 예약불가 시간을 배열에 담습니다.
             foreach($salonBreakTimes as $salonBreakTime) {
                 $breakTimes[] = $salonBreakTime->break_time;
             }
 
+            // 위 배열에 존재하는 경우 available 값을 false로 바꿉니다.
             foreach ($business_hours as $business_hour) {
                 if(in_array($business_hour->time, $breakTimes)) {
                     $business_hour->available = false;
@@ -109,7 +115,7 @@ class SalonBusinessHourController extends Controller
      *     path="/api/salon/hour",
      *     tags={"미용실 - 영업시간"},
      *     summary="영업시간 생성(관리자)(수정)",
-     *     description="미용실 영업시간 생성",
+     *     description="미용실 영업시간 생성 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="영업시간 관련 정보",
      *         required=true,
@@ -123,8 +129,8 @@ class SalonBusinessHourController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="201", description="Created"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -146,13 +152,10 @@ class SalonBusinessHourController extends Controller
             $errorMessage = $validationException->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
-        $businessHour = SalonBusinessHour::create([
-            's_time' => $validated['s_time'],
-            'e_time' => $validated['e_time'],
-            'date'   => $validated['date'],
-        ]);
 
-        if(!$businessHour) return response()->json(['error' => 'Failed to set businessHour'], 500);
+        $businessHour = SalonBusinessHour::create($validated);
+
+        if(!$businessHour) return response()->json(['error' => '미용실 영업시간 설정에 실패하였습니다.'], 500);
 
         return response()->json(['reservation' => $businessHour], 201);
     }
@@ -161,8 +164,8 @@ class SalonBusinessHourController extends Controller
      * @OA\Patch (
      *     path="/api/salon/hour",
      *     tags={"미용실 - 영업시간"},
-     *     summary="영업시간 업데이트(관리자)(수정)",
-     *     description="미용실 영업시간을 업데이트",
+     *     summary="영업시간 업데이트(관리자)",
+     *     description="미용실 영업시간을 업데이트 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="업데이트할 영업시간 및 아이디",
      *         required=true,
@@ -175,9 +178,10 @@ class SalonBusinessHourController extends Controller
      *             )
      *         )
      *     ),
-     *     @OA\Response(response="200", description="OK"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function update(Request $request): \Illuminate\Http\JsonResponse
@@ -202,25 +206,24 @@ class SalonBusinessHourController extends Controller
 
         try {
             $bHour = SalonBusinessHour::findOrFail($validated['b_hour_id']);
-        } catch(ModelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error' => $errorMessage], 404);
+        } catch(ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         $bHour->s_time = $validated['s_time'];
         $bHour->e_time = $validated['e_time'];
 
-        if(!$bHour->save()) return response()->json(['error' => 'Failed to update business hour'], 500);
+        if(!$bHour->save()) return response()->json(['error' => '미용실 영업시간 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => 'Update business hour successfully']);
+        return response()->json(['message' => '미용실 영업시간 수정에 성공하였습니다.']);
     }
 
     /**
      * @OA\Delete (
      *     path="/api/salon/hour/{id}",
      *     tags={"미용실 - 영업시간"},
-     *     summary="영업시간 삭제(관리자)(수정)",
-     *     description="미용실 영업시간 삭제",
+     *     summary="영업시간 삭제(관리자)",
+     *     description="미용실 영업시간 삭제시 사용합니다.",
      *      @OA\Parameter(
      *            name="id",
      *            description="삭제할 영업시간 값의 아이디",
@@ -229,8 +232,8 @@ class SalonBusinessHourController extends Controller
      *            @OA\Schema(type="integer"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
@@ -244,6 +247,7 @@ class SalonBusinessHourController extends Controller
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:salon_business_hours,id',
         ]);
+
         try {
             $validated = $validator->validate();
         } catch (ValidationException $validationException) {
@@ -252,8 +256,8 @@ class SalonBusinessHourController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        if(!SalonBusinessHour::destroy($validated['id'])) return response()->json(['error' => 'Failed to delete business hour'], 500);
+        if(!SalonBusinessHour::destroy($validated['id'])) return response()->json(['error' => '영업시간 삭제에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => 'Business hour data delete successfully']);
+        return response()->json(['message' => '영업시간이 성공적으로 삭제되었습니다.']);
     }
 }
