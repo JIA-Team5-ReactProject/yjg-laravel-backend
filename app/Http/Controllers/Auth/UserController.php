@@ -111,7 +111,7 @@ class UserController extends Controller
             $credentials = $request->validate([
                 'email'        => 'required|email',
                 'displayName'  => 'required|string',
-                'id_token'     => 'required|string',
+//                'id_token'     => 'required|string',
                 'os_type'      => 'required|string',
             ]);
         } catch(ValidationException $exception) {
@@ -203,11 +203,11 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Get (
+     * @OA\Post (
      *     path="/api/user/logout",
      *     tags={"학생"},
      *     summary="로그아웃",
-     *     description="유저 google 로그아웃",
+     *     description="유저 로그아웃",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Server Error"),
      * )
@@ -215,7 +215,7 @@ class UserController extends Controller
     public function logout(): \Illuminate\Http\JsonResponse
     {
         auth('users')->logout();
-        return response()->json(['message' => '성공적으로 로그아웃 되었습니다.']);
+        return response()->json(['message' => '로그아웃 되었습니다.']);
     }
 
     /**
