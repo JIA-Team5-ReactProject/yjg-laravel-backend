@@ -6,6 +6,7 @@ use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\TokenService;
+//use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,11 +37,12 @@ class UserController extends Controller
      *              )
      *          )
      *      ),
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function register(Request $request)
+    public function register(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate($this->userValidateRules);
@@ -50,16 +52,12 @@ class UserController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $user = User::create([
-            'name'         => $validated['name'],
-            'student_id'   => $validated['student_id'],
-            'phone_number' => $validated['phone_number'],
-            'email'        => $validated['email'],
-            'password'     => Hash::make($validated['password']),
-            'approved'     => true,
-        ]);
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['approved']   = true;
 
-        if(!$user) return response()->json(['error' => 'Failed to register'],500);
+        $user = User::create($validated);
+
+        if(!$user) return response()->json(['error' => '회원가입에 실패하였습니다.'],500);
 
         return response()->json(['user' => $user], 201);
     }
@@ -69,20 +67,20 @@ class UserController extends Controller
      *     path="/api/user",
      *     tags={"학생"},
      *     summary="탈퇴",
-     *     description="일반 학생 및 유학생 탈퇴",
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     description="학생 유저의 회원 탈퇴 시 사용합니다.",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      * @throws destroyexception
      */
-    public function unregister(Request $request)
+    public function unregister(): \Illuminate\Http\JsonResponse
     {
         $userId = auth('users')->id();
         if (!User::destroy($userId)) {
-            throw new destroyException('Failed to destroy user', 500);
+            throw new destroyException('회원탈퇴에 실패하였습니다.', 500);
         }
 
-        return response()->json(['message' => 'Destroy user successfully']);
+        return response()->json(['message' => '회원탈퇴 되었습니다.']);
     }
 
     /**
@@ -90,7 +88,7 @@ class UserController extends Controller
      *     path="/api/user/google-login",
      *     tags={"학생"},
      *     summary="로그인",
-     *     description="유저 google 로그인",
+     *     description="유저 google 로그인 시 사용합니다.",
      *     @OA\Requestbody(
      *          description="회원가입 정보",
      *          required=true,
@@ -103,23 +101,40 @@ class UserController extends Controller
      *          )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function googleRegisterOrLogin(Request $request)
+    public function googleRegisterOrLogin(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $credentials = $request->validate([
-                'email' => 'required|email',
+                'email'        => 'required|email',
                 'displayName'  => 'required|string',
+                'id_token'     => 'required|string',
+                'os_type'      => 'required|string',
             ]);
         } catch(ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
-        // TODO : 토큰 받게되면 그거 인증하도록 수정
+
+        $payload = null;
+        // TODO: 토큰 검증하도록 구현해야 함
+//        if($credentials['os_type'] == 'iOS') {
+//            $client = new \Google_Client(['client_id' => env('IOS_GOOGLE_CLIENT_ID')]);
+//            $client->verifyIdToken();
+//            $payload = $client->verifyIdToken($credentials['id_token']);
+//        } else if($credentials['os_type'] == 'android') {
+//            $client = new Google_Client(['client_id' => env('AND_GOOGLE_CLIENT_ID')]);
+//            $payload = $client->verifyIdToken($credentials['id_token']);
+//        }
+
+//        if ($payload['email'] != $credentials['email'] || $payload['hd'] != 'g.yju.ac.kr') {
+//            return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);
+//        }
+
         $user = User::updateOrCreate([
             'email' => $credentials['email'],
         ], [
@@ -127,7 +142,7 @@ class UserController extends Controller
         ]);
 
         if (! $token = $this->tokenService->createAccessToken('users', $credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
         $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
 
@@ -136,7 +151,6 @@ class UserController extends Controller
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
-
     }
 
     /**
@@ -144,7 +158,7 @@ class UserController extends Controller
      *     path="/api/user/login",
      *     tags={"학생"},
      *     summary="로그인",
-     *     description="일반 로그인",
+     *     description="일반 로그인 시 사용합니다.",
      *     @OA\Requestbody(
      *         description="회원가입 정보",
      *         required=true,
@@ -157,11 +171,12 @@ class UserController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      * @throws ValidationException
      */
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $credentials = $request->validate([
@@ -175,7 +190,7 @@ class UserController extends Controller
         }
 
         if (! $token = $this->tokenService->createAccessToken('users', $credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
 
         $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
@@ -193,14 +208,14 @@ class UserController extends Controller
      *     tags={"학생"},
      *     summary="로그아웃",
      *     description="유저 google 로그아웃",
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function logout(Request $request)
+    public function logout(): \Illuminate\Http\JsonResponse
     {
         auth('users')->logout();
-        return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
+        return response()->json(['message' => '성공적으로 로그아웃 되었습니다.']);
     }
 
     /**
@@ -208,7 +223,7 @@ class UserController extends Controller
      *     path="/api/user",
      *     tags={"학생"},
      *     summary="개인정보 수정",
-     *     description="유저 개인정보 수정",
+     *     description="유저의 개인정보 수정 시 사용합니다.",
      *     @OA\Requestbody(
      *         description="수정할 유저의 정보",
      *         required=true,
@@ -223,11 +238,13 @@ class UserController extends Controller
      *             )
      *         ),
      *     ),
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function update(Request $request)
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -247,9 +264,8 @@ class UserController extends Controller
 
         try {
             $user = User::findOrFail($userId);
-        } catch(modelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error' => $errorMessage], 404);
+        } catch(modelNotFoundException) {
+            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
         unset($validated['current_password']);
@@ -264,7 +280,7 @@ class UserController extends Controller
 
         if(!$user->save()) return response()->json(['error' => '회원정보 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '회원정보를 수정하였습니다.']);
+        return response()->json(['message' => '회원정보가 수정되었습니다.']);
     }
 
     /**
@@ -272,54 +288,28 @@ class UserController extends Controller
      *     path="/api/user/approve",
      *     tags={"학생"},
      *     summary="회원가입 승인",
-     *     description="학생 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
-     *     @OA\Requestbody(
-     *         description="아이디 및 승인 여부",
-     *         required=true,
-     *         @OA\Mediatype(
-     *             mediaType="application/json",
-     *            @OA\Schema (
-     *              @OA\Property (property="approve", type="boolean", description="유학생 회원가입 승인 여부", example=false),
-     *            )
-     *         ),
-     *     ),
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="fail"),
+     *     description="학생 회원가입 승인",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function approveRegistration(Request $request)
+    public function approveRegistration(): \Illuminate\Http\JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'approve'  => 'required',
-            ]);
-        } catch(ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getmessage();
-            return response()->json(['error'=>$request], $errorStatus);
-        }
-
         $userId = auth('users')->id();
 
         try {
             $user = User::findOrFail($userId);
-        } catch(modelNotFoundException $modelException) {
-            $errorStatus = $modelException->status;
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+        } catch(ModelNotFoundException) {
+            return response()->json(['error'=>$this->modelExceptionMessage], 404);
         }
 
-        if($validated['approve']) {
-            $user->approved = true;
-        } else {
-            $user->delete();
-            return response()->json(['success' => 'User deleted successfully']);
-        }
+        $user->approved = true;
 
         if(!$user->save()) {
-            return response()->json(['error' => 'Failed to update approve status'], 500);
+            return response()->json(['error' => '유저를 승인하는 데 실패하였습니다.'], 500);
         }
-        return response()->json(['message' => 'Update approve status successfully']);
+        return response()->json(['message' => '유저가 승인되었습니다.']);
     }
 
     /**
@@ -327,7 +317,7 @@ class UserController extends Controller
      *     path="/api/user/list",
      *     tags={"학생"},
      *     summary="승인 혹은 미승인 학생 목록",
-     *     description="파라미터 값에 맞는 학생을 users 배열에 반환",
+     *     description="type 값과 일치하는 학생을 users 배열에 반환",
      *     @OA\Requestbody(
      *     description="승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
      *     required=false,
@@ -338,11 +328,12 @@ class UserController extends Controller
      *             )
      *         )
      *     ),
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="500", description="server error"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ModelNotFoundException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function userList(Request $request)
+    public function userList(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -364,8 +355,8 @@ class UserController extends Controller
      * @OA\Get (
      *     path="/api/user/verify-email/{id}",
      *     tags={"학생"},
-     *     summary="이메일 중복 확인(인증X)",
-     *     description="학생 이메일 중복 확인",
+     *     summary="이메일 중복 확인",
+     *     description="학생 이메일 중복 여부를 확인할 때 사용합니다.",
      *      @OA\Parameter(
      *            name="id",
      *            description="중복을 확인할 학생의 이메일",
@@ -373,11 +364,12 @@ class UserController extends Controller
      *            in="path",
      *            @OA\Schema(type="string"),
      *        ),
-     *     @OA\Response(response="200", description="success"),
-     *     @OA\Response(response="422", description="validation error"),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function verifyUniqueUserEmail(string $email)
+    public function verifyUniqueUserEmail(string $email): \Illuminate\Http\JsonResponse
     {
         $rules = [
             'email' => 'required|email|unique:users,email'

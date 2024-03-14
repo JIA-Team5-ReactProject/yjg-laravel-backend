@@ -39,10 +39,11 @@ class AdminController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function register(Request $request)
+    public function register(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate($this->adminValidateRules);
@@ -63,7 +64,7 @@ class AdminController extends Controller
         $admin['admin_id'] = $admin['id'];
         unset($admin['id']);
 
-        if(!$admin) return response()->json(['error' => 'Failed to register'],500);
+        if(!$admin) return response()->json(['error' => '관리자 회원가입에 실패하였습니다.'],500);
 
         return response()->json($admin, 201);
     }
@@ -73,19 +74,19 @@ class AdminController extends Controller
      *     path="/api/admin",
      *     tags={"관리자"},
      *     summary="탈퇴(본인)",
-     *     description="관리자 탈퇴",
+     *     description="관리자 본인이 계정 탈퇴 시 사용합니다.",
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function unregister(Request $request)
+    public function unregister(): \Illuminate\Http\JsonResponse
     {
         $adminId = auth('admins')->id();
         if (!Admin::destroy($adminId)) {
-            throw new DestroyException('Failed to destroy user');
+            throw new DestroyException('회원탈퇴에 실패하였습니다.');
         }
 
-        return response()->json(['message'=>'Destroy user successfully']);
+        return response()->json(['message' => '회원탈퇴 되었습니다.']);
     }
 
     /**
@@ -93,7 +94,7 @@ class AdminController extends Controller
      *     path="/api/admin/master/{id}",
      *     tags={"관리자"},
      *     summary="탈퇴(마스터)",
-     *     description="관리자 탈퇴",
+     *     description="마스터 관리자가 다른 관리자를 탈퇴시킬 때 사용합니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="삭제할 관리자의 아이디",
@@ -105,13 +106,13 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function unregisterMaster(string $id)
+    public function unregisterMaster(string $id): \Illuminate\Http\JsonResponse
     {
         if (!Admin::destroy($id)) {
-            throw new DestroyException('Failed to destroy user');
+            throw new DestroyException('회원탈퇴에 실패하였습니다.');
         }
 
-        return response()->json(['message'=>'Destroy user successfully']);
+        return response()->json(['message' => '회원탈퇴 되었습니다.']);
     }
 
     /**
@@ -119,7 +120,7 @@ class AdminController extends Controller
      *     path="/api/admin/login",
      *     tags={"관리자"},
      *     summary="로그인",
-     *     description="관리자 로그인. 요청 시 /sanctum/csrf-coocie 경로로 먼저 요청 보내고 로그인 시도하기",
+     *     description="관리자 로그인 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="관리자 로그인을 위한 정보",
      *         required=true,
@@ -132,11 +133,12 @@ class AdminController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ValidationException"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      * @throws ValidationException
      */
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $credentials = $request->validate([
@@ -149,8 +151,8 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if (! $token = $this->tokenService->createAccessToken('admins', $credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = $this->tokenService->createAccessToken('admins', $credentials)) {
+            return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
         }
         $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
 
@@ -168,10 +170,10 @@ class AdminController extends Controller
      *     summary="로그아웃",
      *     description="관리자 로그아웃",
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function logout(Request $request)
+    public function logout(): \Illuminate\Http\JsonResponse
     {
         auth('admins')->logout();
         return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
@@ -182,7 +184,7 @@ class AdminController extends Controller
      *     path="/api/admin/privilege",
      *     tags={"관리자"},
      *     summary="권한 변경",
-     *     description="관리자 권한 변경",
+     *     description="관리자의 서비스 권한 변경 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="관리자 권한 변경을 위한 값 및 아이디",
      *         required=true,
@@ -197,10 +199,13 @@ class AdminController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function privilege(Request $request) {
+    public function privilege(Request $request): \Illuminate\Http\JsonResponse
+    {
         try {
             $validated = $request->validate([
                 'admin_id'              => 'required|numeric',
@@ -216,9 +221,8 @@ class AdminController extends Controller
 
         try {
             $admin = Admin::findOrFail($validated['admin_id']);
-        } catch(ModelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error'=>'아이디에 해당하는 관리자가 없습니다.'], 404);
+        } catch(ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         foreach($validated as $key => $value) {
@@ -226,10 +230,10 @@ class AdminController extends Controller
         }
 
         if(!$admin->save()) {
-            return response()->json(['failed to update privilege'], 500);
+            return response()->json(['error' => '관리자 권한 변경에 실패하였습니다.'], 500);
         }
 
-        return response()->json(['message' => 'update privilege successfully']);
+        return response()->json(['message' => '관리자 권한이 변경되었습니다.']);
     }
 
     /**
@@ -237,7 +241,7 @@ class AdminController extends Controller
      *     path="/api/admin/approve",
      *     tags={"관리자"},
      *     summary="회원가입 승인",
-     *     description="관리자 회원가입 승인 (거부 시 계정 정보 삭제 됨)",
+     *     description="관리자 회원가입 승인 (거부는 회원 탈퇴 API 사용 해주세요)",
      *     @OA\RequestBody(
      *         description="아이디",
      *         required=true,
@@ -249,10 +253,12 @@ class AdminController extends Controller
      *         ),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function approveRegistration(Request $request)
+    public function approveRegistration(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -266,16 +272,16 @@ class AdminController extends Controller
 
         try {
             $admin = Admin::findOrFail($validated['admin_id']);
-        } catch(ModelNotFoundException $modelException) {
-            return response()->json(['error'=> '해당하는 관리자가 없습니다.'], 404);
+        } catch(ModelNotFoundException) {
+            return response()->json(['error'=> $this->modelExceptionMessage], 404);
         }
 
         $admin->approved = true;
 
         if(!$admin->save()) {
-            return response()->json(['error' => 'failed to update approve status'], 500);
+            return response()->json(['error' => '관리자 승인에 실패하였습니다.'], 500);
         }
-        return response()->json(['message' => 'update approve status successfully']);
+        return response()->json(['message' => '관리자가 승인되었습니다.']);
     }
 
     /**
@@ -283,7 +289,7 @@ class AdminController extends Controller
      *     path="/api/admin",
      *     tags={"관리자"},
      *     summary="개인정보 수정",
-     *     description="관리자 개인정보 수정",
+     *     description="관리자 개인정보 수정 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="수정할 관리자 정보",
      *         required=true,
@@ -298,10 +304,12 @@ class AdminController extends Controller
      *         ),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -320,8 +328,8 @@ class AdminController extends Controller
 
         try {
             $admin = Admin::findOrFail($adminId);
-        } catch(ModelNotFoundException $modelException) {
-            return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
+        } catch(ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         unset($validated['current_password']);
@@ -334,9 +342,9 @@ class AdminController extends Controller
             }
         }
 
-        if(!$admin->save()) return response()->json(['error' => 'Failed to update profile'], 500);
+        if(!$admin->save()) return response()->json(['error' => '관리자 정보 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => 'Update profile successfully']);
+        return response()->json(['message' => '관리자 정보가 수정되었습니다.']);
     }
 
     /**
@@ -344,7 +352,7 @@ class AdminController extends Controller
      *     path="/api/admin/verify-email/{id}",
      *     tags={"관리자"},
      *     summary="이메일 중복 확인",
-     *     description="관리자 이메일 중복 확인",
+     *     description="관리자 회원가입 시 이메일 중복 확인을 체크할 때 사용합니다.",
      *      @OA\Parameter(
      *            name="email",
      *            description="중복을 확인할 관리자의 이메일",
@@ -353,10 +361,11 @@ class AdminController extends Controller
      *            @OA\Schema(type="string"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Error"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function verifyUniqueAdminEmail(string $email)
+    public function verifyUniqueAdminEmail(string $email): \Illuminate\Http\JsonResponse
     {
         $rules = [
             'email' => 'required|email|unique:admins,email'
@@ -391,10 +400,11 @@ class AdminController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function verifyPassword(Request $request)
+    public function verifyPassword(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -406,7 +416,10 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if(!Hash::check($validated['password'], auth('admins')->user()->password)) return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
+        // TODO: 오류나는지 체크 해야함
+        if(!Hash::check($validated['password'], auth('admins')->user()->getAuthPassword())) {
+            return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
+        }
 
         return response()->json(['success' => '비밀번호가 일치합니다.']);
     }
@@ -429,11 +442,12 @@ class AdminController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="404", description="Model Not Found(해당 하는 값이 없음)"),
-     *     @OA\Response(response="422", description="Unprocessable Content(Request body에 올바르게 값을 입력했는지 확인)"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function findEmail(Request $request)
+    public function findEmail(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -448,8 +462,8 @@ class AdminController extends Controller
 
         try {
             $admin = Admin::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
-        } catch (ModelNotFoundException $modelNotFoundException) {
-            return response()->json(['error'=>'해당하는 관리자가 없습니다.'], 404);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
         return response()->json(['admin' => $admin]);
     }
@@ -471,10 +485,11 @@ class AdminController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function adminList(Request $request)
+    public function adminList(Request $request): \Illuminate\Http\JsonResponse
     {
         $typeRule = ['approved', 'unapproved'];
 

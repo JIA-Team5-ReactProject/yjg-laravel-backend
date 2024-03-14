@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
 use App\Models\Notice;
 use App\Models\NoticeImage;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -27,9 +26,9 @@ class NoticeController extends Controller
      *     path="/api/notice",
      *     tags={"공지사항"},
      *     summary="공지사항 검색",
-     *     description="파라미터 값에 맞는 공지사항을 반환",
+     *     description="body로 보낸 값에 맞는 공지사항을 검색하는 기능입니다. 검색할 값을 보내지 않으면 전체 공지사항을 반환합니다.",
      *     @OA\RequestBody(
-     *     description="검색 파라미터가 있을 경우 반환, 없을 경우 전체 반환",
+     *     description="페이지, 공지사항의 태그(admin, salon, restaurant, bus), 제목으로 검색합니다.",
      *     required=true,
      *         @OA\MediaType(
      *         mediaType="application/json",
@@ -41,7 +40,8 @@ class NoticeController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function index(Request $request): \Illuminate\Http\JsonResponse
@@ -78,7 +78,7 @@ class NoticeController extends Controller
      *     path="/api/notice/recent",
      *     tags={"공지사항"},
      *     summary="최근 3건의 공지사항",
-     *     description="가장 최신 공지사항 3개를 반환",
+     *     description="Query string과 일치하는 태그를 가진 최신 공지사항 3개를 반환합니다.",
      *     @OA\Parameter(
      *          name="tag",
      *          description="찾을 공지사항의 태그",
@@ -87,6 +87,7 @@ class NoticeController extends Controller
      *          @OA\Schema(type="string"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ValidationException"),
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
@@ -101,6 +102,8 @@ class NoticeController extends Controller
             $errorMessage = $validationException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
+
+        // 태그에 해당하는 최신 게시글 3개만 필터링
         $notices = Notice::with('noticeImages')->where('tag', $validated['tag'])->latest()->take(3)->get();
 
         return response()->json(['notices' => $notices]);
@@ -111,7 +114,7 @@ class NoticeController extends Controller
      *     path="/api/notice/{id}",
      *     tags={"공지사항"},
      *     summary="공지사항 검색",
-     *     description="파라미터 값에 맞는 공지사항을 반환",
+     *     description="아이디와 일치하는 공지사항을 반환합니다.",
      *     @OA\Parameter(
      *          name="id",
      *          description="찾을 공지사항의 아이디",
@@ -120,16 +123,16 @@ class NoticeController extends Controller
      *          @OA\Schema(type="integer"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function show(string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $notice = Notice::with(['noticeImages', 'admin'])->findOrFail($id);
-        } catch (ModelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error'=>$errorMessage], 404);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         return response()->json(['notice' => $notice]);
@@ -139,10 +142,10 @@ class NoticeController extends Controller
      * @OA\Post (
      *     path="/api/notice",
      *     tags={"공지사항"},
-     *     summary="공지사항 작성(관리자)(수정)",
-     *     description="공지사항 작성",
+     *     summary="공지사항 작성(관리자)",
+     *     description="공지사항 작성에 사용됩니다. 사진은 이미지 파일 그대로 보내면 됩니다.",
      *     @OA\RequestBody(
-     *         description="글 내용",
+     *         description="공지사항에 들어갈 내용 및 사진",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -159,8 +162,8 @@ class NoticeController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      * @throws AuthorizationException
      */
@@ -188,37 +191,25 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $adminId = auth('admins')->id();
+        $validated['admin_id'] = auth('admins')->id();
 
-        try {
-            Admin::findOrFail($adminId);
-        } catch (ModelNotFoundException $modelException) {
-            return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
-        }
+        // 불필요하다고 판단되어 모델에서 현재 인증된 사용자를 찾는 로직은 삭제함
 
-        $notice = new Notice();
-        $notice->admin_id = $adminId;
-        $notice->title = $validated['title'];
-        $notice->content = $validated['content'];
-        $notice->tag = $validated['tag'];
-        if(isset($validated['urgent'])) {
-            $notice->urgent = $validated['urgent'];
-        }
+        // 공지사항 생성
+        $notice = Notice::create($validated);
 
-        $notice->save();
+        if(!$notice) return response()->json(['error' => '공지사항을 작성하는 데 실패하였습니다.'], 500);
 
-        if(!$notice) return response()->json(['error' => 'Failed to create notice'], 500);
-
+        // 생성된 공지사항의 연관관계 메서드를 이용하여 이미지를 하나씩 저장
         if(isset($validated['images'])) {
             foreach ($validated['images'] as $image) {
                 $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
 
                 $saveImage = $notice->noticeImages()->save(new NoticeImage(['image' => $url]));
 
-                if(!$saveImage) return response()->json(['Failed to save image'], 500);
+                if(!$saveImage) return response()->json(['공지사항의 이미지를 저장하는 데 실패하였습니다.'], 500);
             }
         }
-
 
         return response()->json(['notice' => $notice, 'images' => $notice->noticeImages()], 201);
     }
@@ -227,11 +218,13 @@ class NoticeController extends Controller
      * @OA\Patch (
      *     path="/api/notice/{id}",
      *     tags={"공지사항"},
-     *     summary="공지사항 수정(관리자)(수정)",
-     *     description="공지사항 수정",
+     *     summary="공지사항 수정(관리자)",
+     *     description="공지사항을 수정할 때 사용됩니다. 수정할 값만 request body에 전송하면 됩니다.
+     *                  삭제할 이미지의 경우에는 delete_images 배열에 이미지의 아이디 값을 문자열로,
+     *                  추가할 이미지는 기존 images 배열에 파일로 추가하면 됩니다.",
      *     @OA\Parameter(
      *          name="id",
-     *          description="찾을 공지사항의 아이디",
+     *          description="수정할 공지사항의 아이디",
      *          required=true,
      *          in="path",
      *          @OA\Schema(type="integer"),
@@ -260,8 +253,9 @@ class NoticeController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function update(string $id, Request $request): \Illuminate\Http\JsonResponse
@@ -289,22 +283,20 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
+        // 해당하는 공지사항이 있는지 검색
         try {
             $notice = Notice::findOrFail($id);
-        } catch (ModelNotFoundException $modelException) {
-            return response()->json(['error' => 'id에 해당하는 게시글이 없습니다.'], 404);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
+        // TODO: 효율적으로 삭제 가능한지 좀 생각해봐야 함
+        // delete_images 배열을 확인하여, 해당하는 이미지의 아이디로 삭제
         if(isset($validated['delete_images'])) {
             foreach ($validated['delete_images'] as $deleteImage) {
-                try {
-                    //TODO: 연관관계 메서드 이용하여 수정하기
-                    $noticeImage = NoticeImage::findOrFail($deleteImage);
-                } catch (ModelNotFoundException $modelException) {
-                    return response()->json(['error' => '해당하는 이미지가 존재하지 않습니다.'], 404);
-                }
-                $deleteDb = $noticeImage->delete();
-                $fileName = basename($noticeImage->image);
+                $imageURL = $notice->noticeImages()->where('id', $deleteImage)->get('image');
+                $deleteDb = $notice->noticeImages()->where('id', $deleteImage)->delete();
+                $fileName = basename($imageURL);
                 $deleteS3 = Storage::delete('images/'.$fileName);
                 if(!$deleteS3 || !$deleteDb) return response()->json(['error' => '이미지 삭제에 실패하였습니다.'], 500);
             }
@@ -315,16 +307,17 @@ class NoticeController extends Controller
             foreach ($validated['images'] as $image) {
                 $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
                 $saveImage = $notice->noticeImages()->save(new NoticeImage(['image' => $url]));
-                if(!$saveImage) return response()->json(['Failed to save image'], 500);
+                if(!$saveImage) return response()->json(['이미지 저장에 실패하였습니다.'], 500);
             }
             unset($validated['images']);
         }
 
+        // 키 값을 컬럼명과 일치시켜 들어온 값만 수정하도록 구현
         foreach($validated as $key => $value) {
             $notice->$key = $value;
         }
 
-        if(!$notice->save()) return response()->json(['error' => 'Failed to update notice'], 500);
+        if(!$notice->save()) return response()->json(['error' => '공지사항 수정에 실패하였습니다.'], 500);
 
         return response()->json(['notice' => $notice, 'images' => $notice->noticeImages()]);
     }
@@ -333,8 +326,8 @@ class NoticeController extends Controller
      * @OA\Delete (
      *     path="/api/notice/{id}",
      *     tags={"공지사항"},
-     *     summary="공지사항 삭제(관리자)(수정)",
-     *     description="공지사항 삭제",
+     *     summary="공지사항 삭제(관리자)",
+     *     description="공지사항 삭제 시 사용됩니다.",
      *     @OA\Parameter(
      *           name="id",
      *           description="삭제할 공지사항의 아이디",
@@ -357,6 +350,6 @@ class NoticeController extends Controller
 
         if(!$notice) return response()->json(['error' => '삭제에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '공지사항이 성공적으로 삭제되었습니다.']);
+        return response()->json(['message' => '공지사항이 성공적으로 삭제되었습니다.']);
     }
 }

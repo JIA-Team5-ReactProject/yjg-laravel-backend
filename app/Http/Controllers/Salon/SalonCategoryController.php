@@ -20,8 +20,8 @@ class SalonCategoryController extends Controller
      * @OA\Get (
      *     path="/api/salon/category",
      *     tags={"미용실 - 카테고리"},
-     *     summary="카테고리 목록(수정)",
-     *     description="미용실 카테고리 목록",
+     *     summary="카테고리 목록",
+     *     description="미용실 카테고리 목록을 불러올 때 사용합니다.",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
@@ -35,8 +35,8 @@ class SalonCategoryController extends Controller
      * @OA\Post (
      *     path="/api/salon/category",
      *     tags={"미용실 - 카테고리"},
-     *     summary="카테고리 생성(관리자)(수정)",
-     *     description="미용실 카테고리 생성",
+     *     summary="카테고리 생성(관리자)",
+     *     description="미용실 카테고리 생성 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="카테고리 관련 정보",
      *         required=true,
@@ -48,8 +48,8 @@ class SalonCategoryController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="201", description="Created"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -70,35 +70,34 @@ class SalonCategoryController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $salonCategory = SalonCategory::create([
-            'category' => $validated['category_name'],
-        ]);
+        $salonCategory = SalonCategory::create($validated);
 
-        if(!$salonCategory) return response()->json(['Falied to create category'], 500);
+        if(!$salonCategory) return response()->json(['카테고리 생성에 실패하였습니다.'], 500);
 
         return response()->json(['salon_category' => $salonCategory], 201);
     }
+
     /**
      * @OA\Patch (
      *     path="/api/salon/category",
      *     tags={"미용실 - 카테고리"},
-     *     summary="카테고리 수정(관리자)(수정)",
-     *     description="카테고리 이름 수정",
+     *     summary="카테고리 수정(관리자)",
+     *     description="카테고리 이름 수정 시 사용합니다.",
      *     @OA\RequestBody(
-     *         description="카테고리 수정을 위한 정보",
+     *         description="수정할 카테고리의 이름과 아이디",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
      *             @OA\Property (property="category_id", type="integer", description="카테고리 아이디", example=1),
-     *             @OA\Property (property="category_name", type="string", description="카테고리 명", example="엄준식"),
+     *             @OA\Property (property="category_name", type="string", description="카테고리명", example="엄준식"),
      *             )
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="404", description="Model Not Found Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function update(Request $request): \Illuminate\Http\JsonResponse
@@ -129,17 +128,18 @@ class SalonCategoryController extends Controller
 
         $category->category = $validated['category_name'];
 
-        if(!$category->save()) return response()->json(['error' => 'Failed to update category name'], 500);
+        if(!$category->save()) return response()->json(['error' => '카테고리명 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => 'Update category name successfully']);
+        return response()->json(['message' => '카테고리명 수정에 성공하였습니다.']);
 
     }
+
     /**
      * @OA\Delete (
      *     path="/api/salon/category/{id}",
      *     tags={"미용실 - 카테고리"},
-     *     summary="카테고리 삭제(관리자)(수정)",
-     *     description="미용실 카테고리 삭제",
+     *     summary="카테고리 삭제(관리자)",
+     *     description="미용실 카테고리 삭제 시 사용합니다.",
      *      @OA\Parameter(
      *            name="id",
      *            description="삭제할 카테고리의 아이디",
@@ -148,8 +148,9 @@ class SalonCategoryController extends Controller
      *            @OA\Schema(type="integer"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
+     * @throws DestroyException
      */
     public function destroy(String $id): \Illuminate\Http\JsonResponse
     {
@@ -160,9 +161,9 @@ class SalonCategoryController extends Controller
         }
 
         if (!SalonCategory::destroy($id)) {
-            throw new DestroyException('Failed to destroy category');
+            throw new DestroyException('카테고리 삭제에 실패하였습니다.');
         }
 
-        return response()->json(['message'=>'Destroy category successfully']);
+        return response()->json(['message'=>'카테고리 삭제에 성공하였습니다.']);
     }
 }

@@ -20,12 +20,17 @@ class SalonBreakTimeController extends Controller
         return Parent::authorize($ability, $arguments);
     }
 
+    /**
+     * 해당 메서드는 미용실 예약에서 사용됩니다.
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function index(): \Illuminate\Database\Eloquent\Collection
     {
         $dayList = $this->dayList;
 
         $breakTimes = SalonBreakTime::all(['break_time', 'date']);
 
+        // 요일, 시간:분으로 포맷팅하여 반환합니다.
         foreach ($breakTimes as $breakTime) {
             $breakTime->day = $dayList[date('w', strtotime($breakTime->date))];
             $breakTime->break_time = date('H:i', strtotime($breakTime->break_time));
@@ -39,7 +44,7 @@ class SalonBreakTimeController extends Controller
      *     path="/api/salon/break",
      *     tags={"미용실 - 예약불가 시간"},
      *     summary="예약불가 시간 생성(관리자)",
-     *     description="미용실 예약불가 시간 생성",
+     *     description="미용실 예약불가 시간을 추가할 때 사용합니다.",
      *     @OA\RequestBody(
      *         description="예약불가 시간 관련 정보",
      *         required=true,
@@ -58,8 +63,8 @@ class SalonBreakTimeController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="201", description="Created"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -78,14 +83,15 @@ class SalonBreakTimeController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
+        // 시간 갯수만큼 배열을 순회하여 레코드를 생성합니다.
         foreach ($validated['break_time'] as $breakTime) {
             $salonBreakTime = new SalonBreakTime();
             $salonBreakTime->break_time = $breakTime;
             $salonBreakTime->date = $validated['date'];
-            if(!$salonBreakTime->save()) return response()->json(['error' => 'Failed to set BreakTime'], 500);
+            if(!$salonBreakTime->save()) return response()->json(['error' => '예약불가 시간 추가에 실패하였습니다.'], 500);
         }
 
-        return response()->json(['success' => 'Set BreakTime successfully'], 201);
+        return response()->json(['message' => '예약불가 시간을 성공적으로 추가하였습니다.'], 201);
     }
 
     /**
@@ -93,7 +99,7 @@ class SalonBreakTimeController extends Controller
      *     path="/api/salon/break",
      *     tags={"미용실 - 예약불가 시간"},
      *     summary="예약불가 시간 삭제(관리자)(수정)",
-     *     description="미용실 예약불가 시간 삭제",
+     *     description="미용실 예약불가 시간 삭제 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="예약불가 시간 관련 정보",
      *         required=true,
@@ -111,8 +117,8 @@ class SalonBreakTimeController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function destroy(Request $request): \Illuminate\Http\JsonResponse
@@ -134,8 +140,8 @@ class SalonBreakTimeController extends Controller
         $salonBreakTime = SalonBreakTime::where('break_time', $validated['break_time'])
             ->where('date', $validated['date'])->delete();
 
-        if(!$salonBreakTime) return response()->json(['error' => 'Nothing to delete'], 404);
+        if(!$salonBreakTime) return response()->json(['error' => $this->modelExceptionMessage], 404);
 
-        return response()->json(['success' => 'Delete BreakTime data successfully']);
+        return response()->json(['message' => '예약불가 시간을 성공적으로 삭제하였습니다.']);
     }
 }

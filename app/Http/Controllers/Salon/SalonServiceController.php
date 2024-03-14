@@ -21,8 +21,8 @@ class SalonServiceController extends Controller
      * @OA\Get (
      *     path="/api/salon/service",
      *     tags={"미용실 - 서비스"},
-     *     summary="카테고리 서비스 목록(수정)",
-     *     description="미용실 특정 카테고리의 서비스 목록",
+     *     summary="카테고리 서비스 목록",
+     *     description="미용실 특정 카테고리의 서비스 목록을 반환합니다.",
      *     @OA\Parameter(
      *          name="category_id",
      *          description="카테고리 아이디",
@@ -38,7 +38,7 @@ class SalonServiceController extends Controller
      *          @OA\Schema(type="string"),
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function show(Request $request): \Illuminate\Http\JsonResponse
@@ -68,8 +68,8 @@ class SalonServiceController extends Controller
      * @OA\Post (
      *     path="/api/salon/service",
      *     tags={"미용실 - 서비스"},
-     *     summary="서비스 생성(관리자)(수정)",
-     *     description="미용실 서비스 생성",
+     *     summary="서비스 생성(관리자)",
+     *     description="미용실 서비스 생성할 때 사용합니다.",
      *     @OA\RequestBody(
      *         description="서비스 관련 정보",
      *         required=true,
@@ -84,8 +84,8 @@ class SalonServiceController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="201", description="Created"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -109,12 +109,7 @@ class SalonServiceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $salonService = SalonService::create([
-            'salon_category_id' => $validated['category_id'],
-            'service'           => $validated['service_name'],
-            'price'             => $validated['price'],
-            'gender'            => $validated['gender'],
-        ]);
+        $salonService = SalonService::create($validated);
 
         return response()->json(['service' => $salonService]);
     }
@@ -123,8 +118,8 @@ class SalonServiceController extends Controller
      * @OA\Patch (
      *     path="/api/salon/service",
      *     tags={"미용실 - 서비스"},
-     *     summary="서비스 수정(관리자)(수정)",
-     *     description="미용실 서비스 수정",
+     *     summary="서비스 수정(관리자)",
+     *     description="미용실의 서비스 정보를 수정 시 사용합니다.",
      *     @OA\RequestBody(
      *         description="서비스 수정을 위한 정보",
      *         required=true,
@@ -139,9 +134,9 @@ class SalonServiceController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="Validation Exception"),
-     *     @OA\Response(response="404", description="Model Not Found Exception"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function update(Request $request): \Illuminate\Http\JsonResponse
@@ -166,9 +161,8 @@ class SalonServiceController extends Controller
         }
         try {
             $salonService = SalonService::findOrFail($validated['service_id']);
-        } catch (ModelNotFoundException $modelException) {
-            $errorMessage = $modelException->getMessage();
-            return response()->json(['error' => $errorMessage], 404);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         unset($validated['service_id']);
@@ -177,17 +171,17 @@ class SalonServiceController extends Controller
             $salonService->$key = $value;
         }
 
-        if (!$salonService->save()) return response()->json(['error' => 'Failed to update service name'], 500);
+        if (!$salonService->save()) return response()->json(['error' => '미용실 서비스명 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => 'Updated successfully']);
+        return response()->json(['message' => '미용실 서비스명 수정에 성공하였습니다.']);
     }
 
     /**
      * @OA\Delete (
      *     path="/api/salon/service/{id}",
      *     tags={"미용실 - 서비스"},
-     *     summary="서비스 삭제(관리자)(수정)",
-     *     description="미용실 서비스 삭제",
+     *     summary="서비스 삭제(관리자)",
+     *     description="미용실 서비스 삭제에 사용됩니다.",
      *      @OA\Parameter(
      *            name="id",
      *            description="삭제할 서비스의 아이디",
@@ -196,7 +190,7 @@ class SalonServiceController extends Controller
      *            @OA\Schema(type="integer"),
      *        ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
@@ -208,8 +202,8 @@ class SalonServiceController extends Controller
         }
 
         if (!SalonService::destroy($id)) {
-            throw new DestroyException('Failed to destroy category');
+            throw new DestroyException('미용실 서비스 삭제에 실패하였습니다.');
         }
-        return response()->json(['success' => 'Service deleted successfully']);
+        return response()->json(['message' => '미용실 서비스 삭제에 성공하였습니다.']);
     }
 }
