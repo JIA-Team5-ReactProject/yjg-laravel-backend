@@ -2604,14 +2604,14 @@
                 }
             }
         },
-        "/api/restaurant/menu/get/m": {
+        "/api/restaurant/menu/get/w": {
             "get": {
                 "tags": [
                     "식수"
                 ],
-                "summary": "식수 식단표 1달치 가져오기",
-                "description": "식수 식단표 1달치를 가져옵니다",
-                "operationId": "7c5d7b4dd545f4a62e2ded2979422208",
+                "summary": "식단표 그 달의 모든 주차 가져오기",
+                "description": "식단표 달의 모든 주차 가져오기",
+                "operationId": "5be786a03948919ebb354ee2938a8743",
                 "requestBody": {
                     "description": "받고싶은 날짜(년,월)",
                     "required": true,
@@ -2635,6 +2635,35 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/get/w/{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식단표 1주치 가져오기",
+                "description": "식단표 1주치 가져오기",
+                "operationId": "d09e7bf401ba6063b74c6adf26b4804f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "가져올 식단표의 date_id 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -2671,6 +2700,35 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/d/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식단표 삭제",
+                "description": "식단표 삭제",
+                "operationId": "368bef47816da39a3860fd4b9f4e0780",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 식단표의 date_id 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -2876,8 +2934,8 @@
                 "tags": [
                     "식수"
                 ],
-                "summary": "주말 식수 입금여부 확인",
-                "description": "주말 식수 입금여부 확인",
+                "summary": "주말 식수 삭제 확인",
+                "description": "주말 식수 삭제 확인",
                 "operationId": "054cc9d10ec30323087e31bcfa00868c",
                 "parameters": [
                     {
@@ -2943,35 +3001,6 @@
                     },
                     "422": {
                         "description": "Validation Exception"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/weekend/delete/{id}": {
-            "delete": {
-                "tags": [
-                    "식수"
-                ],
-                "summary": "주말 식수 신청 삭제",
-                "description": "주말 식수 신청 삭제",
-                "operationId": "a6a527f56ec109744dc05d0334b068ca",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 주말 식수 신청 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
                     },
                     "500": {
                         "description": "Fail"
@@ -3054,6 +3083,35 @@
                 }
             }
         },
+        "/api/restaurant/semester/meal-type/{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유형 가져오기",
+                "description": "학기 식수 유형 가져오기",
+                "operationId": "af683a3d26c7c44cfc2fe5b42c72caf5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "가져올 학기 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/weekend/meal-type": {
             "post": {
                 "tags": [
@@ -3118,6 +3176,35 @@
                         "name": "id",
                         "in": "path",
                         "description": "삭제할 주말 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/meal-type/{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 유형 가져오기",
+                "description": "주말 식수 유형 가져오기",
+                "operationId": "db29adb4e4ab3ffbfaf356ac594cd5c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "가져올 주말 식수 유형 아이디",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -3777,7 +3864,7 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "service_name": {
+                                    "service": {
                                         "description": "서비스 명",
                                         "type": "string",
                                         "example": "커트"
@@ -3801,6 +3888,9 @@
                 "responses": {
                     "201": {
                         "description": "Created"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
                     },
                     "422": {
                         "description": "ValidationException"
