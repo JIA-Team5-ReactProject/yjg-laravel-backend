@@ -11,7 +11,8 @@ class RestaurantMenuDate extends Model
 
     protected $fillable = [
         'month',
-        'year'
+        'year',
+        'week'
     ];
 
     public function restaurant_menu(): \Illuminate\Database\Eloquent\Relations\HasMany

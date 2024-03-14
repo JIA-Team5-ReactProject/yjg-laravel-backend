@@ -68,8 +68,8 @@ class RestaurantWeekendController extends Controller
      * @OA\get (
      *     path="/api/restaurant/weekend/g/payment/{id}",
      *     tags={"식수"},
-     *     summary="주말 식수 입금여부 확인",
-     *     description="주말 식수 입금여부 확인",
+     *     summary="주말 식수 삭제 확인",
+     *     description="주말 식수 삭제 확인",
      *     @OA\Parameter(
      *           name="id",
      *           description="확인할 식수신청 id",
@@ -140,23 +140,7 @@ class RestaurantWeekendController extends Controller
             return response()->json(['message' => '입금이 확인 되었습니다.']);
     }
 
-    /**
-     * @OA\Delete (
-     *     path="/api/restaurant/weekend/delete/{id}",
-     *     tags={"식수"},
-     *     summary="주말 식수 신청 삭제",
-     *     description="주말 식수 신청 삭제",
-     *     @OA\Parameter(
-     *           name="id",
-     *           description="삭제할 주말 식수 신청 아이디",
-     *           required=true,
-     *           in="path",
-     *           @OA\Schema(type="integer"),
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
-     * )
-     */
+    
     public function delete($id)
     {
         try {

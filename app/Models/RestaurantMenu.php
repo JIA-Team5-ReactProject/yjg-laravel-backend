@@ -14,9 +14,10 @@ class RestaurantMenu extends Model
         'date',
         'menu',
         'meal_time',
+        
     ];
     public function restaurantMenuDate() {
         $this->belongsTo(RestaurantMenuDate::class);
-    }//asd
+    }
     
 }
