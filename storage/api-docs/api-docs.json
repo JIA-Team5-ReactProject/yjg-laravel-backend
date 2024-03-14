@@ -2051,13 +2051,13 @@
             }
         },
         "/api/user/logout": {
-            "get": {
+            "post": {
                 "tags": [
                     "학생"
                 ],
                 "summary": "로그아웃",
-                "description": "유저 google 로그아웃",
-                "operationId": "18861a34b16314f9047852239cb85200",
+                "description": "유저 로그아웃",
+                "operationId": "8b589eead1accdf2271a4ebc07a06168",
                 "responses": {
                     "200": {
                         "description": "Success"
