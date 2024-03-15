@@ -137,7 +137,7 @@ class SalonServiceController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *             @OA\Property (property="service_id", type="integer", description="카테고리 아이디", example=1),
-     *             @OA\Property (property="service_name", type="string", description="카테고리 명", example="엄준식"),
+     *             @OA\Property (property="service", type="string", description="카테고리 명", example="엄준식"),
      *             @OA\Property (property="gender", type="string", description="성별", example="male"),
      *             @OA\Property (property="price", type="string", description="가격", example="20000"),
      *             )
@@ -160,7 +160,7 @@ class SalonServiceController extends Controller
         try {
             $validated = $request->validate([
                 'service_id' => 'required|numeric',
-                'service_name' => 'string',
+                'service' => 'string',
                 'gender' => 'string',
                 'price' => 'string',
             ]);
