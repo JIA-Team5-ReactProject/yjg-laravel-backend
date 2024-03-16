@@ -44,8 +44,8 @@ RUN composer install --optimize-autoloader --no-dev
 
 RUN npm install
 
-## use 9000 port
-EXPOSE 9000
+## use 80 port
+EXPOSE 80
 
 RUN chown www-data:www-data ./bootstrap
 
@@ -59,7 +59,7 @@ RUN php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
 
 RUN php artisan l5-swagger:generate
 
-RUN rm -rf .env
+#RUN rm -rf .env
 
-### run php-fpm
+## run php-fpm
 CMD ["php-fpm"]
