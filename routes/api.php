@@ -34,7 +34,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+// Server Health Check
+Route::get('/healthy', function () {
+    return response()->json(['message' => 'HELLO WORLD ^_^']);
+});
 
 
 // 토큰 불필요
