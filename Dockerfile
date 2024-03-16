@@ -44,8 +44,8 @@ RUN composer install --optimize-autoloader --no-dev
 
 RUN npm install
 
-## use 80 port
-EXPOSE 80
+## use 9000 port
+EXPOSE 9000
 
 RUN chown www-data:www-data ./bootstrap
 
