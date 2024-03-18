@@ -263,13 +263,13 @@ class BusScheduleController extends Controller
         $errorBox = [];
         try {
             // 유효성 검사//쿼리파라미터 형식
-            $validatedData = Validator::make($request->query(),[
+            $validatedData = $request->validate([
               'weekend' => 'required|boolean',
               'semester' => 'required|boolean',
               'bus_route_direction' => 'required|string',
-            ])->validate();
+            ]);
         } catch (ValidationException $exception) {
-            return response()->json(['error' => $errorBox], 404);
+            return response()->json(['roundDate' => []], 404);
         }
 
 
@@ -292,7 +292,7 @@ class BusScheduleController extends Controller
             }
             return response()->json(['roundDate' => $matchingRound]);
         } catch (\Exception $exception) {
-            return response()->json(['roundDate' => $matchingRound], 404);
+            return response()->json(['roundDate' => []]);
         }
     }
 
@@ -319,14 +319,13 @@ class BusScheduleController extends Controller
          */
     public function getRoundSchedule($id)
     {
-        $errorBox = [];
         try {
 
             // bus_round_id에 해당하는 모든 bus_schedule 데이터를 조회합니다.
             $schedules = BusSchedule::where('bus_round_id', $id)->get();
 
             if ($schedules->isEmpty()) {
-                return response()->json(['error' => $errorBox], 404);
+                return response()->json(['schedules' => []]);
             }
            
             //Log::info('조회된 스케줄: ', ['schedules' => $schedules->toArray()]);
@@ -335,7 +334,7 @@ class BusScheduleController extends Controller
             return response()->json(['schedules' => $schedules]);
         } catch (\Exception $exception) {
             // 예외 발생 시 에러 메시지를 반환합니다.
-            return response()->json(['schedules' => $schedules], 404);
+            return response()->json(['schedules' => []]);
         }
 
     }
@@ -377,8 +376,8 @@ class BusScheduleController extends Controller
      * @OA\Get (
      *     path="/api/bus/round/appSchedule",
      *     tags={"버스"},
-     *     summary="app 에서 해당 버스 회차, 스케줄 가져오기",
-     *     description="해당하는 버스의 회차, 스케줄 리스트 가져오기",
+     *     summary="App 에서 해당 버스 회차, 스케줄 가져오기",
+     *     description="App 해당하는 버스의 회차, 스케줄 리스트 가져오기",
      *     @OA\RequestBody(
      *     description="가져오고 싶은 회차의 bus_route값",
      *     required=false,
