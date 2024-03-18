@@ -15,7 +15,7 @@ use PHPUnit\Metadata\After;
 
 class AfterServiceController extends Controller
 {
-    protected array $relations = ['user:id,name,created_at', 'afterServiceComments', 'afterServiceImages'];
+    protected array $relations = ['user:id,name,created_at,phone_number', 'afterServiceComments', 'afterServiceImages'];
 
     public function authorize($ability, $arguments = [AfterService::class])
     {
@@ -202,7 +202,7 @@ class AfterServiceController extends Controller
     {
         try {
             $afterService = AfterService::with($this->relations)->findOrFail($id);
-        } catch (ModelNotFoundException $modelException) {
+        } catch (ModelNotFoundException) {
             return response()->json(['error' => '해당하는 AS 정보가 없습니다.'], 404);
         }
 
