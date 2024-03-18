@@ -2758,11 +2758,6 @@
                                         "description": "입금 확인",
                                         "type": "boolean",
                                         "example": false
-                                    },
-                                    "meal_type": {
-                                        "description": "식사 유형",
-                                        "type": "string",
-                                        "example": "C"
                                     }
                                 },
                                 "type": "object"
@@ -2921,11 +2916,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "description": "사용자 ID",
-                                        "type": "string",
-                                        "example": "1"
-                                    },
                                     "meal_type": {
                                         "description": "식사유형",
                                         "type": "string",
@@ -3462,6 +3452,11 @@
                                         "description": "영업 종료",
                                         "type": "time",
                                         "example": "21:00:00"
+                                    },
+                                    "open": {
+                                        "description": "영업 여부",
+                                        "type": "boolean",
+                                        "example": false
                                     }
                                 },
                                 "type": "object"
@@ -3501,38 +3496,6 @@
                         "required": true,
                         "schema": {
                             "type": "date"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "422": {
-                        "description": "ValidationException"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            }
-        },
-        "/api/salon/hour/{id}": {
-            "delete": {
-                "tags": [
-                    "미용실 - 영업시간"
-                ],
-                "summary": "영업시간 삭제(관리자)",
-                "description": "미용실 영업시간 삭제시 사용합니다.",
-                "operationId": "f3715775aa3e08b916f3c5bd37cd1105",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 영업시간 값의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
                         }
                     }
                 ],
@@ -3764,13 +3727,13 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "r_date": {
+                                    "reservation_date": {
                                         "description": "예약 날짜",
                                         "type": "string",
                                         "format": "date",
                                         "example": "2024-01-01"
                                     },
-                                    "r_time": {
+                                    "reservation_time": {
                                         "description": "예약 시간",
                                         "type": "time",
                                         "example": "12:12:12"
