@@ -56,7 +56,7 @@ class MeetingRoomReservationController extends Controller
         }
 
         // reservation_date는 필수 값
-        $reservations = MeetingRoomReservation::with('user:id,name')->where('reservation_date', $validated['date']);
+        $reservations = MeetingRoomReservation::with('user:id,name')->where('reservation_date', $validated['date'])->where('status', true);
 
         if(isset($validated['room_number'])) {
             $reservations = $reservations->where('meeting_room_number', $validated['room_number']);
