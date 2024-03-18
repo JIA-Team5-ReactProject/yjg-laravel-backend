@@ -24,7 +24,6 @@ class RestaurantWeekendController extends Controller
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema (
-     *                     @OA\Property (property="user_id", type="string", description="사용자 ID", example="1"),
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
      *                 )
      *             )
@@ -39,16 +38,17 @@ class RestaurantWeekendController extends Controller
             // 유효성 검사
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
-                'user_id' => 'required|exists:users,id',
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
 
         try {
+
+            $user_id = auth()->id();
             // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
-                'user_id' => $validatedData['user_id'],
+                'user_id' => $user_id
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' =>  $exception->getMessage()], 500);
@@ -184,7 +184,30 @@ class RestaurantWeekendController extends Controller
      */
     public function getRestaurantApply()
     {
-        $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')->get();
-        return WeekendApplyResource::collection($applyData);
+        try{
+            $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')->paginate(5);
+            return WeekendApplyResource::collection($applyData);
+        }catch (\Exception $exception) {
+            return response()->json(['applyData' => []]);
+        }
+        
     }
+
+    public function show(Request $request)
+    {
+        try{
+            $name = $request->input('name');
+
+            //
+            $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')
+                ->whereHas('user', function ($query) use ($name) {
+                    $query->where('name', 'like', '%' . $name . '%');
+                })
+                ->paginate(5);
+            return WeekendApplyResource::collection($applyData);
+        } catch (\Exception $exception) {
+            return response()->json(['applyData' => []]);
+        }
+    }   
+
 }
