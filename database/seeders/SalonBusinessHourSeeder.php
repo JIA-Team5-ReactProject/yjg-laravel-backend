@@ -20,6 +20,7 @@ class SalonBusinessHourSeeder extends Seeder
                 's_time' => date('H:i', strtotime('09:00')),
                 'e_time' => date('H:i', strtotime('18:00')),
                 'date'   => $day,
+                'open'   => true,
             ]);
         }
     }
