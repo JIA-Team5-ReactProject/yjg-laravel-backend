@@ -169,7 +169,7 @@ class AfterServiceCommentController extends Controller
             return $this->denied();
         }
 
-        $validator = Validator::make([$id], [
+        $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:after_service_comments,id|numeric'
         ]);
 
@@ -181,7 +181,11 @@ class AfterServiceCommentController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $asComment = AfterServiceComment::findOrFail($id);
+        try {
+            $asComment = AfterServiceComment::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
 
         if(!$asComment->delete()) return response()->json(['error' => '댓글 삭제에 실패하였습니다.'], 500);
 
