@@ -34,7 +34,7 @@ class SalonBusinessHourController extends Controller
      */
     public function index(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['business_hours' => SalonBusinessHour::all(['id', 's_time', 'e_time', 'date'])]);
+        return response()->json(['business_hours' => SalonBusinessHour::all(['id', 's_time', 'e_time', 'date', 'open'])]);
     }
 
     /**
@@ -55,7 +55,7 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function show(string $date): \Illuminate\Http\JsonResponse
+    public function show(string $date)
     {
         $validator = Validator::make(['date' => $date], [
             'date' => 'required|date_format:Y-m-d',
@@ -84,6 +84,14 @@ class SalonBusinessHourController extends Controller
         while ($current <= $end) {
             $business_hours[] = (object) ['time' => $current, 'available' => true];
             $current = Carbon::parse($current)->addMinutes(30)->format('H:i');
+        }
+
+        // open 값이 false일 경우 모든 시간을 false로 설정합니다.
+        if(!$b_hour->open) {
+            foreach ($business_hours as $business_hour) {
+                $business_hour->available = false;
+            }
+            return response()->json(['business_hours' => $business_hours]);
         }
 
         // 예약불가 시간 필터링
@@ -175,6 +183,7 @@ class SalonBusinessHourController extends Controller
      *                 @OA\Property (property="b_hour_id", type="integer", description="영업시간 아이디", example=1),
      *                 @OA\Property (property="s_time", type="time", description="영업 시작", example="08:00:00"),
      *                 @OA\Property (property="e_time", type="time", description="영업 종료", example="21:00:00"),
+     *                 @OA\Property (property="open", type="boolean", description="영업 여부", example=false),
      *             )
      *         )
      *     ),
@@ -195,8 +204,9 @@ class SalonBusinessHourController extends Controller
         try {
             $validated = $request->validate([
                 'b_hour_id' => 'required|numeric',
-                's_time' => 'required|date_format:H:i',
-                'e_time' => 'required|date_format:H:i',
+                's_time'    => 'date_format:H:i',
+                'e_time'    => 'date_format:H:i',
+                'open'      => 'boolean',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -212,52 +222,54 @@ class SalonBusinessHourController extends Controller
 
         $bHour->s_time = $validated['s_time'];
         $bHour->e_time = $validated['e_time'];
+        $bHour->open   = $validated['open'];
+
 
         if(!$bHour->save()) return response()->json(['error' => '미용실 영업시간 수정에 실패하였습니다.'], 500);
 
         return response()->json(['message' => '미용실 영업시간 수정에 성공하였습니다.']);
     }
 
-    /**
-     * @OA\Delete (
-     *     path="/api/salon/hour/{id}",
-     *     tags={"미용실 - 영업시간"},
-     *     summary="영업시간 삭제(관리자)",
-     *     description="미용실 영업시간 삭제시 사용합니다.",
-     *      @OA\Parameter(
-     *            name="id",
-     *            description="삭제할 영업시간 값의 아이디",
-     *            required=true,
-     *            in="path",
-     *            @OA\Schema(type="integer"),
-     *        ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('destroy');
-        } catch (AuthorizationException) {
-            return $this->denied();
-        }
-
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|exists:salon_business_hours,id',
-        ]);
-
-        try {
-            $validated = $validator->validate();
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
-        }
-
-        if(!SalonBusinessHour::destroy($validated['id'])) return response()->json(['error' => '영업시간 삭제에 실패하였습니다.'], 500);
-
-        return response()->json(['message' => '영업시간이 성공적으로 삭제되었습니다.']);
-    }
+//    /**
+//     * @OA\Delete (
+//     *     path="/api/salon/hour/{id}",
+//     *     tags={"미용실 - 영업시간"},
+//     *     summary="영업시간 삭제(관리자)",
+//     *     description="미용실 영업시간 삭제시 사용합니다.",
+//     *      @OA\Parameter(
+//     *            name="id",
+//     *            description="삭제할 영업시간 값의 아이디",
+//     *            required=true,
+//     *            in="path",
+//     *            @OA\Schema(type="integer"),
+//     *        ),
+//     *     @OA\Response(response="200", description="Success"),
+//     *     @OA\Response(response="422", description="ValidationException"),
+//     *     @OA\Response(response="500", description="ServerError"),
+//     * )
+//     */
+//    public function destroy(string $id): \Illuminate\Http\JsonResponse
+//    {
+//        try {
+//            $this->authorize('destroy');
+//        } catch (AuthorizationException) {
+//            return $this->denied();
+//        }
+//
+//        $validator = Validator::make(['id' => $id], [
+//            'id' => 'required|exists:salon_business_hours,id',
+//        ]);
+//
+//        try {
+//            $validated = $validator->validate();
+//        } catch (ValidationException $validationException) {
+//            $errorStatus = $validationException->status;
+//            $errorMessage = $validationException->getMessage();
+//            return response()->json(['error' => $errorMessage], $errorStatus);
+//        }
+//
+//        if(!SalonBusinessHour::destroy($validated['id'])) return response()->json(['error' => '영업시간 삭제에 실패하였습니다.'], 500);
+//
+//        return response()->json(['message' => '영업시간이 성공적으로 삭제되었습니다.']);
+//    }
 }
