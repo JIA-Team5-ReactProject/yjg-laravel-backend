@@ -130,13 +130,19 @@ class SalonServiceController extends Controller
      *     tags={"미용실 - 서비스"},
      *     summary="서비스 수정(관리자)",
      *     description="미용실의 서비스 정보를 수정 시 사용합니다.",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="삭제할 서비스의 아이디",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="integer"),
+     *     ),
      *     @OA\RequestBody(
      *         description="서비스 수정을 위한 정보",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *             @OA\Property (property="service_id", type="integer", description="카테고리 아이디", example=1),
      *             @OA\Property (property="service", type="string", description="카테고리 명", example="엄준식"),
      *             @OA\Property (property="gender", type="string", description="성별", example="male"),
      *             @OA\Property (property="price", type="string", description="가격", example="20000"),
@@ -149,7 +155,7 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         try {
             $this->authorize('update');
@@ -159,7 +165,6 @@ class SalonServiceController extends Controller
 
         try {
             $validated = $request->validate([
-                'service_id' => 'required|numeric',
                 'service' => 'string',
                 'gender' => 'string',
                 'price' => 'string',
@@ -170,12 +175,10 @@ class SalonServiceController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
         try {
-            $salonService = SalonService::findOrFail($validated['service_id']);
+            $salonService = SalonService::findOrFail($id);
         } catch (ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
-
-        unset($validated['service_id']);
 
         foreach ($validated as $key => $value) {
             $salonService->$key = $value;
