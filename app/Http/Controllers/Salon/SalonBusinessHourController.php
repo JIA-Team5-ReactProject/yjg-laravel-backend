@@ -34,7 +34,7 @@ class SalonBusinessHourController extends Controller
      */
     public function index(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['business_hours' => SalonBusinessHour::all(['s_time', 'e_time', 'date'])]);
+        return response()->json(['business_hours' => SalonBusinessHour::all(['id', 's_time', 'e_time', 'date'])]);
     }
 
     /**
