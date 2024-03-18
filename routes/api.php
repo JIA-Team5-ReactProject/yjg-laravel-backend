@@ -86,7 +86,7 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
         });
         Route::prefix('service')->group(function () {
             Route::post('/', [SalonServiceController::class, 'store'])->name('salon.service.store');
-            Route::patch('/', [SalonServiceController::class, 'update'])->name('salon.service.update');
+            Route::patch('/{id}', [SalonServiceController::class, 'update'])->name('salon.service.update');
             Route::delete('/{id}', [SalonServiceController::class, 'destroy'])->name('salon.service.destroy');
         });
         Route::patch('/reservation', [SalonReservationController::class, 'update'])->name('salon.reservation.status');

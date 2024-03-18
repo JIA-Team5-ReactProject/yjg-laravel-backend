@@ -86,7 +86,10 @@ class MeetingRoomReservationController extends Controller
      */
     public function userIndex(Request $request): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['meeting_room_reservations' => MeetingRoomReservation::with('user')->where('user_id', auth('users')->id())->get()]);
+        // 날짜와 시간이 빠른 순으로 정렬
+        return response()->json(['meeting_room_reservations' => MeetingRoomReservation::with('user')
+            ->where('user_id', auth('users')->id())->orderBy('reservation_date')->orderBy('reservation_s_time')->get()]);
+
     }
 
     /**

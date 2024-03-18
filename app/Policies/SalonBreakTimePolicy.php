@@ -20,7 +20,7 @@ class SalonBreakTimePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function destroy(Admin $admin, SalonBreakTime $salonBreakTime): bool
+    public function destroy(Admin $admin): bool
     {
         return $admin->salon_privilege;
     }
