@@ -114,8 +114,8 @@ class SalonReservationController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="salon_service_id", type="integer", description="미용실 서비스 아이디", example=1),
-     *                 @OA\Property (property="r_date", type="date", description="예약 날짜", example="2024-01-01"),
-     *                 @OA\Property (property="r_time", type="time", description="예약 시간", example="12:12:12"),
+     *                 @OA\Property (property="reservation_date", type="date", description="예약 날짜", example="2024-01-01"),
+     *                 @OA\Property (property="reservation_time", type="time", description="예약 시간", example="12:12:12"),
      *             )
      *         )
      *     ),
@@ -129,8 +129,8 @@ class SalonReservationController extends Controller
         try {
             $validated = $request->validate([
                 'salon_service_id' => 'required|numeric',
-                'r_date' => 'required|date_format:Y-m-d',
-                'r_time' => 'required|date_format:H:i',
+                'reservation_date' => 'required|date_format:Y-m-d',
+                'reservation_time' => 'required|date_format:H:i',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
