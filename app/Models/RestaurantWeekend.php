@@ -16,10 +16,15 @@ class RestaurantWeekend extends Model
         'refund',
     ];
     public function user() {
-        $this->belongsTo(User::class);
+       return $this->belongsTo(User::class);
     }
     public function restaurantWeekendMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RestaurantWeekendMealType::class);
+    }
+
+    public function weekend_meal_type()
+    {
+        return $this->belongsTo(WeekendMealType::class, 'id');
     }
 }

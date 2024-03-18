@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WeekendApplyResource;
 use App\Models\RestaurantWeekend;
 use App\Models\RestaurantWeekendMealType;
 use App\Models\WeekendMealType;
@@ -151,5 +152,25 @@ class RestaurantWeekendController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
+    }
+
+    // public function getRestaurantApply()
+    // {
+    //     try {
+    //         $apply = RestaurantWeekend::with([
+    //             'user' => function ($query) {
+    //                 $query->select('id', 'phone_number', 'name');
+    //             }
+    //         ])->get(['id', 'user_id', 'payment','refund']);
+    //         return response()->json(['apply_data' => $apply]);
+    //     } catch (\Exception $exception) {
+    //         return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+    //     }
+    // }
+
+    public function getRestaurantApply()
+    {
+        $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')->get();
+        return WeekendApplyResource::collection($applyData);
     }
 }

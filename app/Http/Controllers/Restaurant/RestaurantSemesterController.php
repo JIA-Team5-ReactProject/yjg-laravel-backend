@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SemesterApplyResource;
 use App\Models\RestaurantSemester;
 use App\Models\RestaurantSemesterMealType;
 use App\Models\SemesterMealType;
@@ -178,5 +179,25 @@ class RestaurantSemesterController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
+    }
+
+    // public function getRestaurantApply()
+    // {
+    //     try {
+    //         $apply = RestaurantSemester::with([
+    //             'user' => function ($query) {
+    //                 $query->select('id', 'phone_number', 'name');
+    //             }
+    //         ])->get(['id', 'user_id', 'payment']);
+    //         return response()->json(['apply_data' => $apply]);
+    //     } catch (\Exception $exception) {
+    //         return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+    //     }
+    // }
+
+        public function getRestaurantApply()
+    {
+        $applyData = RestaurantSemester::with('user', 'semester_meal_type')->get();
+        return SemesterApplyResource::collection($applyData);
     }
 }

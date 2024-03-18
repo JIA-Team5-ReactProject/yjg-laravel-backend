@@ -199,6 +199,10 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/weekend/p/payment/{id}', [RestaurantWeekendController::class, 'setPayment']);
     Route::post('/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/weekend', [RestaurantWeekendController::class, 'store']);
+
+    Route::get('/semester/apply', [RestaurantSemesterController::class, 'getRestaurantApply']);
+    Route::get('/weekend/apply', [RestaurantWeekendController::class, 'getRestaurantApply']);
+
     Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
     Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
     Route::get('/semester/meal-type/{id}', [SemesterMealTypeController::class, 'getMealType']);
