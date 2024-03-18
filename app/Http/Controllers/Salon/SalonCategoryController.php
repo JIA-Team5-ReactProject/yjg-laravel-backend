@@ -43,7 +43,7 @@ class SalonCategoryController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="category_name", type="string", description="카테고리 명", example="커트"),
+     *                 @OA\Property (property="category", type="string", description="카테고리 명", example="커트"),
      *             )
      *         )
      *     ),
@@ -90,7 +90,7 @@ class SalonCategoryController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *             @OA\Property (property="category_id", type="integer", description="카테고리 아이디", example=1),
-     *             @OA\Property (property="category_name", type="string", description="카테고리명", example="엄준식"),
+     *             @OA\Property (property="category", type="string", description="카테고리명", example="엄준식"),
      *             )
      *         )
      *     ),
@@ -111,7 +111,7 @@ class SalonCategoryController extends Controller
         try {
             $validated = $request->validate([
                 'category_id' => 'required|numeric',
-                'category_name' => 'required|string',
+                'category' => 'required|string',
             ]);
         } catch(ValidationException $validationException) {
             $errorStatus = $validationException->status;
@@ -126,7 +126,7 @@ class SalonCategoryController extends Controller
             return response()->json(['error' => $errorMessage], 404);
         }
 
-        $category->category = $validated['category_name'];
+        $category->category = $validated['category'];
 
         if(!$category->save()) return response()->json(['error' => '카테고리명 수정에 실패하였습니다.'], 500);
 

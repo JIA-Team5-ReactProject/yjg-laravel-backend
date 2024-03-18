@@ -613,8 +613,8 @@
                 "tags": [
                     "버스"
                 ],
-                "summary": "app 에서 해당 버스 회차, 스케줄 가져오기",
-                "description": "해당하는 버스의 회차, 스케줄 리스트 가져오기",
+                "summary": "App 에서 해당 버스 회차, 스케줄 가져오기",
+                "description": "App 해당하는 버스의 회차, 스케줄 리스트 가져오기",
                 "operationId": "1fc5cb3ce01bfff1da4272d47b4aaf4b",
                 "requestBody": {
                     "description": "가져오고 싶은 회차의 bus_route값",
@@ -3580,7 +3580,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "category_name": {
+                                    "category": {
                                         "description": "카테고리 명",
                                         "type": "string",
                                         "example": "커트"
@@ -3622,7 +3622,7 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "category_name": {
+                                    "category": {
                                         "description": "카테고리명",
                                         "type": "string",
                                         "example": "엄준식"
