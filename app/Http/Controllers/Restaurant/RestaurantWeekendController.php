@@ -45,10 +45,11 @@ class RestaurantWeekendController extends Controller
 
         try {
 
-            $user_id = auth()->id();
+            $user_id = auth('user')->id();
             // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
                 'user_id' => $user_id
+                
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' =>  $exception->getMessage()], 500);
@@ -185,26 +186,49 @@ class RestaurantWeekendController extends Controller
     public function getRestaurantApply()
     {
         try{
-            $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')->paginate(5);
-            return WeekendApplyResource::collection($applyData);
+            $applyData = RestaurantWeekend::with(['weekendMealType:id,meal_type,date', 'user:id,phone_number,name,student_id'])->paginate(5);
+            return $applyData;
+            //return WeekendApplyResource::collection($applyData);
         }catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
         
     }
 
+
+     /**
+     * @OA\Get (
+     * path="/api/restaurant/weekend/show",
+     * tags={"식수"},
+     * summary="주말 식수 신청 리스트 검색",
+     * description="주말 식수 신청 리스트 검색하기",
+     *     @OA\RequestBody(
+     *         description="찾고싶은 학생 이름",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="name", type="string", description="학생이름", example="권지훈"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function show(Request $request)
     {
         try{
             $name = $request->input('name');
 
             //
-            $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')
+            $applyData = RestaurantWeekend::with('weekendMealType:id,meal_type,date','user:id,phone_number,name,student_id')
                 ->whereHas('user', function ($query) use ($name) {
                     $query->where('name', 'like', '%' . $name . '%');
                 })
                 ->paginate(5);
-            return WeekendApplyResource::collection($applyData);
+            return $applyData;
+            //return WeekendApplyResource::collection($applyData);
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }

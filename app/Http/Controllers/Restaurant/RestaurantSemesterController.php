@@ -49,12 +49,10 @@ class RestaurantSemesterController extends Controller
         try {
             $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
             ->first();
-            $user_id = auth()->id();
-            //$user_id = 6;
+            $user_id = auth('user')->id();
 
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $user_id,
-                //'user_id' => 1,
             ]);
             Log::info('유저 아이디: ' . $restaurantSemester->user_id);
         } catch (\Exception $exception) {
@@ -196,25 +194,46 @@ class RestaurantSemesterController extends Controller
     public function getRestaurantApply()
     {
         try{
-            $applyData = RestaurantSemester::with('user', 'semester_meal_type')->paginate(5);
-            return SemesterApplyResource::collection($applyData);
+            $applyData = RestaurantSemester::with('semesterMealType:id,meal_type,date', 'user:id,phone_number,name,student_id')->paginate(5);
+            return $applyData;
+            //return SemesterApplyResource::collection($applyData);
         }catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
     }
 
+
+    /**
+     * @OA\Get (
+     * path="/api/restaurant/semester/show",
+     * tags={"식수"},
+     * summary="학기 식수 신청 리스트 검색",
+     * description="학기 식수 신청 리스트 검색하기",
+     *     @OA\RequestBody(
+     *         description="찾고싶은 학생 이름",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="name", type="string", description="학생이름", example="권지훈"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function show(Request $request)
     {
         try{
             $name = $request->input('name');
-
-            //
-            $applyData = RestaurantSemester::with('user', 'semester_meal_type')
+            $applyData = RestaurantSemester::with('semesterMealType:id,meal_type,date', 'user:id,phone_number,name,student_id')
                 ->whereHas('user', function ($query) use ($name) {
                     $query->where('name', 'like', '%' . $name . '%');
                 })
                 ->paginate(5);
-            return SemesterApplyResource::collection($applyData);
+            return $applyData;
+            //return SemesterApplyResource::collection($applyData);
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
