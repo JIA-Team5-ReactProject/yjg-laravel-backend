@@ -28,7 +28,6 @@ class RestaurantSemesterController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="payment", type="boolean", description="입금 확인", example=false),
- *                     @OA\Property (property="meal_type", type="string", description="식사 유형", example="C"),
      *             )
      *         )
      *     ),
@@ -41,7 +40,6 @@ class RestaurantSemesterController extends Controller
         try {
             // 유효성 검사
             $validatedData = $request->validate([
-                'payment' => 'required|boolean',
                 'meal_type' => 'required|string',
             ]);
         } catch (ValidationException $exception) {
@@ -52,6 +50,7 @@ class RestaurantSemesterController extends Controller
             $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
             ->first();
             $user_id = auth()->id();
+            //$user_id = 6;
 
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $user_id,
@@ -194,9 +193,32 @@ class RestaurantSemesterController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-        public function getRestaurantApply()
+    public function getRestaurantApply()
     {
-        $applyData = RestaurantSemester::with('user', 'semester_meal_type')->get();
-        return SemesterApplyResource::collection($applyData);
+        try{
+            $applyData = RestaurantSemester::with('user', 'semester_meal_type')->paginate(5);
+            return SemesterApplyResource::collection($applyData);
+        }catch (\Exception $exception) {
+            return response()->json(['applyData' => []]);
+        }
     }
+
+    public function show(Request $request)
+    {
+        try{
+            $name = $request->input('name');
+
+            //
+            $applyData = RestaurantSemester::with('user', 'semester_meal_type')
+                ->whereHas('user', function ($query) use ($name) {
+                    $query->where('name', 'like', '%' . $name . '%');
+                })
+                ->paginate(5);
+            return SemesterApplyResource::collection($applyData);
+        } catch (\Exception $exception) {
+            return response()->json(['applyData' => []]);
+        }
+    }   
+
+//if (strlen($request->type) == 1 && preg_match('/^[A-Z]$/', $request->type)) 알파벳 대문자 1개일때
 }
