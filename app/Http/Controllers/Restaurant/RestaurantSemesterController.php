@@ -181,20 +181,19 @@ class RestaurantSemesterController extends Controller
         }
     }
 
-    // public function getRestaurantApply()
-    // {
-    //     try {
-    //         $apply = RestaurantSemester::with([
-    //             'user' => function ($query) {
-    //                 $query->select('id', 'phone_number', 'name');
-    //             }
-    //         ])->get(['id', 'user_id', 'payment']);
-    //         return response()->json(['apply_data' => $apply]);
-    //     } catch (\Exception $exception) {
-    //         return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
-    //     }
-    // }
 
+
+    /**
+     * @OA\Get (
+     *     path="/api/restaurant/semester/apply",
+     *     tags={"식수"},
+     *     summary="학기 식수 신청 리스트 가져오기",
+     *     description="학기 식수 신청 리스트 가져오기",
+     *     
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
         public function getRestaurantApply()
     {
         $applyData = RestaurantSemester::with('user', 'semester_meal_type')->get();

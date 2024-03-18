@@ -141,7 +141,23 @@ class RestaurantWeekendController extends Controller
             return response()->json(['message' => '입금이 확인 되었습니다.']);
     }
 
-    
+    /**
+     * @OA\Delete (
+     *     path="/api/restaurant/weekend/delete/{id}",
+     *     tags={"식수"},
+     *     summary="주말 식수 신청 삭제",
+     *     description="주말 식수 신청 삭제",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="삭제할 주말 식수 신청 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function delete($id)
     {
         try {
@@ -154,20 +170,18 @@ class RestaurantWeekendController extends Controller
         }
     }
 
-    // public function getRestaurantApply()
-    // {
-    //     try {
-    //         $apply = RestaurantWeekend::with([
-    //             'user' => function ($query) {
-    //                 $query->select('id', 'phone_number', 'name');
-    //             }
-    //         ])->get(['id', 'user_id', 'payment','refund']);
-    //         return response()->json(['apply_data' => $apply]);
-    //     } catch (\Exception $exception) {
-    //         return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
-    //     }
-    // }
 
+    /**
+     * @OA\Get (
+     *     path="/api/restaurant/weekend/apply",
+     *     tags={"식수"},
+     *     summary="주말 식수 신청 리스트 가져오기",
+     *     description="주말 식수 신청 리스트 가져오기",
+     *     
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function getRestaurantApply()
     {
         $applyData = RestaurantWeekend::with('user', 'weekend_meal_type')->get();
