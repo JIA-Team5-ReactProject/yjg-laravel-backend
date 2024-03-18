@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Casts\TimeCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MeetingRoomReservation extends Model
 {
@@ -16,6 +16,11 @@ class MeetingRoomReservation extends Model
         'reservation_date',
         'reservation_s_time',
         'reservation_e_time',
+    ];
+
+    protected $casts = [
+        'reservation_s_time' => TimeCast::class,
+        'reservation_e_time' => TimeCast::class,
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

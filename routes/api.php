@@ -77,7 +77,6 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
         Route::prefix('hour')->group(function () {
             Route::post('/', [SalonBusinessHourController::class, 'store'])->name('salon.hour.store');
             Route::patch('/', [SalonBusinessHourController::class, 'update'])->name('salon.hour.update');
-            Route::delete('/{id}', [SalonBUsinessHourController::class, 'destroy'])->name('salon.hour.destroy');
         });
         Route::prefix('category')->group(function() {
             Route::post('/', [SalonCategoryController::class, 'store'])->name('salon.category.store');
@@ -99,7 +98,7 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     });
 
     Route::prefix('meeting-room')->group(function () {
-        Route::patch('/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
+        Route::patch('/reservation/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
         Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');
     });

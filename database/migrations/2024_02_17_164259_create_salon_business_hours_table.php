@@ -16,6 +16,7 @@ return new class extends Migration
             $table->time('s_time');
             $table->time('e_time');
             $table->char('date', 3);
+            $table->boolean('open')->default(true);
             $table->timestamps();
         });
     }
