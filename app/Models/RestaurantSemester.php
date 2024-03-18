@@ -16,10 +16,15 @@ class RestaurantSemester extends Model
     ];
 
     public function user() {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
     public function restaurantSemesterMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RestaurantSemesterMealType::class);
+    }
+
+    public function semester_meal_type()
+    {
+        return $this->belongsTo(SemesterMealType::class, 'id');
     }
 }

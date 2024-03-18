@@ -2888,6 +2888,24 @@
                 }
             }
         },
+        "/api/restaurant/semester/apply": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 신청 리스트 가져오기",
+                "description": "학기 식수 신청 리스트 가져오기",
+                "operationId": "4062c658b2e67d637c41acc5e8dba26f",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/weekend": {
             "post": {
                 "tags": [
@@ -3001,6 +3019,53 @@
                     },
                     "422": {
                         "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 삭제",
+                "description": "주말 식수 신청 삭제",
+                "operationId": "a6a527f56ec109744dc05d0334b068ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 주말 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/apply": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 리스트 가져오기",
+                "description": "주말 식수 신청 리스트 가져오기",
+                "operationId": "420c6f5fce0bc003f4bc419bc1ac2481",
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "Fail"
@@ -3136,11 +3201,6 @@
                                         "description": "식사시간",
                                         "type": "string",
                                         "example": "lunch"
-                                    },
-                                    "content": {
-                                        "description": "식사유형 설명",
-                                        "type": "string",
-                                        "example": "223식 1식3,500"
                                     },
                                     "price": {
                                         "description": "가격",
@@ -3919,7 +3979,7 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "service_name": {
+                                    "service": {
                                         "description": "카테고리 명",
                                         "type": "string",
                                         "example": "엄준식"

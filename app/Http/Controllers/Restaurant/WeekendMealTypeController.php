@@ -23,7 +23,6 @@ class WeekendMealTypeController extends Controller
      *                 @OA\Schema (
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
      *                     @OA\Property (property="date", type="string", description="식사시간", example="lunch"), 
-     *                     @OA\Property (property="content", type="string", description="식사유형 설명", example="223식 1식3,500"),
      *                     @OA\Property (property="price", type="string", description="가격", example="750,000"),
      *                     
      *                 )
@@ -40,7 +39,6 @@ class WeekendMealTypeController extends Controller
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
                 'date' => 'required|string',
-                'content' => 'nullable|string',
                 'price' => 'required|string',
                 
             ]);
@@ -53,7 +51,6 @@ class WeekendMealTypeController extends Controller
             // 데이터베이스에 저장
             WeekendMealType::create([
                 'meal_type' => $validatedData['meal_type'],
-                'content' =>$validatedData['content'],
                 'price' =>$validatedData['price'],
                 'date' =>$validatedData['date'],
             ]);
@@ -117,7 +114,7 @@ class WeekendMealTypeController extends Controller
     public function getMealType($id)
     {
         try{
-            $mealType = weekendMealType::where('id', $id)->select('id', 'meal_type', 'date', 'content', 'price')->first();
+            $mealType = weekendMealType::where('id', $id)->select('id', 'meal_type', 'date', 'price')->first();
             return response()->json(['semester_meal_type' => $mealType]);
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);

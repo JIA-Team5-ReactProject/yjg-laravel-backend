@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('meal_type', 10);
             $table->string('date', 10);
-            $table->string('content')->nullable();
             $table->string('price', 10);
             $table->timestamps();
         });

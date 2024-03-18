@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SemesterApplyResource;
 use App\Models\RestaurantSemester;
 use App\Models\RestaurantSemesterMealType;
 use App\Models\SemesterMealType;
@@ -178,5 +179,24 @@ class RestaurantSemesterController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
+    }
+
+
+
+    /**
+     * @OA\Get (
+     *     path="/api/restaurant/semester/apply",
+     *     tags={"식수"},
+     *     summary="학기 식수 신청 리스트 가져오기",
+     *     description="학기 식수 신청 리스트 가져오기",
+     *     
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+        public function getRestaurantApply()
+    {
+        $applyData = RestaurantSemester::with('user', 'semester_meal_type')->get();
+        return SemesterApplyResource::collection($applyData);
     }
 }
