@@ -18,13 +18,15 @@ class RestaurantWeekend extends Model
     public function user() {
        return $this->belongsTo(User::class);
     }
-    public function restaurantWeekendMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(RestaurantWeekendMealType::class);
-    }
+    // public function restaurantWeekendMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
+    // {
+    //     return $this->hasMany(RestaurantWeekendMealType::class);
+    // }
 
-    public function weekend_meal_type()
+    public function WeekendMealType()
     {
-        return $this->belongsTo(WeekendMealType::class, 'id');
+        return $this->belongsToMany(WeekendMealType::class, 'restaurant_weekend_meal_types')
+                    ->withPivot('weekend_meal_type_id'); 
     }
+    
 }

@@ -14,6 +14,7 @@ class WeekendApplyResource extends JsonResource
      */
     public function toArray($request)
     {
+        
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
@@ -25,6 +26,8 @@ class WeekendApplyResource extends JsonResource
             'student_id' => optional($this->user)->student_id,
             // 'restaurant_meal_type'
             'meal_type' => optional($this->weekend_meal_type)->meal_type,
+            
+            'date' => optional($this->weekend_meal_type)->date,
         ];
     }
 }
