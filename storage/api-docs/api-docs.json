@@ -2901,6 +2901,42 @@
                 }
             }
         },
+        "/api/restaurant/semester/show": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 신청 리스트 검색",
+                "description": "학기 식수 신청 리스트 검색하기",
+                "operationId": "5adfde227d85d6dd22f2d3461f192e8c",
+                "requestBody": {
+                    "description": "찾고싶은 학생 이름",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "학생이름",
+                                        "type": "string",
+                                        "example": "권지훈"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/weekend": {
             "post": {
                 "tags": [
@@ -3053,6 +3089,42 @@
                 "summary": "주말 식수 신청 리스트 가져오기",
                 "description": "주말 식수 신청 리스트 가져오기",
                 "operationId": "420c6f5fce0bc003f4bc419bc1ac2481",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 리스트 검색",
+                "description": "주말 식수 신청 리스트 검색하기",
+                "operationId": "87686a62c4f504e397e54a5309038041",
+                "requestBody": {
+                    "description": "찾고싶은 학생 이름",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "학생이름",
+                                        "type": "string",
+                                        "example": "권지훈"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
