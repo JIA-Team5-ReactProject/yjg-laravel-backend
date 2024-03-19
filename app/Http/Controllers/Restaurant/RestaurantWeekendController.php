@@ -46,10 +46,10 @@ class RestaurantWeekendController extends Controller
 
         try {
 
-            $user_id = auth('users')->id();
+            //$user_id = auth('users')->id();
             // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
-                'user_id' => $user_id,
+                'user_id' => 2,
                 'refund' => $validatedData['refund']
             ]);
         } catch (\Exception $exception) {

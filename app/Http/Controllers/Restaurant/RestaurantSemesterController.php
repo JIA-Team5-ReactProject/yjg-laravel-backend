@@ -49,10 +49,10 @@ class RestaurantSemesterController extends Controller
         try {
             $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
             ->first();
-            $user_id = auth('users')->id();
+            //$user_id = auth('users')->id();
 
             $restaurantSemester = RestaurantSemester::create([
-                'user_id' => $user_id,
+                'user_id' => 2
             ]);
             Log::info('유저 아이디: ' . $restaurantSemester->user_id);
         } catch (\Exception $exception) {
