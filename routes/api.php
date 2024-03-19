@@ -180,6 +180,9 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         Route::get('/recent', [NoticeController::class, 'recentIndex'])->name('notice.index.recent');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('notice.show');
     });
+
+    Route::post('/semester', [RestaurantSemesterController::class, 'store']);
+    Route::post('/weekend', [RestaurantWeekendController::class, 'store']);
 });
 
 Route::prefix('restaurant')->group(function () {
@@ -196,8 +199,7 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
     Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
     Route::post('/weekend/p/payment/{id}', [RestaurantWeekendController::class, 'setPayment']);
-    Route::post('/semester', [RestaurantSemesterController::class, 'store']);
-    Route::post('/weekend', [RestaurantWeekendController::class, 'store']);
+    
     Route::get('/semester/apply', [RestaurantSemesterController::class, 'getRestaurantApply']);
     Route::get('/weekend/apply', [RestaurantWeekendController::class, 'getRestaurantApply']);
 
