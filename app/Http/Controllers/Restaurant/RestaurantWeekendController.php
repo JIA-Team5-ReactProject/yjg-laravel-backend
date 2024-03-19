@@ -38,6 +38,7 @@ class RestaurantWeekendController extends Controller
             // 유효성 검사
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
+                'refund' => 'required|boolean',
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -45,7 +46,7 @@ class RestaurantWeekendController extends Controller
 
         try {
 
-            $user_id = auth('user')->id();
+            $user_id = auth('users')->id();
             // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
                 'user_id' => $user_id
