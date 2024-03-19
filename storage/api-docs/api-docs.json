@@ -2892,6 +2892,16 @@
                                         "description": "식사유형",
                                         "type": "string",
                                         "example": "A"
+                                    },
+                                    "refund": {
+                                        "description": "환불여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "date": {
+                                        "description": "토/일",
+                                        "type": "string",
+                                        "example": "sat_sun"
                                     }
                                 },
                                 "type": "object"

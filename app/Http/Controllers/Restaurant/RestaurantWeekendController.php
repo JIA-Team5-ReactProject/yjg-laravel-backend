@@ -26,6 +26,7 @@ class RestaurantWeekendController extends Controller
      *                 @OA\Schema (
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
      *                     @OA\Property (property="refund", type="boolean", description="환불여부", example=true),
+     *                     @OA\Property (property="date", type="string", description="토/일", example="sat_sun"),
      *                 )
      *             )
      *         ),
@@ -40,6 +41,7 @@ class RestaurantWeekendController extends Controller
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
                 'refund' => 'required|boolean',
+                'date' => 'required|string',
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -51,7 +53,8 @@ class RestaurantWeekendController extends Controller
             // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
                 'user_id' => $user_id,
-                'refund' => $validatedData['refund']
+                'refund' => $validatedData['refund'],
+                'date' => $validatedData['date']
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' =>  $exception->getMessage()], 500);
@@ -66,8 +69,8 @@ class RestaurantWeekendController extends Controller
 
         // 완료 메시지 주기
         return response()->json(['message' => '주말 식수 신청이 완료되었습니다.']);
-    }
-    
+    }   
+        
        /**
      * @OA\get (
      *     path="/api/restaurant/weekend/g/payment/{id}",
