@@ -11,13 +11,12 @@ use App\Http\Controllers\MeetingRoom\MeetingRoomController;
 use App\Http\Controllers\MeetingRoom\MeetingRoomReservationController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\RefreshController;
-use App\Http\Controllers\Restaurant\RestaurantApplySettingController as RestaurantRestaurantApplySettingController;
 use App\Http\Controllers\Restaurant\RestaurantMenusController;
 use App\Http\Controllers\Restaurant\RestaurantSemesterController;
 use App\Http\Controllers\Restaurant\RestaurantWeekendController;
 use App\Http\Controllers\Restaurant\SemesterMealTypeController;
 use App\Http\Controllers\Restaurant\WeekendMealTypeController;
-use App\Http\Controllers\RestaurantApplySettingController;
+use App\Http\Controllers\Restaurant\RestaurantApplySettingController;
 use App\Http\Controllers\Salon\SalonBreakTimeController;
 use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
@@ -182,9 +181,9 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         Route::get('/recent', [NoticeController::class, 'recentIndex'])->name('notice.index.recent');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('notice.show');
     });
-
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
+    
 });
 
 Route::prefix('restaurant')->group(function () {
@@ -195,6 +194,8 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/menu/get/d', [RestaurantMenusController::class, 'getDayMenu']);
     Route::delete('/menu/d/{id}', [RestaurantMenusController::class, 'deleteMenu']);
     Route::delete('/menu/date/d', [RestaurantMenusController::class, 'deleteDate']);
+
+    
 
     Route::get('/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
@@ -216,7 +217,12 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/semester/show', [RestaurantSemesterController::class, 'show']);
     Route::get('/weekend/show', [RestaurantWeekendController::class, 'show']);
 
+    Route::post('/apply', [RestaurantApplySettingController::class, 'store']);
+    Route::post('/apply/update', [RestaurantApplySettingController::class, 'update']);
+    Route::get('/apply/semester', [RestaurantApplySettingController::class, 'semesterApply']);
+    Route::get('/apply/weekend', [RestaurantApplySettingController::class, 'weekendApply']);
     
+
 });
 
 Route::prefix('bus')->group(function () {
