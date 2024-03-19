@@ -49,7 +49,7 @@ class RestaurantSemesterController extends Controller
         try {
             $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
             ->first();
-            $user_id = auth('user')->id();
+            $user_id = auth('users')->id();
 
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $user_id,
