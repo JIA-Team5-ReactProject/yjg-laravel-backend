@@ -1,4 +1,5 @@
 {
+    "family": "yeungjin-global",
     "executionRoleArn": "arn:aws:iam::992382483620:role/ecsTaskExecutionRole",
     "containerDefinitions": [
         {
