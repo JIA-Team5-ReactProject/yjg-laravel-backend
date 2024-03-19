@@ -25,6 +25,7 @@ class RestaurantWeekendController extends Controller
      *                 mediaType="application/json",
      *                 @OA\Schema (
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
+     *                     @OA\Property (property="refund", type="boolean", description="환불여부", example=true),
      *                 )
      *             )
      *         ),
@@ -46,10 +47,10 @@ class RestaurantWeekendController extends Controller
 
         try {
 
-            //$user_id = auth('users')->id();
+            $user_id = auth('users')->id();
             // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
-                'user_id' => 2,
+                'user_id' => $user_id,
                 'refund' => $validatedData['refund']
             ]);
         } catch (\Exception $exception) {
@@ -223,11 +224,21 @@ class RestaurantWeekendController extends Controller
             $name = $request->input('name');
 
             //
-            $applyData = RestaurantWeekend::with('weekendMealType:id,meal_type,date','user:id,phone_number,name,student_id')
-                ->whereHas('user', function ($query) use ($name) {
+            // $applyData = RestaurantWeekend::with('weekendMealType:id,meal_type,date','user:id,phone_number,name,student_id')
+            //     ->whereHas('user', function ($query) use ($name) {
+            //         $query->where('name', 'like', '%' . $name . '%');
+            //     })
+            //     ->paginate(5);
+
+            $query = RestaurantWeekend::with('weekendMealType:id,meal_type,date','user:id,phone_number,name,student_id');
+        
+            if (!empty($name)) {
+                $query->whereHas('user', function ($query) use ($name) {
                     $query->where('name', 'like', '%' . $name . '%');
-                })
-                ->paginate(5);
+                });
+            }
+
+            $applyData = $query->paginate(5);
             return $applyData;
             //return WeekendApplyResource::collection($applyData);
         } catch (\Exception $exception) {
