@@ -12,7 +12,7 @@ class WeekendMealTypeController extends Controller
     /**
      * @OA\Post (
      *     path="/api/restaurant/weekend/meal-type",
-     *     tags={"식수"},
+     *     tags={"식수 유형"},
      *     summary="주말 식수 유형 신청",
      *     description="주말 식수 유형 신청을 처리합니다",
      *         @OA\RequestBody(
@@ -67,7 +67,7 @@ class WeekendMealTypeController extends Controller
     /**
      * @OA\Delete (
      *     path="/api/restaurant/weekend/m/delete/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 유형"},
      *     summary="주말 식수 유형 삭제",
      *     description="주말 식수 유형 삭제",
      *     @OA\Parameter(
@@ -97,7 +97,7 @@ class WeekendMealTypeController extends Controller
      /**
      * @OA\Get (
      *     path="/api/restaurant/weekend/meal-type/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 유형"},
      *     summary="주말 식수 유형 가져오기",
      *     description="주말 식수 유형 가져오기",
      *     @OA\Parameter(
