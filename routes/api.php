@@ -16,7 +16,8 @@ use App\Http\Controllers\Restaurant\RestaurantSemesterController;
 use App\Http\Controllers\Restaurant\RestaurantWeekendController;
 use App\Http\Controllers\Restaurant\SemesterMealTypeController;
 use App\Http\Controllers\Restaurant\WeekendMealTypeController;
-use App\Http\Controllers\Restaurant\RestaurantApplySettingController;
+
+use App\Http\Controllers\Restaurant\RestaurantApplyDivisionController;
 use App\Http\Controllers\Salon\SalonBreakTimeController;
 use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
@@ -194,8 +195,6 @@ Route::prefix('restaurant')->group(function () {
     Route::delete('/menu/d/{id}', [RestaurantMenusController::class, 'deleteMenu']);
     Route::delete('/menu/date/d', [RestaurantMenusController::class, 'deleteDate']);
 
-    
-
     Route::get('/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
     Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
@@ -216,10 +215,13 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/semester/show', [RestaurantSemesterController::class, 'show']);
     Route::get('/weekend/show', [RestaurantWeekendController::class, 'show']);
 
-    Route::post('/apply', [RestaurantApplySettingController::class, 'store']);
-    Route::post('/apply/update', [RestaurantApplySettingController::class, 'update']);
-    Route::get('/apply/semester', [RestaurantApplySettingController::class, 'semesterApply']);
-    Route::get('/apply/weekend', [RestaurantApplySettingController::class, 'weekendApply']);
+    
+    Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'weekendAutoOn']);
+    Route::patch('/apply/weekend/set', [RestaurantApplyDivisionController::class, 'weekendAutoSet']);
+    Route::post('/apply/semester/auto', [RestaurantApplyDivisionController::class, 'semesterAutoOn']);
+    Route::patch('/apply/semester/set', [RestaurantApplyDivisionController::class, 'semesterAutoSet']);
+    Route::post('/apply/manual/set', [RestaurantApplyDivisionController::class, 'manualSet']);
+    Route::patch('/apply/manual', [RestaurantApplyDivisionController::class, 'manual']);
     
 
 });
