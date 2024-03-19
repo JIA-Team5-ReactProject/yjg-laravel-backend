@@ -4,7 +4,7 @@ Resources:
       Type: AWS::ECS::Service
       Properties:
         # 연결할 태스크의 ARN을 입력
-        TaskDefinition: "arn:aws:ecs:ap-northeast-2:992382483620:task-definition/yeungjin-global:15"
+        TaskDefinition: <TASK_DEFINITION>
         # 로드밸런서 설정
         LoadBalancerInfo:
           # 로드밸런서가 연결될 컨테이너 명
