@@ -19,7 +19,7 @@ Resources:
             # 사용할 서브넷의 ID
             Subnets: ["subnet-05918a570571ec82d","subnet-0865d4a10e6f7cbdd"]
             # 보안 그룹
-            SecurityGroups: ["	sg-0603b8efd43077c75"]
+            SecurityGroups: ["sg-0603b8efd43077c75"]
             # 공개 IP 할당 여부
             AssignPublicIp: "ENABLED"
         # 용량 제공자 전략
