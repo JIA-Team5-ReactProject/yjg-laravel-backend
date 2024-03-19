@@ -21,7 +21,7 @@ class ReservedTimeService
      */
     public function __invoke(): array
     {
-        $reservations = MeetingRoomReservation::where('reservation_date', $this->date)->where('meeting_room_number' , $this->roomNumber)->get();
+        $reservations = MeetingRoomReservation::where('reservation_date', $this->date)->where('meeting_room_number' , $this->roomNumber)->where('status', true)->get();
 
         $reservedTimes = [];
 
