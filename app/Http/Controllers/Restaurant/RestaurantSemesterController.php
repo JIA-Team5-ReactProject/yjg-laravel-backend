@@ -50,12 +50,20 @@ class RestaurantSemesterController extends Controller
             $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
             ->first();
             
+            
+
             $user_id = auth('users')->id();
+
+            // return $user_id;
 
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $user_id
             ]);
-            Log::info('유저 아이디: ' . $restaurantSemester->user_id);
+
+            Log::info('신청 아이디: ' . $restaurantSemester->id);
+            Log::info('유형 아이디: ' . $semesterMealType->id);
+
+            
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }

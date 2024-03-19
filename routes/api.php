@@ -183,7 +183,6 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
     });
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
-    
 });
 
 Route::prefix('restaurant')->group(function () {
