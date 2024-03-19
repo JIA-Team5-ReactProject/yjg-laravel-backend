@@ -15,60 +15,12 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RestaurantMenusController extends Controller
 {
-/**
-     * @OA\Post (
-     * path="/api/restaurant/menu/date",
-     * tags={"식수"},
-     * summary="식수 식단표 날짜 추가",
-     * description="식수 식단표 날짜 추가를 합니다",
-     *     @OA\RequestBody(
-     *         description="추가할 날짜(년,월)",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="month", type="string", description="월", example="03"),
- *                     @OA\Property (property="year", type="string", description="년", example="23"),
-     *             )
-     *         )
-     *     ),
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
-    public function store(Request $request)
-    {
-        try {
-            // 유효성 검사
-            $validatedData = $request->validate([
-                'month' => 'required|string',
-                'week' => 'required|string',
-            ]);
-        } catch (ValidationException $exception) {
-            // 유효성 검사 실패시 애러 메세지
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
-       
-        try {
-            // 데이터베이스에 저장
-            RestaurantMenuDate::create([
-                'month' => $validatedData['month'],
-                'year' => date('Y'),
-                'week' => $validatedData['week'],
-            ]);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 500);
-        }
-
-        // 성공 메시지
-        return response()->json(['message' => '식단표 날짜 저장 완료']);
-    }
 
 
     /**
      * @OA\Post (
      * path="/api/restaurant/menu",
-     * tags={"식수"},
+     * tags={"식단표"},
      * summary="식단표 업로드",
      * description="바디에 엑셀 파일 담아서 보내면 됩니다.",
      *     @OA\RequestBody(
@@ -101,39 +53,21 @@ class RestaurantMenusController extends Controller
 
 /**
      * @OA\Get (
-     * path="/api/restaurant/menu/get/w",
-     * tags={"식수"},
-     * summary="식단표 그 달의 모든 주차 가져오기",
-     * description="식단표 달의 모든 주차 가져오기",
-     *     @OA\RequestBody(
-     *         description="받고싶은 날짜(년,월)",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="month", type="string", description="월", example="03"),
- *                     @OA\Property (property="year", type="string", description="년", example="23"),
-     *             )
-     *         )
-     *     ),
+     * path="/api/restaurant/menu/get/year",
+     * tags={"식단표"},
+     * summary="년도 전부 가져오기",
+     * description="년도 전부 가져오기",
+     *    
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getWeek(Request $request)
+    public function getyears()
     { 
         try {
-            $month_ids = RestaurantMenuDate::where('year', $request->year)
-                                            ->where('month', $request->month)
-                                            ->pluck('id');
-                                            Log::info('먼스 아이디: ' .$month_ids); 
-            $weeks = [];
-            foreach ($month_ids as $month_id) {
-                $week = RestaurantMenuDate::find($month_id)->week;
-                $weeks[] = $week;
-            }
+            $years = RestaurantMenuDate::distinct()->pluck('year');
                 
-            return response()->json(['month_menus' => $weeks]);
+            return response()->json(['years' => $years]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -144,7 +78,7 @@ class RestaurantMenusController extends Controller
 /**
      * @OA\Get (
      *     path="/api/restaurant/menu/get/w/{id}",
-     *     tags={"식수"},
+     *     tags={"식단표"},
      *     summary="식단표 1주치 가져오기",
      *     description="식단표 1주치 가져오기",
      *     @OA\Parameter(
@@ -173,7 +107,7 @@ class RestaurantMenusController extends Controller
     /**
      * @OA\Get (
      * path="/api/restaurant/menu/get/d",
-     * tags={"식수"},
+     * tags={"식단표"},
      * summary="식수 식단표 하루치 가져오기",
      * description="식수 식단표 하루치를 가져옵니다",
      *     @OA\RequestBody(
@@ -200,23 +134,11 @@ class RestaurantMenusController extends Controller
         }
     }
 
-
- 
-    public function deleteDate($id)// year, month 값으로 받을지
-    {
-        try {
-            $menuDate = RestaurantMenuDate::findOrFail($id);
-            $menuDate->delete();
-            return response()->json(['message' => '식단표 날짜가 삭제되었습니다.']);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 500);
-        }
-    }
     
  /**
      * @OA\Delete (
      *     path="/api/restaurant/menu/d/{id}",
-     *     tags={"식수"},
+     *     tags={"식단표"},
      *     summary="식단표 삭제",
      *     description="식단표 삭제",
      *     @OA\Parameter(

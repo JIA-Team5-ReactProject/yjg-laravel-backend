@@ -201,7 +201,7 @@ class BusScheduleController extends Controller
      */
     public function addRound(Request $request)
     {
-
+        Log::info('요일' . date('w'));
         try {
             // 유효성 검사
             $validatedData = $request->validate([

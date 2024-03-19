@@ -2527,51 +2527,10 @@
                 }
             }
         },
-        "/api/restaurant/menu/date": {
-            "post": {
-                "tags": [
-                    "식수"
-                ],
-                "summary": "식수 식단표 날짜 추가",
-                "description": "식수 식단표 날짜 추가를 합니다",
-                "operationId": "1f23b0545afeac11741e76d7873619f2",
-                "requestBody": {
-                    "description": "추가할 날짜(년,월)",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "month": {
-                                        "description": "월",
-                                        "type": "string",
-                                        "example": "03"
-                                    },
-                                    "year": {
-                                        "description": "년",
-                                        "type": "string",
-                                        "example": "23"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/restaurant/menu": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식단표"
                 ],
                 "summary": "식단표 업로드",
                 "description": "바디에 엑셀 파일 담아서 보내면 됩니다.",
@@ -2604,37 +2563,14 @@
                 }
             }
         },
-        "/api/restaurant/menu/get/w": {
+        "/api/restaurant/menu/get/year": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식단표"
                 ],
-                "summary": "식단표 그 달의 모든 주차 가져오기",
-                "description": "식단표 달의 모든 주차 가져오기",
-                "operationId": "5be786a03948919ebb354ee2938a8743",
-                "requestBody": {
-                    "description": "받고싶은 날짜(년,월)",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "month": {
-                                        "description": "월",
-                                        "type": "string",
-                                        "example": "03"
-                                    },
-                                    "year": {
-                                        "description": "년",
-                                        "type": "string",
-                                        "example": "23"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
+                "summary": "년도 전부 가져오기",
+                "description": "년도 전부 가져오기",
+                "operationId": "3db3193b76f097daed61caab8dcd7dbd",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -2648,7 +2584,7 @@
         "/api/restaurant/menu/get/w/{id}": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식단표"
                 ],
                 "summary": "식단표 1주치 가져오기",
                 "description": "식단표 1주치 가져오기",
@@ -2677,7 +2613,7 @@
         "/api/restaurant/menu/get/d": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식단표"
                 ],
                 "summary": "식수 식단표 하루치 가져오기",
                 "description": "식수 식단표 하루치를 가져옵니다",
@@ -2713,7 +2649,7 @@
         "/api/restaurant/menu/d/{id}": {
             "delete": {
                 "tags": [
-                    "식수"
+                    "식단표"
                 ],
                 "summary": "식단표 삭제",
                 "description": "식단표 삭제",
@@ -3138,7 +3074,7 @@
         "/api/restaurant/semester/meal-type": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식수 유형"
                 ],
                 "summary": "학기 식수 유형 생성",
                 "description": "학기 식수 유형을 생성",
@@ -3184,7 +3120,7 @@
         "/api/restaurant/semester/m/delete/{id}": {
             "delete": {
                 "tags": [
-                    "식수"
+                    "식수 유형"
                 ],
                 "summary": "학기 식수 유형 삭제",
                 "description": "학기 식수 유형 삭제",
@@ -3213,7 +3149,7 @@
         "/api/restaurant/semester/meal-type/{id}": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 유형"
                 ],
                 "summary": "학기 식수 유형 가져오기",
                 "description": "학기 식수 유형 가져오기",
@@ -3242,7 +3178,7 @@
         "/api/restaurant/weekend/meal-type": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식수 유형"
                 ],
                 "summary": "주말 식수 유형 신청",
                 "description": "주말 식수 유형 신청을 처리합니다",
@@ -3288,7 +3224,7 @@
         "/api/restaurant/weekend/m/delete/{id}": {
             "delete": {
                 "tags": [
-                    "식수"
+                    "식수 유형"
                 ],
                 "summary": "주말 식수 유형 삭제",
                 "description": "주말 식수 유형 삭제",
@@ -3317,7 +3253,7 @@
         "/api/restaurant/weekend/meal-type/{id}": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 유형"
                 ],
                 "summary": "주말 식수 유형 가져오기",
                 "description": "주말 식수 유형 가져오기",
