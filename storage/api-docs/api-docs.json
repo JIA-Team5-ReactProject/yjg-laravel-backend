@@ -2646,6 +2646,24 @@
                 }
             }
         },
+        "/api/restaurant/apply/weekend/get/app": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "방학 식수 자동 신청App get",
+                "description": "방학 식수 자동 신청App get",
+                "operationId": "71d8706215058ac0e508f55047f008ae",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/apply/semester/auto": {
             "post": {
                 "tags": [
@@ -2713,6 +2731,24 @@
                 "summary": "학기 식수 자동 신청 get",
                 "description": "학기 식수 자동 신청 get",
                 "operationId": "7dfba620aa4e0971fdfcfc4448dd5f82",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/get/app": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 자동 신청App get",
+                "description": "학기 식수 자동 신청App get",
+                "operationId": "aeace256d7f5619eb2a7d6bdf9b3ba21",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -2831,6 +2867,24 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/manual/get/app": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 수동 신청 App get",
+                "description": "식수 수동 신청 App get",
+                "operationId": "e2d4282912e943779ef96a20d8bdd4fa",
                 "responses": {
                     "200": {
                         "description": "Success"

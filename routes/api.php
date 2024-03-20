@@ -222,13 +222,18 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'onWeekendAuto']);
     Route::patch('/apply/weekend/set', [RestaurantApplyDivisionController::class, 'setWeekendAuto']);
     Route::get('/apply/weekend/get', [RestaurantApplyDivisionController::class, 'getWeekendAuto']);
+    Route::get('/apply/weekend/get/app', [RestaurantApplyDivisionController::class, 'getWeekendAutoApp']);
+
     Route::post('/apply/semester/auto', [RestaurantApplyDivisionController::class, 'onSemesterAuto']);
     Route::patch('/apply/semester/set', [RestaurantApplyDivisionController::class, 'setSemesterAuto']);
     Route::get('/apply/semester/get', [RestaurantApplyDivisionController::class, 'getSemesterAuto']);
+    Route::get('/apply/semester/get/app', [RestaurantApplyDivisionController::class, 'getSemesterAutoApp']);
 
     Route::post('/apply/manual/set', [RestaurantApplyDivisionController::class, 'setManual']);
     Route::patch('/apply/manual', [RestaurantApplyDivisionController::class, 'manual']);
     Route::get('/apply/manual/get', [RestaurantApplyDivisionController::class, 'getManual']);
+    Route::get('/apply/manual/get/app', [RestaurantApplyDivisionController::class, 'getManualApp']);
+
 
 
 
