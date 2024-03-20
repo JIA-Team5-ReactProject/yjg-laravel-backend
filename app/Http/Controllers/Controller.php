@@ -17,7 +17,7 @@ class Controller extends BaseController
 
     protected string $modelExceptionMessage = '아이디에 해당하는 데이터를 찾을 수 없습니다.';
 
-    protected array $dayList = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    protected array $dayList = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     protected array $userValidateRules = [
         'name' => 'required|string',
         'student_id' => 'required|string',
