@@ -2559,6 +2559,216 @@
                 }
             }
         },
+        "/api/restaurant/apply/weekend/auto": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "주말 식수 신청 날짜 디폴트 넣기",
+                "description": "주말 식수 신청 날짜 디폴트 넣기",
+                "operationId": "8f1cb1055d3135a3b439d45c66e5f2d0",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/weekend/set": {
+            "patch": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "주말 식수 자동 신청 설정",
+                "description": "주말 식수 자동 신청 설정",
+                "operationId": "2803e3a689f065e5fc8d8231733eb93e",
+                "requestBody": {
+                    "description": "설정할 시간",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_week": {
+                                        "description": "시작 요일(0~6)",
+                                        "type": "string",
+                                        "example": "2"
+                                    },
+                                    "end_week": {
+                                        "description": "종료 요일(0~6)",
+                                        "type": "string",
+                                        "example": "5"
+                                    },
+                                    "start_time": {
+                                        "description": "시작 시간",
+                                        "type": "string",
+                                        "example": "08:00"
+                                    },
+                                    "end_time": {
+                                        "description": "종료 시간",
+                                        "type": "string",
+                                        "example": "22:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/auto": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 신청 날짜 디폴트 넣기",
+                "description": "학기 식수 신청 날짜 디폴트 넣기",
+                "operationId": "c12f6d4d82cf3213391f03c78c1ec2d3",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/set": {
+            "patch": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 자동 신청 설정",
+                "description": "학기 식수 자동 신청 설정",
+                "operationId": "4e7002284bc76d3fe8ae963e63c4b770",
+                "requestBody": {
+                    "description": "설정할 시간",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "description": "시작 날짜",
+                                        "type": "string",
+                                        "example": "2024-03-19"
+                                    },
+                                    "end_date": {
+                                        "description": "종료 날짜",
+                                        "type": "string",
+                                        "example": "2024-06-22"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/manual": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 수동 신청 디폴트 넣기",
+                "description": "식수 수동 디폴트 넣기",
+                "operationId": "78ca8f9667fcdce94b8e864fdb2c30d9",
+                "requestBody": {
+                    "description": "학기인지 방학인지, 열지 닫을지",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "division": {
+                                        "description": "학기,방학 구분",
+                                        "type": "string",
+                                        "example": "semester or weekend"
+                                    },
+                                    "open": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/manual/set": {
+            "patch": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 수동 신청 수정",
+                "description": "식수 수동 신청 수정",
+                "operationId": "96f1092f01eec289d0f3527b3617d111",
+                "requestBody": {
+                    "description": "학기인지 방학인지, 열지 닫을지",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "division": {
+                                        "description": "학기,방학 구분",
+                                        "type": "string",
+                                        "example": "semester or weekend"
+                                    },
+                                    "open": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/menu": {
             "post": {
                 "tags": [
@@ -2959,17 +3169,6 @@
                 "summary": "주말 식수 삭제 확인",
                 "description": "주말 식수 삭제 확인",
                 "operationId": "054cc9d10ec30323087e31bcfa00868c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "확인할 식수신청 id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success"

@@ -23,8 +23,11 @@ class RestaurantSemester extends Model
         return $this->hasMany(RestaurantSemesterMealType::class);
     }
 
-    public function semester_meal_type()
+    public function SemesterMealType()
     {
-        return $this->belongsTo(SemesterMealType::class, 'id');
+        return $this->belongsToMany(SemesterMealType::class, 'restaurant_semester_meal_types')
+                    ->withPivot('semester_meal_type_id');
     }
+
+   
 }

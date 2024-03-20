@@ -203,11 +203,11 @@ class RestaurantSemesterController extends Controller
     public function getRestaurantApply()
     {
         try{
-            $applyData = RestaurantSemester::with('semesterMealType:id,meal_type,date', 'user:id,phone_number,name,student_id')->paginate(5);
+            $applyData = RestaurantSemester::with('semesterMealType:id,meal_type', 'user:id,phone_number,name,student_id')->paginate(5);
             return $applyData;
             //return SemesterApplyResource::collection($applyData);
         }catch (\Exception $exception) {
-            return response()->json(['applyData' => []]);
+            return response()->json(['error' => $exception->getMessage()]);
         }
     }
 

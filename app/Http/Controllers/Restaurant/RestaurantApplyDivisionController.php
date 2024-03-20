@@ -15,12 +15,49 @@ use Illuminate\Validation\ValidationException;
 
 class RestaurantApplyDivisionController extends Controller
 {
+
+    /**
+     * @OA\Post (
+     * path="/api/restaurant/apply/weekend/auto",
+     * tags={"식수 신청 기간"},
+     * summary="주말 식수 신청 날짜 디폴트 넣기",
+     * description="주말 식수 신청 날짜 디폴트 넣기",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function weekendAutoOn()
     {
         RestaurantWeekendAuto::create([]);
         return response()->json(['message' => '주말 식수 신청 날짜 셋팅 완료되었습니다.']); 
     }
 
+
+
+    /**
+     * @OA\Patch (
+     * path="/api/restaurant/apply/weekend/set",
+     * tags={"식수 신청 기간"},
+     * summary="주말 식수 자동 신청 설정",
+     * description="주말 식수 자동 신청 설정",
+     *     @OA\RequestBody(
+     *         description="설정할 시간",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="start_week", type="string", description="시작 요일(0~6)", example="2"),
+     *                 @OA\Property (property="end_week", type="string", description="종료 요일(0~6)", example="5"),
+     *                 @OA\Property (property="start_time", type="string", description="시작 시간", example="08:00"),
+     *                 @OA\Property (property="end_time", type="string", description="종료 시간", example="22:00"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function weekendAutoSet(Request $request)
     {
         try {
@@ -51,6 +88,18 @@ class RestaurantApplyDivisionController extends Controller
           }
     }
 
+
+     /**
+     * @OA\Post (
+     * path="/api/restaurant/apply/semester/auto",
+     * tags={"식수 신청 기간"},
+     * summary="학기 식수 신청 날짜 디폴트 넣기",
+     * description="학기 식수 신청 날짜 디폴트 넣기",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function semesterAutoOn()//디폴트로 설정
     {
         $startDate = Carbon::create(null, 3, 1);
@@ -64,6 +113,27 @@ class RestaurantApplyDivisionController extends Controller
     }
 
 
+    /**
+     * @OA\Patch (
+     * path="/api/restaurant/apply/semester/set",
+     * tags={"식수 신청 기간"},
+     * summary="학기 식수 자동 신청 설정",
+     * description="학기 식수 자동 신청 설정",
+     *     @OA\RequestBody(
+     *         description="설정할 시간",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="start_date", type="string", description="시작 날짜", example="2024-03-19"),
+     *                 @OA\Property (property="end_date", type="string", description="종료 날짜", example="2024-06-22"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function semesterAutoSet(Request $request)
         {
             try {
@@ -90,6 +160,28 @@ class RestaurantApplyDivisionController extends Controller
             }
         }
 
+
+    /**
+     * @OA\Post (
+     * path="/api/restaurant/apply/manual",
+     * tags={"식수 신청 기간"},
+     * summary="식수 수동 신청 디폴트 넣기",
+     * description="식수 수동 디폴트 넣기",
+     *     @OA\RequestBody(
+     *         description="학기인지 방학인지, 열지 닫을지",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="division", type="string", description="학기,방학 구분", example="semester or weekend"),
+     *                 @OA\Property (property="open", type="boolean", description="열림/닫힘", example="true"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function manualSet(Request $request)//디폴트로 들어가야하는게 학기,방학 2개임
     {
         RestaurantApplyManual::create([
@@ -100,7 +192,27 @@ class RestaurantApplyDivisionController extends Controller
     }
 
 
-
+ /**
+     * @OA\Patch(
+     * path="/api/restaurant/apply/manual/set",
+     * tags={"식수 신청 기간"},
+     * summary="식수 수동 신청 수정",
+     * description="식수 수동 신청 수정",
+     *     @OA\RequestBody(
+     *         description="학기인지 방학인지, 열지 닫을지",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="division", type="string", description="학기,방학 구분", example="semester or weekend"),
+     *                 @OA\Property (property="open", type="boolean", description="열림/닫힘", example="true"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function manual(Request $request)
     {
         try {
@@ -115,7 +227,6 @@ class RestaurantApplyDivisionController extends Controller
 
         try{
             $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOr();
-            Log::info('어플리: ' . $apply);
             $apply->update([
                 'open' => $validatedData['open']
             ]);
