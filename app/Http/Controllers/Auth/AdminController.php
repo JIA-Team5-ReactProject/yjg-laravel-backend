@@ -20,6 +20,21 @@ class AdminController extends Controller
     }
 
     /**
+     * @OA\Get (
+     *     path="/api/admin",
+     *     tags={"관리자"},
+     *     summary="관리자 정보",
+     *     description="현재 인증된 관리자의 정보를 반환",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="ServerError"),
+     * )
+     */
+    public function admin(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json(['admin' => auth('admins')->user()]);
+    }
+
+    /**
      * @OA\Post (
      *     path="/api/admin",
      *     tags={"관리자"},

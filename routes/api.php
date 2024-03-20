@@ -61,6 +61,7 @@ Route::prefix('admin')->group(function () {
 // 관리자
 Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     Route::prefix('admin')->group(function() {
+        Route::get('/', [AdminController::class, 'admin'])->name('admin.info');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
         Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
@@ -126,6 +127,7 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         return auth('users')->user();
     });
     Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'user'])->name('user.info');
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
         Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
@@ -215,14 +217,14 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/semester/show', [RestaurantSemesterController::class, 'show']);
     Route::get('/weekend/show', [RestaurantWeekendController::class, 'show']);
 
-    
+
     Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'weekendAutoOn']);
     Route::patch('/apply/weekend/set', [RestaurantApplyDivisionController::class, 'weekendAutoSet']);
     Route::post('/apply/semester/auto', [RestaurantApplyDivisionController::class, 'semesterAutoOn']);
     Route::patch('/apply/semester/set', [RestaurantApplyDivisionController::class, 'semesterAutoSet']);
     Route::post('/apply/manual/set', [RestaurantApplyDivisionController::class, 'manualSet']);
     Route::patch('/apply/manual', [RestaurantApplyDivisionController::class, 'manual']);
-    
+
 
 });
 
