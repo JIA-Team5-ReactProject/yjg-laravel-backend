@@ -27,7 +27,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function weekendAutoOn()
+    public function onWeekendAuto()
     {
         RestaurantWeekendAuto::create([]);
         return response()->json(['message' => '주말 식수 신청 날짜 셋팅 완료되었습니다.']); 
@@ -58,7 +58,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function weekendAutoSet(Request $request)
+    public function setWeekendAuto(Request $request)
     {
         try {
             // 유효성 검사
@@ -73,7 +73,7 @@ class RestaurantApplyDivisionController extends Controller
           }
     
           //어차피 1 하나밖에 없음
-          $apply = RestaurantWeekendAuto::findOrFail(1);
+          $apply = RestaurantWeekendAuto::first();
     
           try{
             $apply->update([
@@ -89,6 +89,28 @@ class RestaurantApplyDivisionController extends Controller
     }
 
 
+    /**
+     * @OA\Get (
+     * path="/api/restaurant/apply/weekend/get",
+     * tags={"식수 신청 기간"},
+     * summary="방학 식수 자동 신청 get",
+     * description="방학 식수 자동 신청 get",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+        public function getWeekendAuto()
+        {
+            try {
+                $weekendAuto = RestaurantWeekendAuto::first();
+                return response()->json(['semesterAuto' => $weekendAuto]);
+            }catch (ValidationException $exception) {
+                return response()->json(['error' => $exception->getMessage()], 422);
+            }
+        }
+
+
      /**
      * @OA\Post (
      * path="/api/restaurant/apply/semester/auto",
@@ -100,7 +122,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function semesterAutoOn()//디폴트로 설정
+    public function onSemesterAuto()//디폴트로 설정
     {
         $startDate = Carbon::create(null, 3, 1);
         $endDate = Carbon::create(null, 6, 20);
@@ -134,7 +156,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function semesterAutoSet(Request $request)
+    public function setSemesterAuto(Request $request)
         {
             try {
                 // 유효성 검사
@@ -146,8 +168,8 @@ class RestaurantApplyDivisionController extends Controller
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
         
-            //어차피 1 하나밖에 없음
-            $apply = RestaurantSemesterAuto::findOrFail(2);
+            //어차피 하나밖에 없음
+            $apply = RestaurantSemesterAuto::first();
         
             try{
                 $apply->update([
@@ -159,6 +181,31 @@ class RestaurantApplyDivisionController extends Controller
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
         }
+
+
+
+        /**
+     * @OA\Get (
+     * path="/api/restaurant/apply/semester/get",
+     * tags={"식수 신청 기간"},
+     * summary="학기 식수 자동 신청 get",
+     * description="학기 식수 자동 신청 get",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+        public function getSemesterAuto()
+        {
+            try {
+                $semesterAuto = RestaurantSemesterAuto::first();
+                Log::info('open: ' . $semesterAuto);
+                return response()->json(['semesterAuto' => $semesterAuto]);
+            }catch (ValidationException $exception) {
+                return response()->json(['error' => $exception->getMessage()], 422);
+            }
+        }
+
 
 
     /**
@@ -182,7 +229,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function manualSet(Request $request)//디폴트로 들어가야하는게 학기,방학 2개임
+    public function setManual(Request $request)//디폴트로 들어가야하는게 학기,방학 2개임
     {
         RestaurantApplyManual::create([
             'division' => $request->division,
@@ -216,7 +263,7 @@ class RestaurantApplyDivisionController extends Controller
     public function manual(Request $request)
     {
         try {
-            // 유효성 검사
+            
             $validatedData = $request->validate([
                 'division' => 'required|string|in:semester,weekend',
                 'open' => 'required|boolean'
@@ -231,6 +278,47 @@ class RestaurantApplyDivisionController extends Controller
                 'open' => $validatedData['open']
             ]);
             return response()->json(['message' => $validatedData['division'].'식수 신청 시간 수정이 완료되었습니다.']);
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+    }
+
+
+
+     /**
+     * @OA\Get(
+     * path="/api/restaurant/apply/manual/get",
+     * tags={"식수 신청 기간"},
+     * summary="식수 수동 신청 get",
+     * description="식수 수동 신청 get",
+     *     @OA\RequestBody(
+     *         description="학기인지 방학인지",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="division", type="string", description="학기,방학 구분", example="semester or weekend"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getManual(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'division' => 'required|string|in:semester,weekend',
+            ]);
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+        try {
+            $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOr();
+            Log::info('open: ' . $apply->open);
+            return response()->json(['open' => $apply->open]);
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
