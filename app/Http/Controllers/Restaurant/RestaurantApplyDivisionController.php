@@ -34,7 +34,6 @@ class RestaurantApplyDivisionController extends Controller
     }
 
 
-
     /**
      * @OA\Patch (
      * path="/api/restaurant/apply/weekend/set",
@@ -100,15 +99,52 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-        public function getWeekendAuto()
-        {
-            try {
-                $weekendAuto = RestaurantWeekendAuto::first();
-                return response()->json(['semesterAuto' => $weekendAuto]);
-            }catch (ValidationException $exception) {
-                return response()->json(['error' => $exception->getMessage()], 422);
-            }
+    public function getWeekendAuto()
+    {
+        try {
+            $weekendAuto = RestaurantWeekendAuto::first();
+            return response()->json(['semesterAuto' => $weekendAuto]);
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
         }
+    }
+
+
+      /**
+     * @OA\Get (
+     * path="/api/restaurant/apply/weekend/get/app",
+     * tags={"식수 신청 기간"},
+     * summary="방학 식수 자동 신청App get",
+     * description="방학 식수 자동 신청App get",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getWeekendAutoApp()
+    {
+        try {
+            $weekendAuto = RestaurantWeekendAuto::first();
+            $startTime = $weekendAuto->start_time;
+            $endTime = $weekendAuto->end_time;
+            $startWeek = $weekendAuto->start_week;
+            $endWeek = $weekendAuto->end_week;
+
+            $now = Carbon::now();
+            $nowWeek = $now->dayOfWeekIso;
+
+            if ($nowWeek >= $startWeek && $nowWeek <= $endWeek) {
+                if ($now->between($startTime, $endTime)) {
+                    return response()->json(['result' => true]);
+                } else {
+                    return response()->json(['result' => false]);
+                }
+            }return response()->json(['result' => false]);
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+    }
+
 
 
      /**
@@ -206,6 +242,35 @@ class RestaurantApplyDivisionController extends Controller
             }
         }
 
+
+         /**
+     * @OA\Get (
+     * path="/api/restaurant/apply/semester/get/app",
+     * tags={"식수 신청 기간"},
+     * summary="학기 식수 자동 신청App get",
+     * description="학기 식수 자동 신청App get",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getSemesterAutoApp()
+    {
+        try {
+            $semesterAuto = RestaurantSemesterAuto::first();
+            $startDate = $semesterAuto->start_date;
+            $endDate = $semesterAuto->end_date;
+            $now = Carbon::now();
+
+            if ($now->between($startDate, $endDate)) {
+                return response()->json(['result' => true]);
+            } else {
+                return response()->json(['result' => false]);
+            }
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+    }
 
 
     /**
@@ -322,5 +387,24 @@ class RestaurantApplyDivisionController extends Controller
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
+    }
+
+
+    
+     /**
+     * @OA\Get(
+     * path="/api/restaurant/apply/manual/get/app",
+     * tags={"식수 신청 기간"},
+     * summary="식수 수동 신청 App get",
+     * description="식수 수동 신청 App get",
+     *     
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function getManualApp()
+    {
+        $ManualApp = RestaurantApplyManual::all();
+        return response()->json(['date' => $ManualApp]);
     }
 }
