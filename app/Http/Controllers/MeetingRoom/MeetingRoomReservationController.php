@@ -118,6 +118,7 @@ class MeetingRoomReservationController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        // TODO: 기존에 예약했던 시간대와 중복되게 예약하면, 막기
         try {
             $validated = $request->validate([
                 'meeting_room_number' => 'required|numeric',
