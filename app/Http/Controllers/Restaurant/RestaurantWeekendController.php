@@ -77,21 +77,17 @@ class RestaurantWeekendController extends Controller
      *     tags={"식수"},
      *     summary="주말 식수 삭제 확인",
      *     description="주말 식수 삭제 확인",
-     *     @OA\Parameter(
-     *           name="id",
-     *           description="확인할 식수신청 id",
-     *           required=true,
-     *           in="path",
-     *           @OA\Schema(type="integer"),
-     *     ),
+     *   
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getPayment($id)
+    public function getPayment()
     {
+        $user_id = auth('users')->id();
+
         try {
-            $paymentData = RestaurantWeekend::where('id', $id)->pluck('payment');
+            $paymentData = RestaurantWeekend::where('user_id', $user_id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
