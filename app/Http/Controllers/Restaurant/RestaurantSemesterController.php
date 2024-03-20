@@ -38,7 +38,6 @@ class RestaurantSemesterController extends Controller
     public function store(Request $request)
     {
         try {
-            // 유효성 검사
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
             ]);
@@ -47,37 +46,37 @@ class RestaurantSemesterController extends Controller
         }
 
         try {
-            $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
-            ->first();
-            
-            
-
             $user_id = auth('users')->id();
-
-            // return $user_id;
-
             $restaurantSemester = RestaurantSemester::create([
                 'user_id' => $user_id
             ]);
-
-            Log::info('신청 아이디: ' . $restaurantSemester->id);
-            Log::info('유형 아이디: ' . $semesterMealType->id);
-
-            
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
 
-        try {
+        $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
+                                        ->first();
+
+        
             RestaurantSemesterMealType::create([
             'restaurant_semester_id' => $restaurantSemester->id,
             'semester_meal_type_id' => $semesterMealType->id
             ]);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 500);
-        }
+    
         return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
     }
+
+    public function getMealType()
+    {
+        try {
+            $mealType = SemesterMealType::all();
+            return response()->json(['mealType' => $mealType]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+        }
+    }
+
+
 
     /**
          * @OA\Get (
@@ -96,15 +95,21 @@ class RestaurantSemesterController extends Controller
          *  @OA\Response(response="500", description="Fail"),
          * )
          */
-    public function getPayment($id)
+    public function getPayment()
     {
+        $user_id = auth('users')->id();
+        Log::info('유저 아이디: ' . $user_id);
         try {
-            $paymentData = RestaurantSemester::where('user_id', $id)->pluck('payment');
+            $paymentData = RestaurantSemester::where('user_id', $user_id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
         }
     }
+
+
+    
+
 
        /**
      * @OA\Post (

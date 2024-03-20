@@ -48,9 +48,7 @@ class RestaurantWeekendController extends Controller
         }
 
         try {
-
             $user_id = auth('users')->id();
-            // 데이터베이스에 저장
             $RestaurantWeekend = RestaurantWeekend::create([
                 'user_id' => $user_id,
                 'refund' => $validatedData['refund'],
@@ -66,8 +64,7 @@ class RestaurantWeekendController extends Controller
             'restaurant_weekend_id' => $RestaurantWeekend->id,
             'weekend_meal_type_id' => $weekendMealType->id
         ]);
-
-        // 완료 메시지 주기
+        
         return response()->json(['message' => '주말 식수 신청이 완료되었습니다.']);
     }   
         

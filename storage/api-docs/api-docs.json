@@ -3387,25 +3387,14 @@
                 }
             }
         },
-        "/api/restaurant/semester/meal-type/{id}": {
+        "/api/restaurant/semester/meal-type/get": {
             "get": {
                 "tags": [
                     "식수 유형"
                 ],
                 "summary": "학기 식수 유형 가져오기",
                 "description": "학기 식수 유형 가져오기",
-                "operationId": "af683a3d26c7c44cfc2fe5b42c72caf5",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "가져올 학기 식수 유형 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "fb8d542020a5413326b33427282848f8",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3491,25 +3480,14 @@
                 }
             }
         },
-        "/api/restaurant/weekend/meal-type/{id}": {
+        "/api/restaurant/weekend/meal-type/get": {
             "get": {
                 "tags": [
                     "식수 유형"
                 ],
                 "summary": "주말 식수 유형 가져오기",
                 "description": "주말 식수 유형 가져오기",
-                "operationId": "db29adb4e4ab3ffbfaf356ac594cd5c3",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "가져올 주말 식수 유형 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "b958e1056af79132183df379fd27f4da",
                 "responses": {
                     "200": {
                         "description": "Success"
