@@ -232,8 +232,7 @@ class RestaurantApplyDivisionController extends Controller
             ]);
             return response()->json(['message' => $validatedData['division'].'식수 신청 시간 수정이 완료되었습니다.']);
         }catch (ValidationException $exception) {
-                return response()->json(['error' => $exception->getMessage()], 422);
-            }
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
     }
-
 }

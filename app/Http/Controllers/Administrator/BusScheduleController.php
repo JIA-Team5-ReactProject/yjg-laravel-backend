@@ -426,12 +426,9 @@ class BusScheduleController extends Controller
         try{
             $matchingSchedule = BusSchedule::whereIn('bus_round_id', $matchingRound)->select('station', 'bus_time','bus_round_id')->get();
             //$exGroupedSchedules = $matchingSchedule->groupBy('bus_round_id');
-
-              // 그룹화된 결과를 담을 배열 초기화
             $groupedSchedules = [];
 
             foreach ($matchingSchedule as $schedule) {
-                // BusRound 모델을 사용하여 라운드 정보를 가져옴
                 $round = BusRound::find($schedule->bus_round_id);
                 // BusRound 모델의 round 값으로 그룹화된 결과에 추가
                 $groupedSchedules[$round->round][] = [
