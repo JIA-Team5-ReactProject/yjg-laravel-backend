@@ -1356,6 +1356,22 @@
             }
         },
         "/api/admin": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 정보",
+                "description": "현재 인증된 관리자의 정보를 반환",
+                "operationId": "6d0cf02b419b0df0eb46c97d4101d25b",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "관리자"
@@ -1828,6 +1844,22 @@
             }
         },
         "/api/user": {
+            "get": {
+                "tags": [
+                    "유저"
+                ],
+                "summary": "유저 정보",
+                "description": "현재 인증된 유저의 정보를 반환",
+                "operationId": "2183352f835b442102aaa60ac0d76c29",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "학생"

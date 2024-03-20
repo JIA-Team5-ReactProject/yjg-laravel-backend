@@ -17,6 +17,22 @@ class UserController extends Controller
 {
     public function __construct(protected TokenService $tokenService) {
     }
+
+    /**
+     * @OA\Get (
+     *     path="/api/user",
+     *     tags={"유저"},
+     *     summary="유저 정보",
+     *     description="현재 인증된 유저의 정보를 반환",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="ServerError"),
+     * )
+     */
+    public function user(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json(['user' => auth('users')->user()]);
+    }
+
     /**
      * @OA\Post (
      *     path="/api/user",

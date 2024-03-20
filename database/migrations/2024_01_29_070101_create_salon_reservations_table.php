@@ -18,7 +18,6 @@ return new class extends Migration
             $table->date('reservation_date');
             $table->time('reservation_time');
             $table->string('status', 10)->default('submit');
-            $table->softDeletes();
             $table->timestamps();
 
         });
