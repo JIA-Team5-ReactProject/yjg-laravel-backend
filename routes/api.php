@@ -193,7 +193,7 @@ Route::prefix('restaurant')->group(function () {
     Route::post('/menu', [RestaurantMenusController::class, 'import']);
     Route::post('/menu/date', [RestaurantMenusController::class, 'store']);
     Route::get('/menu/get/year', [RestaurantMenusController::class, 'getyears']);
-    Route::get('/menu/get/w/{id}', [RestaurantMenusController::class, 'getWeekMenu']);
+    Route::get('/menu/get/w', [RestaurantMenusController::class, 'getWeekMenu']);
     Route::get('/menu/get/d', [RestaurantMenusController::class, 'getDayMenu']);
     Route::delete('/menu/d/{id}', [RestaurantMenusController::class, 'deleteMenu']);
     Route::delete('/menu/date/d', [RestaurantMenusController::class, 'deleteDate']);
@@ -217,6 +217,7 @@ Route::prefix('restaurant')->group(function () {
 
     Route::get('/semester/show', [RestaurantSemesterController::class, 'show']);
     Route::get('/weekend/show', [RestaurantWeekendController::class, 'show']);
+    Route::get('/semester/show/user', [RestaurantSemesterController::class, 'showUser']);
 
 
     Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'onWeekendAuto']);

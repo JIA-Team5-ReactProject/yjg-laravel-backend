@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('payment')->default(false);
             $table->boolean('refund')->default(false);
+            $table->boolean('sat')->default(false);
+            $table->boolean('sun')->default(false);
             $table->timestamps();
         });
     }

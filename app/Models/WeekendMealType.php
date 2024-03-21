@@ -10,10 +10,8 @@ class WeekendMealType extends Model
     use HasFactory;
     protected $fillable = [
         'meal_type',
-        'date',
         'content',
         'price',
-        
     ];
 
 
