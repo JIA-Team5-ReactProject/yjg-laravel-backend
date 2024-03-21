@@ -419,5 +419,4 @@ class RestaurantApplyDivisionController extends Controller
             return response()->json(['error' => $exception->getMessage()], 422);
         }
     }
-
 }

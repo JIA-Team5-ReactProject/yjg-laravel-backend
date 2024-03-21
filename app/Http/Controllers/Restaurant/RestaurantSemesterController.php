@@ -266,7 +266,33 @@ class RestaurantSemesterController extends Controller
         try{
             $user_id = auth('users')->id();
             $userData = User::select('id', 'phone_number', 'name', 'student_id')->where('id', $user_id)->first();
+            
             return response()->json(['userData' => $userData]);
+        }catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()]);
+        }
+    }
+
+/**
+     * @OA\Get (
+     * path="/api/restaurant/semester/show/user/after",
+     * tags={"식수"},
+     * summary="학기 식수 유저 정보(신청 후)",
+     * description="학기 식수 유조 정보 확인(신청 후)",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function showUserAfter(){
+        try{
+            $user_id = auth('users')->id();
+            $allData = RestaurantSemester::with('semesterMealType:id,meal_type', 'user:id,phone_number,name,student_id');
+    
+    
+            $applyData = $allData->where('user_id', $user_id)->paginate(5);
+            
+            return response()->json(['userData' => $applyData ]);
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()]);
         }
