@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalonReservation extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
     protected $fillable = [
         'salon_service_id',
         'user_id',
