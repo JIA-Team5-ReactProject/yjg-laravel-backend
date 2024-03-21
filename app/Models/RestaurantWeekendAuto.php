@@ -13,5 +13,6 @@ class RestaurantWeekendAuto extends Model
         'end_week',
         'start_time',
         'end_time',
+        'state'
     ];
 }

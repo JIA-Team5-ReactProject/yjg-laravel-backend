@@ -11,6 +11,7 @@ class RestaurantSemesterAuto extends Model
 
     protected $fillable = [
         'start_date',
-        'end_date'
+        'end_date',
+        'state'
     ];
 }

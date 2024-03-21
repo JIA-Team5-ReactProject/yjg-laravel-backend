@@ -11,6 +11,6 @@ class RestaurantApplyManual extends Model
 
     protected $fillable = [
         'division',
-        'open'
+        'state'
     ];
 }
