@@ -7,6 +7,7 @@ use App\Http\Resources\SemesterApplyResource;
 use App\Models\RestaurantSemester;
 use App\Models\RestaurantSemesterMealType;
 use App\Models\SemesterMealType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -66,15 +67,7 @@ class RestaurantSemesterController extends Controller
         return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
     }
 
-    public function getMealType()
-    {
-        try {
-            $mealType = SemesterMealType::all();
-            return response()->json(['mealType' => $mealType]);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
-        }
-    }
+    
 
 
 
@@ -251,7 +244,26 @@ class RestaurantSemesterController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
-    }   
-
-//if (strlen($request->type) == 1 && preg_match('/^[A-Z]$/', $request->type)) 알파벳 대문자 1개일때
+    }
+    
+    /**
+     * @OA\Get (
+     * path="/api/restaurant/semester/show/user",
+     * tags={"식수"},
+     * summary="학기 식수 유저 정보",
+     * description="학기 식수 유조 정보 확인",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function showUser(){
+        try{
+            $user_id = auth('users')->id();
+            $userData = User::select('id', 'phone_number', 'name', 'student_id')->where('id', $user_id)->first();
+            return response()->json(['userData' => $userData]);
+        }catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()]);
+        }
+    }
 }

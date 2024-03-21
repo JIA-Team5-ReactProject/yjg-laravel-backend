@@ -14,6 +14,8 @@ class RestaurantWeekend extends Model
         'user_id',
         'payment',
         'refund',
+        'sat',
+        'sun',
     ];
     public function user() {
        return $this->belongsTo(User::class);

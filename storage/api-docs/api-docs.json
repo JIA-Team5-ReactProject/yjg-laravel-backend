@@ -2949,25 +2949,37 @@
                 }
             }
         },
-        "/api/restaurant/menu/get/w/{id}": {
+        "/api/restaurant/menu/get/w": {
             "get": {
                 "tags": [
                     "식단표"
                 ],
                 "summary": "식단표 1주치 가져오기",
                 "description": "식단표 1주치 가져오기",
-                "operationId": "d09e7bf401ba6063b74c6adf26b4804f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "가져올 식단표의 date_id 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "operationId": "009925aeffd85b427d15a20803b294ce",
+                "requestBody": {
+                    "description": "가져올 식단표의 년도, 월",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "year": {
+                                        "description": "년도",
+                                        "type": "string",
+                                        "example": "2024"
+                                    },
+                                    "month": {
+                                        "description": "월",
+                                        "type": "string",
+                                        "example": "03"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3241,6 +3253,24 @@
                 }
             }
         },
+        "/api/restaurant/semester/show/user": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유저 정보",
+                "description": "학기 식수 유조 정보 확인",
+                "operationId": "e28765ed7d54a2d28b8aa78b05cd511d",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/weekend": {
             "post": {
                 "tags": [
@@ -3266,10 +3296,15 @@
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "date": {
-                                        "description": "토/일",
-                                        "type": "string",
-                                        "example": "sat_sun"
+                                    "sat": {
+                                        "description": "토욜",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "sun": {
+                                        "description": "일욜",
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 },
                                 "type": "object"
@@ -3551,10 +3586,10 @@
                                         "type": "string",
                                         "example": "A"
                                     },
-                                    "date": {
-                                        "description": "식사시간",
+                                    "content": {
+                                        "description": "내용",
                                         "type": "string",
-                                        "example": "lunch"
+                                        "example": "아침"
                                     },
                                     "price": {
                                         "description": "가격",

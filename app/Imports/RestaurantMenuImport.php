@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Carbon\Carbon;
+use DateTime;
 use Exception;
 
 class RestaurantMenuImport implements ToCollection
@@ -56,9 +57,9 @@ class RestaurantMenuImport implements ToCollection
                         
                         //식단표 모델로 보내서 db에 저장
                         $year = date('Y', strtotime($date));
-                        Log::info('년도 : ' . $year);
+                       
                         $month = date('m', strtotime($date));
-                        Log::info('년도 : ' . $month);
+
                         $restaurantMenuDate = RestaurantMenuDate::where('month', $month)->where('year', $year)->first();
                         Log::info('날짜 : ' . $restaurantMenuDate->id);
                         $menuData = new RestaurantMenu([

@@ -22,7 +22,7 @@ class WeekendMealTypeController extends Controller
      *                 mediaType="application/json",
      *                 @OA\Schema (
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
-     *                     @OA\Property (property="date", type="string", description="식사시간", example="lunch"), 
+     *                     @OA\Property (property="content", type="string", description="내용", example="아침"), 
      *                     @OA\Property (property="price", type="string", description="가격", example="750,000"),
      *                     
      *                 )
@@ -38,7 +38,7 @@ class WeekendMealTypeController extends Controller
             // 유효성 검사
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
-                'date' => 'required|string',
+                'content' => 'required|string',
                 'price' => 'required|string',
                 
             ]);
@@ -51,8 +51,8 @@ class WeekendMealTypeController extends Controller
             // 데이터베이스에 저장
             WeekendMealType::create([
                 'meal_type' => $validatedData['meal_type'],
+                'content' =>$validatedData['content'],
                 'price' =>$validatedData['price'],
-                'date' =>$validatedData['date'],
             ]);
         } catch (\Exception $exception) {//Exception는 부모 예외 클래스임
             // 데이터베이스 저장 실패시 애러 메세지

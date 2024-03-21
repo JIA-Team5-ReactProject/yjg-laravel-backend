@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('restaurant_weekend_autos', function (Blueprint $table) {
             $table->id();
-            $table->string('start_week')->default(0);
-            $table->string('end_week')->default(0);
-            $table->string('start_time')->default("00:00");
-            $table->string('end_time')->default("00:00");
+            $table->string('start_week',5)->default(0);
+            $table->string('end_week',5)->default(0);
+            $table->string('start_time',20)->default("00:00");
+            $table->string('end_time',20)->default("00:00");
             $table->timestamps();
         });
     }

@@ -77,26 +77,40 @@ class RestaurantMenusController extends Controller
 
 /**
      * @OA\Get (
-     *     path="/api/restaurant/menu/get/w/{id}",
+     *     path="/api/restaurant/menu/get/w",
      *     tags={"식단표"},
      *     summary="식단표 1주치 가져오기",
      *     description="식단표 1주치 가져오기",
-     *     @OA\Parameter(
-     *           name="id",
-     *           description="가져올 식단표의 date_id 아이디",
-     *           required=true,
-     *           in="path",
-     *           @OA\Schema(type="integer"),
+     *     @OA\RequestBody(
+     *         description="가져올 식단표의 년도, 월",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema (
+     *                 @OA\Property (property="year", type="string", description="년도", example="2024"),
+     *                 @OA\Property (property="month", type="string", description="월", example="03"),
+     *             )
+     *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getWeekMenu($id)
+    public function getWeekMenu(Request $request)
     {
         try {
-            $weekDay = RestaurantMenu::where('date_id', $id)->get();
-            return response()->json(['week_menus' => $weekDay]);
+            $weekdata = RestaurantMenuDate::where('year', $request->year)
+                                        ->where('month', $request->month)
+                                        ->get();
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+        
+        try {
+            $weekMenus = $weekdata->flatMap(function ($date) {
+                return RestaurantMenu::where('date_id', $date->id)->get();
+            });
+            return response()->json(['week_menus' => $weekMenus]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }

@@ -8,6 +8,7 @@ use App\Models\RestaurantWeekend;
 use App\Models\RestaurantWeekendMealType;
 use App\Models\WeekendMealType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class RestaurantWeekendController extends Controller
@@ -26,7 +27,8 @@ class RestaurantWeekendController extends Controller
      *                 @OA\Schema (
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
      *                     @OA\Property (property="refund", type="boolean", description="환불여부", example=true),
-     *                     @OA\Property (property="date", type="string", description="토/일", example="sat_sun"),
+     *                     @OA\Property (property="sat", type="boolean", description="토욜", example=true),
+     *                     @OA\Property (property="sun", type="boolean", description="일욜", example=true),
      *                 )
      *             )
      *         ),
@@ -41,18 +43,23 @@ class RestaurantWeekendController extends Controller
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
                 'refund' => 'required|boolean',
-                'date' => 'required|string',
+                'sat' => 'required|boolean',
+                'sun' => 'required|boolean',
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
 
+
+
         try {
             $user_id = auth('users')->id();
+            Log::info('유저: ' . $user_id);
             $RestaurantWeekend = RestaurantWeekend::create([
                 'user_id' => $user_id,
                 'refund' => $validatedData['refund'],
-                'date' => $validatedData['date']
+                'sat' => $validatedData['sat'],
+                'sun' => $validatedData['sun'],
             ]);
         } catch (\Exception $exception) {
             return response()->json(['error' =>  $exception->getMessage()], 500);
@@ -184,7 +191,7 @@ class RestaurantWeekendController extends Controller
     public function getRestaurantApply()
     {
         try{
-            $applyData = RestaurantWeekend::with(['weekendMealType:id,meal_type,date', 'user:id,phone_number,name,student_id'])->paginate(5);
+            $applyData = RestaurantWeekend::with(['weekendMealType:id,meal_type,content', 'user:id,phone_number,name,student_id'])->paginate(5);
             return $applyData;
             //return WeekendApplyResource::collection($applyData);
         }catch (\Exception $exception) {
@@ -226,7 +233,7 @@ class RestaurantWeekendController extends Controller
             //     })
             //     ->paginate(5);
 
-            $query = RestaurantWeekend::with('weekendMealType:id,meal_type,date','user:id,phone_number,name,student_id');
+            $query = RestaurantWeekend::with('weekendMealType:id,meal_type,price,sun,sat','user:id,phone_number,name,student_id');
         
             if (!empty($name)) {
                 $query->whereHas('user', function ($query) use ($name) {
