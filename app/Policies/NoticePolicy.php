@@ -29,6 +29,6 @@ class NoticePolicy
      */
     public function destroy(Admin $admin): bool
     {
-        return $$admin->admin_privilege;
+        return $admin->admin_privilege;
     }
 }
