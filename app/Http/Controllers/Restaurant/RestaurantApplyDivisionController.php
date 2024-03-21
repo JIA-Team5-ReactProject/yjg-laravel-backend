@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
-use App\Models\RestaurantApplyAuto;
-use App\Models\RestaurantApplyDivision;
 use App\Models\RestaurantApplyManual;
 use App\Models\RestaurantSemesterAuto;
 use App\Models\RestaurantWeekendAuto;
@@ -50,6 +48,7 @@ class RestaurantApplyDivisionController extends Controller
      *                 @OA\Property (property="end_week", type="string", description="종료 요일(0~6)", example="5"),
      *                 @OA\Property (property="start_time", type="string", description="시작 시간", example="08:00"),
      *                 @OA\Property (property="end_time", type="string", description="종료 시간", example="22:00"),
+     *                 @OA\Property (property="state", type="boolean", description="열림/닫힘", example=true),
      *             )
      *         )
      *     ),
@@ -66,6 +65,7 @@ class RestaurantApplyDivisionController extends Controller
                 'end_week' => 'required|string',
                 'start_time' => 'required|string',
                 'end_time' => 'required|string',
+                'state' => 'required|boolean'
             ]);
           }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -80,7 +80,15 @@ class RestaurantApplyDivisionController extends Controller
               'end_week' => $validatedData['end_week'],
               'start_time' => $validatedData['start_time'],
               'end_time' => $validatedData['end_time'],
+              'state' => $validatedData['state'],
             ]);
+
+            $manual = RestaurantApplyManual::where('division', "weekend")->first();
+            $manual->update([
+                'state' => false
+            ]);
+
+
             return response()->json(['message' => '주말 식수 신청 시간 수정이 완료되었습니다.']); 
           }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -185,6 +193,7 @@ class RestaurantApplyDivisionController extends Controller
      *             @OA\Schema (
      *                 @OA\Property (property="start_date", type="string", description="시작 날짜", example="2024-03-19"),
      *                 @OA\Property (property="end_date", type="string", description="종료 날짜", example="2024-06-22"),
+     *                 @OA\Property (property="state", type="boolean", description="열림/닫힘", example=true),
      *             )
      *         )
      *     ),
@@ -198,7 +207,8 @@ class RestaurantApplyDivisionController extends Controller
                 // 유효성 검사
                 $validatedData = $request->validate([
                     'start_date' => 'required|string',
-                    'end_date' => 'required|string'
+                    'end_date' => 'required|string',
+                    'state' =>'required|boolean'
                 ]);
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
@@ -211,7 +221,14 @@ class RestaurantApplyDivisionController extends Controller
                 $apply->update([
                 'start_date' => $validatedData['start_date'],
                 'end_date' => $validatedData['end_date'],
+                'state'=> $validatedData['state'],
                 ]);
+
+                $manual = RestaurantApplyManual::where('division', "semester")->first();
+                $manual->update([
+                'state' => false
+            ]);
+
                 return response()->json(['message' => '주말 식수 신청 시간 수정이 완료되었습니다.']); 
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
@@ -286,7 +303,7 @@ class RestaurantApplyDivisionController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="division", type="string", description="학기,방학 구분", example="semester or weekend"),
-     *                 @OA\Property (property="open", type="boolean", description="열림/닫힘", example="true"),
+     *                 @OA\Property (property="state", type="boolean", description="열림/닫힘", example="true"),
      *             )
      *         )
      *     ),
@@ -298,7 +315,7 @@ class RestaurantApplyDivisionController extends Controller
     {
         RestaurantApplyManual::create([
             'division' => $request->division,
-            'open' => $request->open
+            'state' => $request->state
         ]);
         return response()->json(['message' => '학기 식수 신청 날짜 셋팅 완료되었습니다.']); 
     }
@@ -317,7 +334,7 @@ class RestaurantApplyDivisionController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="division", type="string", description="학기,방학 구분", example="semester or weekend"),
-     *                 @OA\Property (property="open", type="boolean", description="열림/닫힘", example="true"),
+     *                 @OA\Property (property="state", type="boolean", description="상태", example="true"),
      *             )
      *         )
      *     ),
@@ -331,17 +348,25 @@ class RestaurantApplyDivisionController extends Controller
             
             $validatedData = $request->validate([
                 'division' => 'required|string|in:semester,weekend',
-                'open' => 'required|boolean'
+                'state' => 'required|boolean'
             ]);
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
 
         try{
-            $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOr();
-            $apply->update([
-                'open' => $validatedData['open']
-            ]);
+            $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOrNew();
+            $apply->state = $validatedData['state'];
+            $apply->save();
+
+            if($validatedData['state'] == "semester"){
+                RestaurantSemesterAuto::query()->update(['state' => false]);
+            }elseif($validatedData['state'] == "weekend"){
+                RestaurantWeekendAuto::query()->update(['state' => false]);
+            }
+            
+            
+
             return response()->json(['message' => $validatedData['division'].'식수 신청 시간 수정이 완료되었습니다.']);
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -408,15 +433,10 @@ class RestaurantApplyDivisionController extends Controller
         return response()->json(['date' => $ManualApp]);
     }
 
-    public function setState(Request $request)
+    public function getSemesterState()
     {
-        try{
-            $validatedData = $request->validate([
-                'start_date' => 'required|string',
-                'end_date' => 'required|string'
-            ]);
-        }catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
+        $manual = RestaurantApplyManual::where('division',"semester")->get('state');
+        
     }
+
 }

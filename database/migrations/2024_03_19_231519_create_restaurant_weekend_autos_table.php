@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('end_week',5)->default(0);
             $table->string('start_time',20)->default("00:00");
             $table->string('end_time',20)->default("00:00");
+            $table->boolean('state')->default(false);
             $table->timestamps();
         });
     }

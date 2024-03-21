@@ -3204,7 +3204,7 @@
                 "tags": [
                     "식수"
                 ],
-                "summary": "학기 식수 신청 리스트 가져오기",
+                "summary": "학기 식수 신청 리스트 가져오기(삭제예정)",
                 "description": "학기 식수 신청 리스트 가져오기",
                 "operationId": "4062c658b2e67d637c41acc5e8dba26f",
                 "responses": {
@@ -3222,8 +3222,8 @@
                 "tags": [
                     "식수"
                 ],
-                "summary": "학기 식수 신청 리스트 검색",
-                "description": "학기 식수 신청 리스트 검색하기",
+                "summary": "학기 식수 신청 리스트 보기, 검색",
+                "description": "학기 식수 신청 리스트 보기, 검색하기",
                 "operationId": "5adfde227d85d6dd22f2d3461f192e8c",
                 "requestBody": {
                     "description": "찾고싶은 학생 이름",
@@ -3261,6 +3261,24 @@
                 "summary": "학기 식수 유저 정보",
                 "description": "학기 식수 유조 정보 확인",
                 "operationId": "e28765ed7d54a2d28b8aa78b05cd511d",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/show/user/after": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유저 정보(신청 후)",
+                "description": "학기 식수 유조 정보 확인(신청 후)",
+                "operationId": "6ccda42e9859f785e8f3100006436ecc",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3424,7 +3442,7 @@
                 "tags": [
                     "식수"
                 ],
-                "summary": "주말 식수 신청 리스트 가져오기",
+                "summary": "주말 식수 신청 리스트 가져오기(삭제예정)",
                 "description": "주말 식수 신청 리스트 가져오기",
                 "operationId": "420c6f5fce0bc003f4bc419bc1ac2481",
                 "responses": {
@@ -3442,8 +3460,8 @@
                 "tags": [
                     "식수"
                 ],
-                "summary": "주말 식수 신청 리스트 검색",
-                "description": "주말 식수 신청 리스트 검색하기",
+                "summary": "주말 식수 신청 리스트 보기, 검색",
+                "description": "주말 식수 신청 리스트 보기, 검색하기",
                 "operationId": "87686a62c4f504e397e54a5309038041",
                 "requestBody": {
                     "description": "찾고싶은 학생 이름",
@@ -3456,6 +3474,42 @@
                                         "description": "학생이름",
                                         "type": "string",
                                         "example": "권지훈"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show/sum": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 인원 확인",
+                "description": "주말 식수 신청 인원 확인",
+                "operationId": "54ac28f8ee3d52c8373530b535c63f97",
+                "requestBody": {
+                    "description": "찾고싶은 요일",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "description": "요일",
+                                        "type": "string",
+                                        "example": "sat"
                                     }
                                 },
                                 "type": "object"
@@ -4310,35 +4364,6 @@
                         "description": "ServerError"
                     }
                 }
-            }
-        },
-        "/api/salon/service/{id}": {
-            "delete": {
-                "tags": [
-                    "미용실 - 서비스"
-                ],
-                "summary": "서비스 삭제(관리자)",
-                "description": "미용실 서비스 삭제에 사용됩니다.",
-                "operationId": "fbdeea1998aca5a638b04f05d95d54c5",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 서비스의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
             },
             "patch": {
                 "tags": [
@@ -4346,7 +4371,7 @@
                 ],
                 "summary": "서비스 수정(관리자)",
                 "description": "미용실의 서비스 정보를 수정 시 사용합니다.",
-                "operationId": "55e312867778885f210d484dc04a31cd",
+                "operationId": "7c0f0cd73dc0416cdc9a4dcb0a056a57",
                 "parameters": [
                     {
                         "name": "id",
@@ -4395,6 +4420,35 @@
                     },
                     "422": {
                         "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/service/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실 - 서비스"
+                ],
+                "summary": "서비스 삭제(관리자)",
+                "description": "미용실 서비스 삭제에 사용됩니다.",
+                "operationId": "fbdeea1998aca5a638b04f05d95d54c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "ServerError"

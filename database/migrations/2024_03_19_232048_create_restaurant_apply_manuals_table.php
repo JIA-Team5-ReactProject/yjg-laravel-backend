@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('restaurant_apply_manuals', function (Blueprint $table) {
             $table->id();
             $table->string('division',20);
-            $table->boolean('open')->default(false);
+            $table->boolean('state')->default(false);
             $table->timestamps();
         });
     }
