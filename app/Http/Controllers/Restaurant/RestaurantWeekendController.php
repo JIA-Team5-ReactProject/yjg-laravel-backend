@@ -181,7 +181,7 @@ class RestaurantWeekendController extends Controller
      * @OA\Get (
      *     path="/api/restaurant/weekend/apply",
      *     tags={"식수"},
-     *     summary="주말 식수 신청 리스트 가져오기",
+     *     summary="주말 식수 신청 리스트 가져오기(삭제예정)",
      *     description="주말 식수 신청 리스트 가져오기",
      *     
      *     @OA\Response(response="200", description="Success"),
@@ -205,8 +205,8 @@ class RestaurantWeekendController extends Controller
      * @OA\Get (
      * path="/api/restaurant/weekend/show",
      * tags={"식수"},
-     * summary="주말 식수 신청 리스트 검색",
-     * description="주말 식수 신청 리스트 검색하기",
+     * summary="주말 식수 신청 리스트 보기, 검색",
+     * description="주말 식수 신청 리스트 보기, 검색하기",
      *     @OA\RequestBody(
      *         description="찾고싶은 학생 이름",
      *         required=true,
@@ -223,30 +223,66 @@ class RestaurantWeekendController extends Controller
      */
     public function show(Request $request)
     {
-        try{
+        try {
             $name = $request->input('name');
-
-            //
-            // $applyData = RestaurantWeekend::with('weekendMealType:id,meal_type,date','user:id,phone_number,name,student_id')
-            //     ->whereHas('user', function ($query) use ($name) {
-            //         $query->where('name', 'like', '%' . $name . '%');
-            //     })
-            //     ->paginate(5);
-
-            $query = RestaurantWeekend::with('weekendMealType:id,meal_type,price,sun,sat','user:id,phone_number,name,student_id');
-        
-            if (!empty($name)) {
-                $query->whereHas('user', function ($query) use ($name) {
-                    $query->where('name', 'like', '%' . $name . '%');
-                });
+            $allData = RestaurantWeekend::with('weekendMealType:id,meal_type', 'user:id,phone_number,name,student_id');
+            
+            if ($name === null || $name === '') {
+                $applyData = $allData->paginate(5);
+            } else {
+                $applyData = $allData->whereHas('user', function ($allData) use ($name) {
+                    $allData->where('name', 'like', '%' . $name . '%');
+                })->paginate(5);
             }
-
-            $applyData = $query->paginate(5);
+    
             return $applyData;
-            //return WeekendApplyResource::collection($applyData);
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
-    }   
+    }
 
+/**
+     * @OA\Get (
+     * path="/api/restaurant/weekend/show/sum",
+     * tags={"식수"},
+     * summary="주말 식수 신청 인원 확인",
+     * description="주말 식수 신청 인원 확인",
+     *     @OA\RequestBody(
+     *         description="찾고싶은 요일",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="date", type="string", description="요일", example="sat"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function sumApply(Request $request)
+    {
+        try{
+            $validatedData = $request->validate([
+                'date' => 'required|string',
+            ]);
+        }catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+
+        try{
+            if ($validatedData['date'] == "sun") {
+                $sun = RestaurantWeekend::where('sun',1)->get();
+                $sunCount = $sun->count();
+                return response()->json(['sunCount' => $sunCount]);
+            }else{
+                $sat = RestaurantWeekend::where('sat', 1)->get();
+                $satCount = $sat->count();
+                return response()->json(['satCount' => $satCount]);
+            }
+        }catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
 }

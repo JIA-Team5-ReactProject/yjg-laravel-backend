@@ -191,7 +191,7 @@ class RestaurantSemesterController extends Controller
      * @OA\Get (
      *     path="/api/restaurant/semester/apply",
      *     tags={"식수"},
-     *     summary="학기 식수 신청 리스트 가져오기",
+     *     summary="학기 식수 신청 리스트 가져오기(삭제예정)",
      *     description="학기 식수 신청 리스트 가져오기",
      *     
      *     @OA\Response(response="200", description="Success"),
@@ -214,8 +214,8 @@ class RestaurantSemesterController extends Controller
      * @OA\Get (
      * path="/api/restaurant/semester/show",
      * tags={"식수"},
-     * summary="학기 식수 신청 리스트 검색",
-     * description="학기 식수 신청 리스트 검색하기",
+     * summary="학기 식수 신청 리스트 보기, 검색",
+     * description="학기 식수 신청 리스트 보기, 검색하기",
      *     @OA\RequestBody(
      *         description="찾고싶은 학생 이름",
      *         required=true,
@@ -232,19 +232,24 @@ class RestaurantSemesterController extends Controller
      */
     public function show(Request $request)
     {
-        try{
+        try {
             $name = $request->input('name');
-            $applyData = RestaurantSemester::with('semesterMealType:id,meal_type,date', 'user:id,phone_number,name,student_id')
-                ->whereHas('user', function ($query) use ($name) {
-                    $query->where('name', 'like', '%' . $name . '%');
-                })
-                ->paginate(5);
+            $allData = RestaurantSemester::with('semesterMealType:id,meal_type', 'user:id,phone_number,name,student_id');
+            
+            if ($name === null || $name === '') {
+                $applyData = $allData->paginate(5);
+            } else {
+                $applyData = $allData->whereHas('user', function ($allData) use ($name) {
+                    $allData->where('name', 'like', '%' . $name . '%');
+                })->paginate(5);
+            }
+    
             return $applyData;
-            //return SemesterApplyResource::collection($applyData);
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
     }
+
     
     /**
      * @OA\Get (
