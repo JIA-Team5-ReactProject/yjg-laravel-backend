@@ -407,4 +407,17 @@ class RestaurantApplyDivisionController extends Controller
         $ManualApp = RestaurantApplyManual::all();
         return response()->json(['date' => $ManualApp]);
     }
+
+    public function setState(Request $request)
+    {
+        try{
+            $validatedData = $request->validate([
+                'start_date' => 'required|string',
+                'end_date' => 'required|string'
+            ]);
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+    }
+
 }
