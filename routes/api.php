@@ -156,6 +156,7 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
         Route::get('/', [AfterServiceController::class, 'index'])->name('as.index');
         Route::get('/user', [AfterServiceController::class, 'userIndex'])->name('as.index.user');
         Route::get('/{id}', [AfterServiceController::class, 'show'])->name('as.show');
+        Route::get('/{id}/comment', [AfterServiceCommentController::class, 'show'])->name('as.comment.show');
     });
 
     Route::prefix('meeting-room')->group(function () {
@@ -198,7 +199,7 @@ Route::prefix('restaurant')->group(function () {
     Route::delete('/menu/d/{id}', [RestaurantMenusController::class, 'deleteMenu']);
     Route::delete('/menu/date/d', [RestaurantMenusController::class, 'deleteDate']);
 
-    
+
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
     Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
     Route::post('/weekend/p/payment/{id}', [RestaurantWeekendController::class, 'setPayment']);
@@ -221,7 +222,7 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/semester/show/user/after', [RestaurantSemesterController::class, 'showUserAfter']);
 
     Route::get('/weekend/show/sum', [RestaurantWeekendController::class, 'sumApply']);
-    
+
 
 
     Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'onWeekendAuto']);

@@ -67,7 +67,8 @@ class AfterServiceController extends Controller
         }
 
         // 클래스의 정의한 연관관계와 함께 불러옴
-        $afterServices = AfterService::query()->with($this->relations);
+        // 유저 정보와 사진만
+        $afterServices = AfterService::query()->with([$this->relations[0], $this->relations[1]]);
 
         if(isset($request['status'])) {
             $afterServices = $afterServices->where('status', $validated['status']);

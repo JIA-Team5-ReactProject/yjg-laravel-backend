@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('admin_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('after_service_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('comment');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

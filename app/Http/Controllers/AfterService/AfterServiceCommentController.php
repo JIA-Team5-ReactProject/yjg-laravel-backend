@@ -17,6 +17,36 @@ class AfterServiceCommentController extends Controller
     {
         return Parent::authorize($ability, $arguments);
     }
+
+    /**
+     * @OA\Get (
+     *     path="/api/after-service/{id}/comment",
+     *     tags={"AS 댓글"},
+     *     summary="특정 AS의 댓글 불러오기",
+     *     description="아이디에 해당하는 AS의 댓글을 받아옵니다.",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="as의 id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function show(string $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $afterService = AfterService::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => '해당하는 AS 정보가 없습니다.'], 404);
+        }
+
+        return response()->json(['after_service_comments' => $afterService->afterServiceComments()->get()]);
+
+    }
+
     /**
      * @OA\Post (
      *     path="/api/after-service/{id}/comment",

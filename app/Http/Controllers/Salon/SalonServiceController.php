@@ -126,7 +126,7 @@ class SalonServiceController extends Controller
 
     /**
      * @OA\Patch (
-     *     path="/api/salon/service",
+     *     path="/api/salon/service/{id}",
      *     tags={"미용실 - 서비스"},
      *     summary="서비스 수정(관리자)",
      *     description="미용실의 서비스 정보를 수정 시 사용합니다.",
