@@ -926,6 +926,33 @@
             }
         },
         "/api/after-service/{id}/comment": {
+            "get": {
+                "tags": [
+                    "AS 댓글"
+                ],
+                "summary": "특정 AS의 댓글 불러오기",
+                "description": "아이디에 해당하는 AS의 댓글을 받아옵니다.",
+                "operationId": "74eec2920314fff302b3f1fc52a6dee2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "as의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "AS 댓글"
@@ -2611,6 +2638,11 @@
                                         "description": "종료 시간",
                                         "type": "string",
                                         "example": "22:00"
+                                    },
+                                    "state": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 },
                                 "type": "object"
@@ -2706,6 +2738,11 @@
                                         "description": "종료 날짜",
                                         "type": "string",
                                         "example": "2024-06-22"
+                                    },
+                                    "state": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 },
                                 "type": "object"
@@ -2779,7 +2816,7 @@
                                         "type": "string",
                                         "example": "semester or weekend"
                                     },
-                                    "open": {
+                                    "state": {
                                         "description": "열림/닫힘",
                                         "type": "boolean",
                                         "example": "true"
@@ -2820,8 +2857,8 @@
                                         "type": "string",
                                         "example": "semester or weekend"
                                     },
-                                    "open": {
-                                        "description": "열림/닫힘",
+                                    "state": {
+                                        "description": "상태",
                                         "type": "boolean",
                                         "example": "true"
                                     }
@@ -4364,6 +4401,35 @@
                         "description": "ServerError"
                     }
                 }
+            }
+        },
+        "/api/salon/service/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실 - 서비스"
+                ],
+                "summary": "서비스 삭제(관리자)",
+                "description": "미용실 서비스 삭제에 사용됩니다.",
+                "operationId": "fbdeea1998aca5a638b04f05d95d54c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
             },
             "patch": {
                 "tags": [
@@ -4371,7 +4437,7 @@
                 ],
                 "summary": "서비스 수정(관리자)",
                 "description": "미용실의 서비스 정보를 수정 시 사용합니다.",
-                "operationId": "7c0f0cd73dc0416cdc9a4dcb0a056a57",
+                "operationId": "55e312867778885f210d484dc04a31cd",
                 "parameters": [
                     {
                         "name": "id",
@@ -4420,35 +4486,6 @@
                     },
                     "422": {
                         "description": "ValidationException"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            }
-        },
-        "/api/salon/service/{id}": {
-            "delete": {
-                "tags": [
-                    "미용실 - 서비스"
-                ],
-                "summary": "서비스 삭제(관리자)",
-                "description": "미용실 서비스 삭제에 사용됩니다.",
-                "operationId": "fbdeea1998aca5a638b04f05d95d54c5",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "삭제할 서비스의 아이디",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
                     },
                     "500": {
                         "description": "ServerError"
