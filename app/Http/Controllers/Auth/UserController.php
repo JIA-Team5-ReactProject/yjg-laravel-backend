@@ -6,7 +6,7 @@ use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\TokenService;
-//use Google_Client;
+use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -121,13 +121,13 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function googleRegisterOrLogin(Request $request): \Illuminate\Http\JsonResponse
+    public function googleRegisterOrLogin(Request $request)
     {
         try {
             $credentials = $request->validate([
                 'email'        => 'required|email',
                 'displayName'  => 'required|string',
-//                'id_token'     => 'required|string',
+                'id_token'     => 'required|string',
                 'os_type'      => 'required|string',
             ]);
         } catch(ValidationException $exception) {
@@ -136,20 +136,14 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $payload = null;
-        // TODO: 토큰 검증하도록 구현해야 함
-//        if($credentials['os_type'] == 'iOS') {
-//            $client = new \Google_Client(['client_id' => env('IOS_GOOGLE_CLIENT_ID')]);
-//            $client->verifyIdToken();
-//            $payload = $client->verifyIdToken($credentials['id_token']);
-//        } else if($credentials['os_type'] == 'android') {
-//            $client = new Google_Client(['client_id' => env('AND_GOOGLE_CLIENT_ID')]);
-//            $payload = $client->verifyIdToken($credentials['id_token']);
-//        }
+        $client = new Google_Client(['client_id' => $credentials['os_type'] == 'iOS' ?
+            env('IOS_GOOGLE_CLIENT_ID') : env('AND_GOOGLE_CLIENT_ID')]);
+        $payload = $client->verifyIdToken($credentials['id_token']);
 
-//        if ($payload['email'] != $credentials['email'] || $payload['hd'] != 'g.yju.ac.kr') {
-//            return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);
-//        }
+
+        if ($payload['email'] != $credentials['email'] || $payload['hd'] != 'g.yju.ac.kr') {
+            return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);
+        }
 
         $user = User::updateOrCreate([
             'email' => $credentials['email'],
@@ -157,7 +151,7 @@ class UserController extends Controller
             'name' => $credentials['displayName'],
         ]);
 
-        if (! $token = $this->tokenService->createAccessToken('users', $credentials)) {
+        if (!$user || !$token = $this->tokenService->createAccessToken('users', $credentials)) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
         $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
