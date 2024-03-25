@@ -2678,6 +2678,78 @@
                 }
             }
         },
+        "/api/restaurant/account": {
+            "post": {
+                "tags": [
+                    "식당 계좌"
+                ],
+                "summary": "식당 계좌 저장",
+                "description": "식당 계좌 저장을 처리합니다",
+                "operationId": "823f5c7fa71aa09db8ba0afe63a27aaf",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/account/set": {
+            "patch": {
+                "tags": [
+                    "식당 계좌 수정"
+                ],
+                "summary": "식당 계좌 수정",
+                "description": "식당 계좌 수정을 처리합니다",
+                "operationId": "8126a21cc60d0a4a04ded59933abb7da",
+                "requestBody": {
+                    "description": "식당 계좌 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "account": {
+                                        "description": "계좌",
+                                        "type": "string",
+                                        "example": "은행명 (번호)12345678901234 예금주명"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/account/show": {
+            "get": {
+                "tags": [
+                    "식당 계좌 조회"
+                ],
+                "summary": "식당 계좌 조회",
+                "description": "식당 계좌 조회를 처리합니다",
+                "operationId": "de82951b97ad5bc29301fe56fdf7aabb",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/apply/weekend/auto": {
             "post": {
                 "tags": [

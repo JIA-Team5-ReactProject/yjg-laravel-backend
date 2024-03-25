@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rastaurant_apply_states', function (Blueprint $table) {
+        Schema::create('restaurant_apply_states', function (Blueprint $table) {
             $table->id();
-            $table->boolean('semester_auto');
-            $table->boolean('weekend_auto');
+            $table->boolean('semester')->default(false);
+            $table->boolean('weekend')->default(false);
             $table->timestamps();
         });
     }
