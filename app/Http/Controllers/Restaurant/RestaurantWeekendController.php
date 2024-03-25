@@ -285,4 +285,6 @@ class RestaurantWeekendController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
+
+    
 }

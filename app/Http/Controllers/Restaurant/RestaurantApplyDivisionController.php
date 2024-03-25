@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
 use App\Models\RestaurantApplyManual;
+use App\Models\RestaurantApplyState;
 use App\Models\RestaurantSemesterAuto;
 use App\Models\RestaurantWeekendAuto;
 use Illuminate\Http\Request;
@@ -86,6 +87,12 @@ class RestaurantApplyDivisionController extends Controller
             $manual = RestaurantApplyManual::where('division', "weekend")->first();
             $manual->update([
                 'state' => false
+            ]);
+
+            $state = RestaurantApplyState::first();
+            $state->update([
+                'weekend' => true,
+                'semester' => false
             ]);
 
 
@@ -229,7 +236,13 @@ class RestaurantApplyDivisionController extends Controller
                 'state' => false
             ]);
 
-                return response()->json(['message' => '주말 식수 신청 시간 수정이 완료되었습니다.']); 
+                $state = RestaurantApplyState::first();
+                $state->update([
+                    'weekend' => false,
+                    'semester' => true
+                ]);
+
+                return response()->json(['message' => '학기 식수 신청 시간 수정이 완료되었습니다.']); 
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
@@ -361,12 +374,20 @@ class RestaurantApplyDivisionController extends Controller
 
             if($validatedData['state'] == "semester"){
                 RestaurantSemesterAuto::query()->update(['state' => false]);
+                $state = RestaurantApplyState::first();
+                $state->update([
+                    'weekend' => false,
+                    'semester' => true
+                ]);
             }elseif($validatedData['state'] == "weekend"){
                 RestaurantWeekendAuto::query()->update(['state' => false]);
+                $state = RestaurantApplyState::first();
+                $state->update([
+                    'weekend' => true,
+                    'semester' => false
+                ]);
             }
             
-            
-
             return response()->json(['message' => $validatedData['division'].'식수 신청 시간 수정이 완료되었습니다.']);
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -406,9 +427,8 @@ class RestaurantApplyDivisionController extends Controller
         }
 
         try {
-            $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOr();
-            Log::info('open: ' . $apply->open);
-            return response()->json(['open' => $apply->open]);
+            $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOrFail();
+            return response()->json(['open' => $apply->state]);
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
@@ -438,5 +458,22 @@ class RestaurantApplyDivisionController extends Controller
         $manual = RestaurantApplyManual::where('division',"semester")->get('state');
         
     }
+
+
+    public function showApplyState()
+    {
+        $applyState = RestaurantApplyState::all();
+        return response()->json(['applyState' => $applyState]);
+    }
+
+    public function onApplyState()
+    {
+        RestaurantApplyState::create([
+            'semester' => false,
+            'weekend' => false
+        ]);
+        return response()->json(['message' => '식수 신청 상태 셋팅 완료되었습니다.']);
+    }
+    
 
 }

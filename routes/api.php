@@ -18,6 +18,7 @@ use App\Http\Controllers\Restaurant\SemesterMealTypeController;
 use App\Http\Controllers\Restaurant\WeekendMealTypeController;
 
 use App\Http\Controllers\Restaurant\RestaurantApplyDivisionController;
+use App\Http\Controllers\Restaurant\RestaurantAccountController;
 use App\Http\Controllers\Salon\SalonBreakTimeController;
 use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
@@ -203,6 +204,9 @@ Route::prefix('restaurant')->group(function () {
     Route::delete('/menu/d/{id}', [RestaurantMenusController::class, 'deleteMenu']);
     Route::delete('/menu/date/d', [RestaurantMenusController::class, 'deleteDate']);
 
+    Route::post('/account', [RestaurantAccountController::class, 'store']);
+    Route::patch('/account/set', [RestaurantAccountController::class, 'update']);
+    Route::get('/account/show', [RestaurantAccountController::class, 'show']);
 
     Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
     Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
@@ -227,8 +231,6 @@ Route::prefix('restaurant')->group(function () {
 
     Route::get('/weekend/show/sum', [RestaurantWeekendController::class, 'sumApply']);
 
-
-
     Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'onWeekendAuto']);
     Route::patch('/apply/weekend/set', [RestaurantApplyDivisionController::class, 'setWeekendAuto']);
     Route::get('/apply/weekend/get', [RestaurantApplyDivisionController::class, 'getWeekendAuto']);
@@ -244,8 +246,8 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/apply/manual/get', [RestaurantApplyDivisionController::class, 'getManual']);
     Route::get('/apply/manual/get/app', [RestaurantApplyDivisionController::class, 'getManualApp']);
 
-
-
+    Route::get('/apply/state', [RestaurantApplyDivisionController::class, 'showApplyState']);
+    Route::post('/apply/state/on', [RestaurantApplyDivisionController::class, 'onApplyState']);
 
 });
 
