@@ -2342,6 +2342,54 @@
                         "description": "ServerError"
                     }
                 }
+            },
+            "patch": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 상태 변경(관리자)",
+                "description": "회의실을 닫거나 열 때 사용합니다.",
+                "operationId": "ed98368b4d82048f7447deef2e52ab4e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "변경할 회의실 룸 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "회의실 오픈 여부",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "open": {
+                                        "description": "오픈 여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
             }
         },
         "/api/meeting-room/reservation": {

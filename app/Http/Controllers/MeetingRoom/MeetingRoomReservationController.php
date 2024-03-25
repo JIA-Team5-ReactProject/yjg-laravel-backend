@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\MeetingRoom;
 
 use App\Http\Controllers\Controller;
+use App\Models\MeetingRoom;
 use App\Models\MeetingRoomReservation;
 use App\Services\ReservedTimeService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -132,6 +133,16 @@ class MeetingRoomReservationController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
+        // 회의실의 예약 가능 여부 체크
+        try {
+            $meetingRoom = MeetingRoom::findOrFail($validated['meeting_room_number']);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
+
+        if(!$meetingRoom->open) return response()->json(['error' => '예약 불가한 회의실입니다.'], 403);
+
+        // 유저 아이디를 받아옴
         $validated['user_id'] = auth('users')->id();
 
         // 기존에 예약된 시간 예외처리

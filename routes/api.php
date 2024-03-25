@@ -101,6 +101,7 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
     });
 
     Route::prefix('meeting-room')->group(function () {
+        Route::patch('/{id}', [MeetingRoomController::class, 'close'])->name('meeting.update');
         Route::patch('/reservation/reject/{id}', [MeetingRoomReservationController::class, 'reject'])->name('meeting.reservation.reject');
         Route::post('/', [MeetingRoomController::class, 'store'])->name('meeting.store');
         Route::delete('/{id}', [MeetingRoomController::class, 'destroy'])->name('meeting.destroy');

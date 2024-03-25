@@ -128,6 +128,62 @@ class MeetingRoomController extends Controller
     }
 
     /**
+     * @OA\Patch (
+     *     path="/api/meeting-room/{id}",
+     *     tags={"회의실"},
+     *     summary="회의실 상태 변경(관리자)",
+     *     description="회의실을 닫거나 열 때 사용합니다.",
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="변경할 회의실 룸 번호",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(type="string"),
+     *      ),
+     *     @OA\RequestBody(
+     *         description="회의실 오픈 여부",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="open", type="boolean", description="오픈 여부", example=true),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="201", description="Created"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
+     * )
+     */
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:meeting_rooms,room_number|string'
+        ], $this->messages);
+
+        try {
+            $validator->validate();
+            $validated = $request->validate([
+                'open' => 'required|boolean',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()]);
+        }
+
+        try {
+            $meetingRoom = MeetingRoom::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->messages], 404);
+        }
+
+        $meetingRoom->open = $validated['open'];
+
+        if(!$meetingRoom->save()) return response()->json(['error' => '회의실 상태 변경에 실패하였습니다.'], 500);
+
+        return response()->json(['message' => '회의실 상태 변경에 성공하였습니다.']);
+    }
+
+    /**
      * @OA\Delete (
      *     path="/api/meeting-room/{id}",
      *     tags={"회의실"},
