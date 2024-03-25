@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('meeting_rooms', function (Blueprint $table) {
             $table->string('room_number', 10)->primary();
+            $table->boolean('open')->default(true);
             $table->timestamps();
         });
     }

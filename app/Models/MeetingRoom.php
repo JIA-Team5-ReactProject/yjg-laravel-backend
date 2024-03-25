@@ -16,6 +16,7 @@ class MeetingRoom extends Model
 
     protected $fillable = [
         'room_number',
+        'open',
     ];
 
     public function meetingRoomReservations(): \Illuminate\Database\Eloquent\Relations\hasMany
