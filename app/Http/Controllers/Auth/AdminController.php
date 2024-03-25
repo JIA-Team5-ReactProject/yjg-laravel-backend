@@ -151,7 +151,6 @@ class AdminController extends Controller
      *     @OA\Response(response="422", description="ValidationException"),
      *     @OA\Response(response="500", description="Fail"),
      * )
-     * @throws ValidationException
      */
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
@@ -176,6 +175,52 @@ class AdminController extends Controller
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
+    }
+
+    /**
+     * @OA\Post (
+     *     path="/api/admin/login/web",
+     *     tags={"관리자"},
+     *     summary="로그인(웹)",
+     *     description="관리자가 웹에서 로그인 시 사용합니다.",
+     *     @OA\RequestBody(
+     *         description="관리자 로그인을 위한 정보",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="email", type="string", description="이메일", example="admin@gmail.com"),
+     *                 @OA\Property (property="password", type="string", description="비밀번호", example="admin123"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function webLogin(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+        } catch(ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
+        }
+
+        if (!$token = $this->tokenService->createAccessToken('admins', $credentials)) {
+            return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
+        }
+        $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
+
+        return response()->json([
+            'user' => auth('admins')->user(),
+            'refresh_token' => $refreshToken,
+        ])->cookie('access_token',$token);
     }
 
     /**

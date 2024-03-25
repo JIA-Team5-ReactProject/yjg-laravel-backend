@@ -23,6 +23,7 @@ use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
 use App\Http\Controllers\Salon\SalonReservationController;
 use App\Http\Controllers\Salon\SalonServiceController;
+use App\Http\Middleware\AdminApprovedCheck;
 use Illuminate\Support\Facades\Route;
 
 
@@ -47,12 +48,14 @@ Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin']);
-//        ->middleware('user.google.approve')->name('user.google.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.google.approve')->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
-    Route::post('/login', [AdminController::class, 'login'])->middleware('admin.approve')->name('admin.login');
+    Route::middleware([AdminApprovedCheck::class])->group(function () {
+        Route::post('/login/web', [AdminController::class, 'webLogin'])->name('admin.login.web');
+        Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
+    });
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
     Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueAdminEmail'])->name('admin.verify.email');
 //    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
