@@ -1596,6 +1596,50 @@
                 }
             }
         },
+        "/api/admin/login/web": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "로그인(웹)",
+                "description": "관리자가 웹에서 로그인 시 사용합니다.",
+                "operationId": "5f39d5fc1aa6cde3d7b9f9a8f82e6f9e",
+                "requestBody": {
+                    "description": "관리자 로그인을 위한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/admin/logout": {
             "post": {
                 "tags": [
