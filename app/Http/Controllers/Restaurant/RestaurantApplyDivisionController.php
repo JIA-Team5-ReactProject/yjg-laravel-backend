@@ -453,19 +453,36 @@ class RestaurantApplyDivisionController extends Controller
         return response()->json(['date' => $ManualApp]);
     }
 
-    public function getSemesterState()
-    {
-        $manual = RestaurantApplyManual::where('division',"semester")->get('state');
-        
-    }
 
-
+    /**
+     * @OA\Get(
+     * path="/api/restaurant/apply/state",
+     * tags={"식수 신청 상태"},
+     * summary="식수 신청 상태",
+     * description="식수 신청 상태",
+     *     
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function showApplyState()
     {
         $applyState = RestaurantApplyState::all();
         return response()->json(['applyState' => $applyState]);
     }
 
+
+    /**
+     * @OA\Post(
+     * path="/api/restaurant/apply/state/on",
+     * tags={"식수 신청 상태"},
+     * summary="식수 신청 상태 셋팅",
+     * description="식수 신청 상태 셋팅",
+     *     
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
     public function onApplyState()
     {
         RestaurantApplyState::create([

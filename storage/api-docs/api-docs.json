@@ -2714,7 +2714,17 @@
                                     "account": {
                                         "description": "계좌",
                                         "type": "string",
-                                        "example": "은행명 (번호)12345678901234 예금주명"
+                                        "example": "계좌번호"
+                                    },
+                                    "bank_name": {
+                                        "description": "은행명",
+                                        "type": "string",
+                                        "example": "은행명"
+                                    },
+                                    "name": {
+                                        "description": "예금주명",
+                                        "type": "string",
+                                        "example": "예금주명"
                                     }
                                 },
                                 "type": "object"
@@ -3086,6 +3096,42 @@
                 "summary": "식수 수동 신청 App get",
                 "description": "식수 수동 신청 App get",
                 "operationId": "e2d4282912e943779ef96a20d8bdd4fa",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state": {
+            "get": {
+                "tags": [
+                    "식수 신청 상태"
+                ],
+                "summary": "식수 신청 상태",
+                "description": "식수 신청 상태",
+                "operationId": "043084d94d5bf47be12a7342b016305e",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/on": {
+            "post": {
+                "tags": [
+                    "식수 신청 상태"
+                ],
+                "summary": "식수 신청 상태 셋팅",
+                "description": "식수 신청 상태 셋팅",
+                "operationId": "0c6267777c09dab5e16c73b1fb07c88e",
                 "responses": {
                     "200": {
                         "description": "Success"

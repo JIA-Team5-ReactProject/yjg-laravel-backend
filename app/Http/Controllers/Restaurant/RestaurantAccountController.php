@@ -25,6 +25,8 @@ class RestaurantAccountController extends Controller
         try {
             RestaurantAccount::create([
                 'account' => '은행명 (번호)12345678901234 예금주명',
+                'bank_name' => '은행명',
+                'name' => '예금주명',
             ]);
             return response()->json(['message' => '식당 계좌 저장 완료'], 200);
         } catch (\Exception $exception) {
@@ -46,7 +48,9 @@ class RestaurantAccountController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                 @OA\Property (property="account", type="string", description="계좌", example="은행명 (번호)12345678901234 예금주명"),
+     *                 @OA\Property (property="account", type="string", description="계좌", example="계좌번호"),
+     *                 @OA\Property (property="bank_name", type="string", description="은행명", example="은행명"),
+     *                 @OA\Property (property="name", type="string", description="예금주명", example="예금주명"),
      *             )
      *         )
      *     ),
@@ -59,6 +63,8 @@ class RestaurantAccountController extends Controller
         try {
             $validatedData = $request->validate([
                 'account' => 'required|string',
+                'bank_name' => 'required|string',
+                'name' => 'required|string',
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -68,6 +74,8 @@ class RestaurantAccountController extends Controller
             $restaurantAccount = RestaurantAccount::first();
             $restaurantAccount->update([
                 'account' => $validatedData['account'],
+                'bank_name' => $validatedData['bank_name'],
+                'name' => $validatedData['name'],
             ]);
             return response()->json(['message' => '식당 계좌 수정 완료'], 200);
         } catch (\Exception $exception) {

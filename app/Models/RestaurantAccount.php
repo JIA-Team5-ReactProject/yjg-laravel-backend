@@ -11,5 +11,7 @@ class RestaurantAccount extends Model
 
     protected $fillable = [
         'account',
+        'bank_name',
+        'name',
     ];
 }
