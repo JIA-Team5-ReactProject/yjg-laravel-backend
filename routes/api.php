@@ -228,6 +228,7 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/weekend/show', [RestaurantWeekendController::class, 'show']);
     Route::get('/semester/show/user', [RestaurantSemesterController::class, 'showUser']);
     Route::get('/semester/show/user/after', [RestaurantSemesterController::class, 'showUserAfter']);
+    Route::get('/weekend/show/user/table', [RestaurantWeekendController::class, 'showUserTable']);
 
     Route::get('/weekend/show/sum', [RestaurantWeekendController::class, 'sumApply']);
 

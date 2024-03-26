@@ -286,5 +286,27 @@ class RestaurantWeekendController extends Controller
         }
     }
 
-    
+    /**
+     * @OA\Get (
+     * path="/api/restaurant/weekend/show/user",
+     * tags={"식수"},
+     * summary="주말 식수 유저 정보",
+     * description="주말 식수 유저 정보 확인",
+     *    
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function showUserTable(){
+        try{
+            $user_id = auth('users')->id();
+            $allData = RestaurantWeekend::with('weekendMealType:id,meal_type', 'user:id,phone_number,name,student_id');
+            $applyData = $allData->where('user_id', $user_id)->paginate(5);
+            
+            return response()->json(['userData' => $applyData ]);
+        }catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()]);
+        }
+    }
+
 }
