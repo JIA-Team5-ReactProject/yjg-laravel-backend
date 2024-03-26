@@ -18,7 +18,7 @@ class AdminMasterCheck
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $admin = Admin::findOrFail(auth()->id());
+            $admin = Admin::findOrFail(auth('admins')->id());
         } catch (ModelNotFoundException $modelException) {
             return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
