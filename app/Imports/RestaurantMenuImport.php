@@ -56,12 +56,17 @@ class RestaurantMenuImport implements ToCollection
                         }
                         
                         //식단표 모델로 보내서 db에 저장
-                        $year = date('Y', strtotime($date));
+
+                        $dateEX = Carbon::parse($date);
+                        $weekDate = $dateEX->weekOfMonth;
                        
+                        Log::info('시작 주 : ' . $dateEX->startOfWeek());
+                        $year = date('Y', strtotime($date));
+                        
                         $month = date('m', strtotime($date));
 
-                        $restaurantMenuDate = RestaurantMenuDate::where('month', $month)->where('year', $year)->first();
-                        Log::info('날짜 : ' . $restaurantMenuDate->id);
+                        $restaurantMenuDate = RestaurantMenuDate::where('month', $month)->where('year', $year)->where('week',$weekDate)->first();
+                        Log::info('날짜Id : ' . $restaurantMenuDate->id);
                         $menuData = new RestaurantMenu([
                             'date_id' => $restaurantMenuDate->id,
                             'date' => $date,

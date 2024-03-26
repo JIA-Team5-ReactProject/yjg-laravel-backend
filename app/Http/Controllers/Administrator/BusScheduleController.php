@@ -443,4 +443,53 @@ class BusScheduleController extends Controller
             return response()->json(['error' => $exception->getMessage()], 422);
         }
     }
+
+    
+    /**
+     * @OA\Get (
+     *     path="/api/bus/round/schedule/update/{id}",
+     *     tags={"버스"},
+     *     summary="해당 버스 스케줄 수정",
+     *     description="해당 버스 스케줄 을 수정 합니다",
+     *      @OA\Parameter(
+     *           name="id",
+     *           description="수정할 스케줄 id",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *          ),
+     *     @OA\RequestBody(
+     *     description="가져오고 싶은 회차의 id값, 수정할 스케줄의 값",
+     *     required=false,
+     *         @OA\MediaType(
+     *         mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="station", type="string", description="수정할 station 값", example="정류장"),
+     *                  @OA\Property (property="bus_time", type="string", description="수정할 bus_time 값", example="08:20"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function scheduleUpdate(Request $request, $id)
+    {
+        try {
+            // 유효성 검사
+            $validatedData = $request->validate([
+                'station' => 'required|string',
+                'bus_time' => 'required|date_format:H:i'
+            ]);
+            $busSchedule = BusSchedule::findOrFail($id);
+
+            $busSchedule->update([
+                'station' => $validatedData['station'],
+                'bus_time' => $validatedData['bus_time'],
+            ]);
+            return response()->json(['message' => '버스 시간표 수정이 완료되었습니다.']);
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 404);
+        }
+    }
 }
