@@ -654,6 +654,58 @@
                 }
             }
         },
+        "/api/bus/round/schedule/update/{id}": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 버스 스케줄 수정",
+                "description": "해당 버스 스케줄 을 수정 합니다",
+                "operationId": "e3d24d76298f68a0ce1ea11d9bc091c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 스케줄 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 id값, 수정할 스케줄의 값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "station": {
+                                        "description": "수정할 station 값",
+                                        "type": "string",
+                                        "example": "정류장"
+                                    },
+                                    "bus_time": {
+                                        "description": "수정할 bus_time 값",
+                                        "type": "string",
+                                        "example": "08:20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/notice": {
             "get": {
                 "tags": [
@@ -3774,14 +3826,14 @@
                 }
             }
         },
-        "/api/restaurant/semester/meal-type": {
+        "/api/semester/meal-type": {
             "post": {
                 "tags": [
                     "식수 유형"
                 ],
                 "summary": "학기 식수 유형 생성",
                 "description": "학기 식수 유형을 생성",
-                "operationId": "cb67ed8e50e5616f8f35e4ac53bca1cb",
+                "operationId": "0ac0af536d3ba1cc624237fda7be686c",
                 "requestBody": {
                     "description": "학기 식수 유형 정보",
                     "required": true,
@@ -3867,14 +3919,14 @@
                 }
             }
         },
-        "/api/restaurant/weekend/meal-type": {
+        "/api/weekend/meal-type": {
             "post": {
                 "tags": [
                     "식수 유형"
                 ],
                 "summary": "주말 식수 유형 신청",
                 "description": "주말 식수 유형 신청을 처리합니다",
-                "operationId": "0c2ce999a6180b3284fe42a61988936d",
+                "operationId": "f40d5bab708f5e0678d276eee0b04e87",
                 "requestBody": {
                     "description": "주말 식수 유형 정보",
                     "required": true,

@@ -255,6 +255,8 @@ Route::prefix('bus')->group(function () {
     Route::prefix('schedule')->group(function () {
         Route::post('/', [BusScheduleController::class, 'store']);
         Route::delete('/{id}', [BusScheduleController::class, 'destroySchedule']);
+        Route::patch('/update/{id}', [BusScheduleController::class, 'scheduleUpdate']);
+
     });
     Route::prefix('round')->group(function () {
         Route::post('/', [BusScheduleController::class, 'addRound']);

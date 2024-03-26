@@ -101,6 +101,7 @@ class RestaurantMenusController extends Controller
         try {
             $weekdata = RestaurantMenuDate::where('year', $request->year)
                                         ->where('month', $request->month)
+                                        ->where('week', $request->week)
                                         ->get();
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
