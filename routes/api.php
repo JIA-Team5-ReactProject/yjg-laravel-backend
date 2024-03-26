@@ -122,6 +122,8 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
         Route::get('/count', [AbsenceController::class, 'absenceCount'])->name('absence.count');
         Route::patch('/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
     });
+
+   
 });
 
 // 유저 및 공용
@@ -190,6 +192,8 @@ Route::middleware(['auth:users,admins', 'token.type:access'])->group(function ()
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
     Route::get('/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);
+    Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
+    Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
 });
 
 Route::prefix('restaurant')->group(function () {
@@ -211,8 +215,7 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/semester/apply', [RestaurantSemesterController::class, 'getRestaurantApply']);
     Route::get('/weekend/apply', [RestaurantWeekendController::class, 'getRestaurantApply']);
 
-    Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
-    Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
+    
     Route::get('/semester/meal-type/get', [SemesterMealTypeController::class, 'getMealType']);
     Route::get('/weekend/meal-type/get', [WeekendMealTypeController::class, 'getMealType']);
 

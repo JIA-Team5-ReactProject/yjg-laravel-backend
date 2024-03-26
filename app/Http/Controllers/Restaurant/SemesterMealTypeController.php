@@ -12,7 +12,7 @@ class SemesterMealTypeController extends Controller
 {
      /**
      * @OA\Post (
-     * path="/api/restaurant/semester/meal-type",
+     * path="/api/semester/meal-type",
      * tags={"식수 유형"},
      * summary="학기 식수 유형 생성",
      * description="학기 식수 유형을 생성",
