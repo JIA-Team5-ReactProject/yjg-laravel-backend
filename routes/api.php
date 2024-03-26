@@ -24,7 +24,7 @@ use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
 use App\Http\Controllers\Salon\SalonReservationController;
 use App\Http\Controllers\Salon\SalonServiceController;
-use App\Http\Middleware\AdminApprovedCheck;
+use App\Http\Middleware\AdminLoginApproveCheck;
 use Illuminate\Support\Facades\Route;
 
 
@@ -53,7 +53,7 @@ Route::prefix('user')->group(function () {
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
-    Route::middleware([AdminApprovedCheck::class])->group(function () {
+    Route::middleware([AdminLoginApproveCheck::class])->group(function () {
         Route::post('/login/web', [AdminController::class, 'webLogin'])->name('admin.login.web');
         Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     });
