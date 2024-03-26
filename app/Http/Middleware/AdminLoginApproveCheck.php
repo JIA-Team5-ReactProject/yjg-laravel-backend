@@ -2,13 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
+use App\Models\Admin;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserApproveCheck
+class AdminLoginApproveCheck
 {
     /**
      * Handle an incoming request.
@@ -18,13 +18,13 @@ class UserApproveCheck
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $user = User::where('email', $request->email)->firstOrFail();
-        } catch (ModelNotFoundException $modelException) {
-            return response()->json(['error' => '해당하는 유저가 없습니다.'], 404);
+            $admin = Admin::where('email', $request->email)->firstOrFail();
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
-        if(!$user->approved) {
-            return response()->json(['error' => '아직 승인되지 않은 유저입니다.'], 403);
+        if(!$admin->approved) {
+            return response()->json(['error' => '승인되지 않은 관리자입니다.'], 403);
         }
 
         return $next($request);

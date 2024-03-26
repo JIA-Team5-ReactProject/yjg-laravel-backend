@@ -4,10 +4,11 @@ namespace App\Http\Middleware;
 
 use App\Models\User;
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserGoogleApprovedCheck
+class ApproveCheck
 {
     /**
      * Handle an incoming request.
@@ -16,9 +17,14 @@ class UserGoogleApprovedCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = User::where('email', $request->email)->first();
+        $type = auth()->payload()->get('grd');
 
-        if($user && !$user->approved) return response()->json(['error' => '아직 승인되지 않은 유저입니다.'], 403);
+        $user = auth($type)->user();
+
+        if(!$user->approved) {
+            return response()->json(['error' => '승인되지 않은 유저입니다.'], 403);
+        }
+
         return $next($request);
     }
 }

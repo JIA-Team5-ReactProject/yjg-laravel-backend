@@ -24,7 +24,7 @@ use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
 use App\Http\Controllers\Salon\SalonReservationController;
 use App\Http\Controllers\Salon\SalonServiceController;
-use App\Http\Middleware\AdminApprovedCheck;
+use App\Http\Middleware\AdminLoginApproveCheck;
 use Illuminate\Support\Facades\Route;
 
 
@@ -48,12 +48,12 @@ Route::get('/healthy', function () {
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
-    Route::post('/login', [UserController::class, 'login'])->middleware('user.approve')->name('user.login');
-    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->middleware('user.google.approve')->name('user.google.login');
+    Route::post('/login', [UserController::class, 'login'])->name('user.login');
+    Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
-    Route::middleware([AdminApprovedCheck::class])->group(function () {
+    Route::middleware([AdminLoginApproveCheck::class])->group(function () {
         Route::post('/login/web', [AdminController::class, 'webLogin'])->name('admin.login.web');
         Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     });
@@ -63,7 +63,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // 관리자
-Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
+Route::middleware(['auth:admins', 'token.type:access', 'approve'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::get('/', [AdminController::class, 'admin'])->name('admin.info');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
@@ -125,12 +125,9 @@ Route::middleware(['auth:admins', 'token.type:access'])->group(function () {
 });
 
 // 유저 및 공용
-Route::get('/refresh', RefreshController::class)->middleware(['auth:users,admins', 'token.type:refresh']);
+Route::get('/refresh', RefreshController::class)->middleware(['auth:users,admins', 'token.type:refresh', 'approve']);
 
-Route::middleware(['auth:users,admins', 'token.type:access'])->group(function () {
-    Route::get('/me', function () {
-        return auth('users')->user();
-    });
+Route::middleware(['auth:users,admins', 'token.type:access', 'approve'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'user'])->name('user.info');
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
