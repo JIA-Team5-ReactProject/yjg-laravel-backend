@@ -23,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // users 가드를 사용할 때 해당 커스텀 프로바이더를 통해 인증함
         Auth::provider('users', function ($app, array $config) {
             // Return an instance of Illuminate\Contracts\Auth\CustomUserProvider...
 

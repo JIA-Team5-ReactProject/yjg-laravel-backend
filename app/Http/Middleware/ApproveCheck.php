@@ -15,14 +15,12 @@ class ApproveCheck
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ...$guards): Response
     {
-        $type = auth()->payload()->get('grd');
-
-        $user = auth($type)->user();
-
-        if(!$user->approved) {
-            return response()->json(['error' => '승인되지 않은 유저입니다.'], 403);
+        foreach ($guards as $guard) {
+            if (auth($guard)->check() && !auth($guard)->user()->approved) {
+                return response()->json(['error' => '승인되지 않은 유저입니다.'], 403);
+            }
         }
 
         return $next($request);
