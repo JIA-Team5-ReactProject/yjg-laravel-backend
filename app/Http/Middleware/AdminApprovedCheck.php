@@ -19,12 +19,12 @@ class AdminApprovedCheck
     {
         try {
             $admin = Admin::where('email', $request->email)->firstOrFail();
-        } catch (ModelNotFoundException $modelException) {
+        } catch (ModelNotFoundException) {
             return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }
 
         if(!$admin->approved) {
-            return response()->json(['error' => '아직 승인되지 않은 유저입니다.'], 500);
+            return response()->json(['error' => '승인되지 않은 관리자입니다.'], 403);
         }
 
         return $next($request);
