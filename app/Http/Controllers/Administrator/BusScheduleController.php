@@ -446,8 +446,8 @@ class BusScheduleController extends Controller
 
     
     /**
-     * @OA\Get (
-     *     path="/api/bus/round/schedule/update/{id}",
+     * @OA\patch (
+     *     path="/api/bus/schedule/update/{id}",
      *     tags={"버스"},
      *     summary="해당 버스 스케줄 수정",
      *     description="해당 버스 스케줄 을 수정 합니다",
