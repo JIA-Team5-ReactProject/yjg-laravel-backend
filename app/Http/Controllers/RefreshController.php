@@ -27,24 +27,14 @@ class RefreshController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $guard = $request->grd;
         $model = null;
 
-        if($guard == 'users') {
-            try {
-                $model = User::findOrFail(auth('users')->id());
-            } catch (ModelNotFoundException) {
-                return response()->json(['error' => $this->modelExceptionMessage], 404);
-            }
-        } else if ($guard == 'admins') {
-            try {
-                $model = Admin::findOrFail(auth('admins')->id());
-            } catch (ModelNotFoundException $modelException) {
-                return response()->json(['error' => $this->modelExceptionMessage], 404);
-            }
+        try {
+            $model = User::findOrFail(auth('users')->id());
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
-
-        return response()->json(['refresh_token' => $this->tokenService->createAccessTokenByModel($guard, $model)]);
+        return response()->json(['refresh_token' => $this->tokenService->createAccessTokenByModel($model)]);
     }
 }
