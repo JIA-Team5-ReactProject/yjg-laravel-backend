@@ -16,7 +16,7 @@ return [
     // policy 때문에 기본 값 admin으로 설정해놓음
     'defaults' => [
         'guard' => 'admins',
-        'passwords' => 'users',
+        'passwords' => 'admins',
     ],
 
     /*

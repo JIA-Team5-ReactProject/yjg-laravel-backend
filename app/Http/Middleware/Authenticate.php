@@ -20,7 +20,6 @@ class Authenticate extends Middleware
     {
         foreach ($guards as $guard) {
             if ($this->auth->guard($guard)->check()) {
-                $request->grd = $guard;
                 return $next($request);
             }
         }
