@@ -184,9 +184,9 @@ class SalonServiceController extends Controller
             $salonService->$key = $value;
         }
 
-        if (!$salonService->save()) return response()->json(['error' => '미용실 서비스명 수정에 실패하였습니다.'], 500);
+        if (!$salonService->save()) return response()->json(['error' => '미용실 서비스 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => '미용실 서비스명 수정에 성공하였습니다.']);
+        return response()->json(['message' => '미용실 서비스 수정에 성공하였습니다.']);
     }
 
     /**

@@ -15,8 +15,8 @@ return [
 
     // policy 때문에 기본 값 admin으로 설정해놓음
     'defaults' => [
-        'guard' => 'admins',
-        'passwords' => 'admins',
+        'guard' => 'users',
+        'passwords' => 'users',
     ],
 
     /*
@@ -37,10 +37,6 @@ return [
     */
 
     'guards' => [
-        'admins' => [
-            'driver' => 'jwt',
-            'provider' => 'admins',
-        ],
         'users' => [
             'driver' => 'jwt',
             'provider' => 'users',
@@ -65,10 +61,6 @@ return [
     */
 
     'providers' => [
-        'admins' => [
-            'driver' => 'eloquent',
-            'model'  => App\Models\Admin::class,
-        ],
         'users' => [
             'driver' => 'users',
             'model'  => App\Models\User::class,
@@ -95,12 +87,6 @@ return [
     */
 
     'passwords' => [
-        'admins' => [
-            'provider' => 'admins',
-            'table'    => 'password_reset_tokens',
-            'expire'   => 60,
-            'throttle' => 60,
-        ],
         'users' => [
             'provider' => 'users',
             'table'    => 'password_reset_tokens',

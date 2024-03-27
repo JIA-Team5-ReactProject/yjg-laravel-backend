@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Admin;
+use App\Models\User;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class AdminLoginApproveCheck
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $admin = Admin::where('email', $request->email)->firstOrFail();
+            $admin = User::where('email', $request->email)->firstOrFail();
         } catch (ModelNotFoundException) {
             return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
         }

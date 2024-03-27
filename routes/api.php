@@ -65,7 +65,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // 관리자
-Route::middleware(['auth:admins', 'token.type:access', 'approve:admins'])->group(function () {
+Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::get('/', [AdminController::class, 'admin'])->name('admin.info');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
@@ -128,9 +128,9 @@ Route::middleware(['auth:admins', 'token.type:access', 'approve:admins'])->group
 });
 
 // 유저 및 공용
-Route::get('/refresh', RefreshController::class)->middleware(['auth:users,admins', 'token.type:refresh', 'approve:users,admins']);
+Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'token.type:refresh', 'approve:users']);
 
-Route::middleware(['auth:users,admins', 'token.type:access', 'approve:users,admins'])->group(function () {
+Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'user'])->name('user.info');
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');

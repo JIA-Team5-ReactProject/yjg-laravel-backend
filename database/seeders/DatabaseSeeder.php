@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AdminSeeder::class,
+            PrivilegeSeeder::class,
             SalonSeeder::class,
             SalonBusinessHourSeeder::class,
             MeetingRoomSeeder::class,
@@ -21,6 +21,11 @@ class DatabaseSeeder extends Seeder
             MeetingRoomReservationSeeder::class,
             NoticeSeeder::class,
             AfterServiceSeeder::class,
+            BusRouteSeeder::class,
+            BusRoundSeeder::class,
+            BusScheduleSeeder::class,
+            SalonReservationSeeder::class,
+            AbsenceListSeeder::class,
         ]);
     }
 }
