@@ -59,7 +59,8 @@ Route::prefix('admin')->group(function () {
     });
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
     Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueAdminEmail'])->name('admin.verify.email');
-//    Route::post('/forgot-password', [AdminController::class, 'forgotPassword'])->middleware('guest')->name('admin.forgot.password');
+    Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
+    Route::get('/reset-password/verify', [AdminController::class, 'verifyPasswordResetCode'])->name('admin.reset.pw.verify');
 });
 
 // 관리자
