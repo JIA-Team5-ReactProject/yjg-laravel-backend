@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPassword;
+use App\Models\PasswordResetCode;
 use App\Models\User;
 use App\Services\TokenService;
 use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -278,6 +281,8 @@ class UserController extends Controller
             return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
+        //TODO: 대량할당으로 수정하기
+
         unset($validated['current_password']);
 
         foreach($validated as $key => $value) {
@@ -397,4 +402,56 @@ class UserController extends Controller
         return response()->json(['check' => true]);
     }
 
+    /**
+     * @OA\Post (
+     *     path="/api/user/reset-password",
+     *     tags={"학생"},
+     *     summary="비밀번호 초기화",
+     *     description="회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
+     *     @OA\RequestBody(
+     *         description="name & email",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
+     *                 @OA\Property (property="email", type="string", description="이메일", example="test@test.com"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="ServerError"),
+     * )
+     */
+    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'email' => 'required|email|exists:users,email',
+                'name'  => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        try {
+            User::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
+        }
+
+        $secret = sprintf('%06d',rand(000000,999999));
+
+        $validated['code'] = $secret;
+
+        PasswordResetCode::create($validated);
+
+        Mail::to($request['email'])->send(new ResetPassword($secret));
+
+        return response()->json(['message' => '이메일이 발송되었습니다.']);
+    }
 }
