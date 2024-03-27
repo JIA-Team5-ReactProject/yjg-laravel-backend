@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PasswordResetCode;
+use DateTime;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -39,7 +40,7 @@ class PasswordResetCodeController extends Controller
     {
         try {
             $validated = $request->validate([
-                'email' => 'required|email|exists:admins,email',
+                'email' => 'required|email',
                 'code'  => 'required|string',
             ]);
         } catch (ValidationException $exception) {
@@ -48,12 +49,21 @@ class PasswordResetCodeController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        // DB에서 조회
+        // DB에서 코드를 조회하여 검증
         try {
-            PasswordResetCode::where('email', $validated['email'])
+            $secret = PasswordResetCode::where('email', $validated['email'])
                 ->where('code', $validated['code'])->firstOrFail();
         } catch (ModelNotFoundException) {
             return response()->json(['error' => '인증코드가 일치하지 않습니다.'], 401);
+        }
+
+        // 현재 시간
+        $dateTime = new DateTime();
+        $currentTime = $dateTime->format('Y-m-d H:i:s');
+
+        // 만료 여부 확인
+        if($secret->expires_at < $currentTime) {
+            return response()->json(['error' => '만료된 인증코드입니다.'], 401);
         }
 
         return response()->json(['message' => '코드가 인증되었습니다.']);
