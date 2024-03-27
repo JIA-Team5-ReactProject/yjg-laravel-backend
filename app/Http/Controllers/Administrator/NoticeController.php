@@ -109,6 +109,12 @@ class NoticeController extends Controller
         return response()->json(['notices' => $notices]);
     }
 
+    public function recentUrgent(): \Illuminate\Http\JsonResponse
+    {
+        $notice = Notice::with('noticeImages')->whereIn('tag', ['bus', 'admin'])->latest()->first();
+        return response()->json(['notices' => $notice]);
+    }
+
     /**
      * @OA\Get (
      *     path="/api/notice/{id}",
