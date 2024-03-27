@@ -25,7 +25,6 @@ class SalonSeeder extends Seeder
                         'service' => '커트+옆다운',
                         'gender' => 'male',
                         'price' => '15000',
-                        ],
                     ],
                     [
                         'service' => '커트+옆다운+뒷다운',
@@ -33,6 +32,7 @@ class SalonSeeder extends Seeder
                         'price' => '20000',
                     ],
                     [
+                        'service' => '커트+전체다운',
                         'gender' => 'male',
                         'price' => '25000',
                     ],
@@ -77,6 +77,7 @@ class SalonSeeder extends Seeder
                         'price' => '10000',
                     ],
                 ],
+            ],
             [
                 'category' => 'PERM',
                 'salonServices' => [
