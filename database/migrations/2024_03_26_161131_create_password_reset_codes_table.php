@@ -19,12 +19,20 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
         });
         DB::unprepared(
-            'CREATE TRIGGER set_expires_at BEFORE INSERT ON password_reset_codes
+            'CREATE TRIGGER set_expires_at_insert BEFORE INSERT ON password_reset_codes
                    FOR EACH ROW
                    BEGIN
-                       SET NEW.expires_at = NOW() + INTERVAL 10 MINUTE;
+                       SET NEW.expires_at = NOW() + INTERVAL 3 MINUTE;
                    END;'
         );
+        DB::unprepared(
+            'CREATE TRIGGER set_expires_at_update BEFORE UPDATE ON password_reset_codes
+                   FOR EACH ROW
+                   BEGIN
+                       SET NEW.expires_at = NOW() + INTERVAL 3 MINUTE;
+                   END;'
+        );
+
     }
 
     /**
@@ -32,7 +40,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::unprepared('DROP TRIGGER IF EXISTS set_expires_at');
-        Schema::dropIfExists('reset_password_code');
+        DB::unprepared('DROP TRIGGER IF EXISTS set_expires_at_insert');
+        DB::unprepared('DROP TRIGGER IF EXISTS set_expires_at_update');
+        Schema::dropIfExists('reset_password_codes');
     }
 };
