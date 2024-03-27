@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Privilege;
+use App\Models\User;
 use App\Services\ResetPasswordService;
 use App\Services\TokenService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -32,7 +34,7 @@ class AdminController extends Controller
      */
     public function admin(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['admin' => auth('admins')->user()]);
+        return response()->json(['admin' => auth()->user()]);
     }
 
     /**
@@ -69,7 +71,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admin = Admin::create([
+        $admin = User::create([
             'name'         => $validated['name'],
             'phone_number' => $validated['phone_number'],
             'email'        => $validated['email'],
@@ -97,8 +99,8 @@ class AdminController extends Controller
      */
     public function unregister(): \Illuminate\Http\JsonResponse
     {
-        $adminId = auth('admins')->id();
-        if (!Admin::destroy($adminId)) {
+        $adminId = auth()->id();
+        if (!User::destroy($adminId)) {
             throw new DestroyException('회원탈퇴에 실패하였습니다.');
         }
 
@@ -124,7 +126,7 @@ class AdminController extends Controller
      */
     public function unregisterMaster(string $id): \Illuminate\Http\JsonResponse
     {
-        if (!Admin::destroy($id)) {
+        if (!User::destroy($id)) {
             throw new DestroyException('회원탈퇴에 실패하였습니다.');
         }
 
@@ -166,13 +168,16 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if (!$token = $this->tokenService->createAccessToken('admins', $credentials)) {
+        if (!$token = $this->tokenService->createAccessToken($credentials)) {
             return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
         }
-        $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
+        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+
+        // TODO: findOrFail
+        $admin = User::with('privileges:id,privilege')->find(auth()->id());
 
         return response()->json([
-            'user' => auth('admins')->user(),
+            'user' => $admin,
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
@@ -213,13 +218,13 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if (!$token = $this->tokenService->createAccessToken('admins', $credentials)) {
+        if (!$token = $this->tokenService->createAccessToken($credentials)) {
             return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
         }
-        $refreshToken = $this->tokenService->createRefreshToken('admins', $credentials);
+        $refreshToken = $this->tokenService->createRefreshToken($credentials);
 
         return response()->json([
-            'user' => auth('admins')->user(),
+            'user' => auth()->user(),
             'refresh_token' => $refreshToken,
         ])->cookie('access_token',$token);
     }
@@ -236,7 +241,7 @@ class AdminController extends Controller
      */
     public function logout(): \Illuminate\Http\JsonResponse
     {
-        auth('admins')->logout();
+        auth()->logout();
         return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
     }
 
@@ -281,15 +286,28 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::findOrFail($validated['admin_id']);
+            $admin = User::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
         unset($validated['admin_id']);
 
-        foreach($validated as $key => $value) {
-            $admin->$key = $value;
+        $admin->privileges()->detach();
+
+         if($validated['salon_privilege']) {
+             $salon = Privilege::where('privilege', 'salon');
+             $admin->privileges()->attach($salon->id);
+         }
+
+        if($validated['admin_privilege']) {
+            $adminPrivilege = Privilege::where('privilege', 'admin');
+            $admin->privileges()->attach($adminPrivilege->id);
+        }
+
+        if($validated['restaurant_privilege']) {
+            $restaurant = Privilege::where('privilege', 'restaurant');
+            $admin->privileges()->attach($restaurant->id);
         }
 
         if(!$admin->save()) {
@@ -334,7 +352,7 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::findOrFail($validated['admin_id']);
+            $admin = User::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException) {
             return response()->json(['error'=> $this->modelExceptionMessage], 404);
         }
@@ -390,7 +408,7 @@ class AdminController extends Controller
         $adminId = auth('admins')->id();
 
         try {
-            $admin = Admin::findOrFail($adminId);
+            $admin = User::findOrFail($adminId);
         } catch(ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
@@ -524,7 +542,7 @@ class AdminController extends Controller
         }
 
         try {
-            $admin = Admin::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
+            $admin = User::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
         } catch (ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
@@ -566,7 +584,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admins = Admin::all();
+        $admins = User::all();
 
         if(isset($validated['type'])) {
             if($validated['type'] == 'unapproved') {
@@ -616,7 +634,7 @@ class AdminController extends Controller
         }
 
         try {
-            Admin::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
+            User::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
         } catch (ModelNotFoundException) {
             return response()->json(['error' => '해당하는 관리자가 존재하지 않습니다.'], 404);
         }

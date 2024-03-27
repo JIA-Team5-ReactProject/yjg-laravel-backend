@@ -158,7 +158,7 @@ class UserController extends Controller
         $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
 
         return response()->json([
-            'user' => auth('users')->user(),
+            'user' => auth()->user(),
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
@@ -200,14 +200,14 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        if (! $token = $this->tokenService->createAccessToken('users', $credentials)) {
+        if (! $token = $this->tokenService->createAccessToken($credentials)) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
 
-        $refreshToken = $this->tokenService->createRefreshToken('users', $credentials);
+        $refreshToken = $this->tokenService->createRefreshToken($credentials);
 
         return response()->json([
-            'user' => auth('users')->user(),
+            'user' => auth()->user(),
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
@@ -271,7 +271,7 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $userId = auth('users')->id();
+        $userId = auth()->id();
 
         try {
             $user = User::findOrFail($userId);
@@ -309,7 +309,7 @@ class UserController extends Controller
      */
     public function approveRegistration(): \Illuminate\Http\JsonResponse
     {
-        $userId = auth('users')->id();
+        $userId = auth()->id();
 
         try {
             $user = User::findOrFail($userId);

@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class TokenService
 {
-    public function createAccessToken(string $guard, array $credentials)
+    public function createAccessToken(array $credentials)
     {
-        return auth($guard)->claims(['typ' => 'access'])->attempt($credentials);
+        return auth()->claims(['typ' => 'access'])->attempt($credentials);
     }
 
-    public function createAccessTokenByModel(string $guard, Model $user)
+    public function createAccessTokenByModel(Model $user)
     {
-        return auth($guard)->claims(['typ' => 'access'])->login($user);
+        return auth()->claims(['typ' => 'access'])->login($user);
     }
 
-    public function createRefreshToken(string $guard, array $credentials)
+    public function createRefreshToken(array $credentials)
     {
-        return auth($guard)->claims(['typ' => 'refresh'])->setTTL(1440 * 7)->attempt($credentials);
+        return auth()->claims(['typ' => 'refresh'])->setTTL(1440 * 7)->attempt($credentials);
     }
 
 
