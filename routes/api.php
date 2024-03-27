@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\MeetingRoom\MeetingRoomController;
 use App\Http\Controllers\MeetingRoom\MeetingRoomReservationController;
+use App\Http\Controllers\PasswordResetCodeController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\RefreshController;
 use App\Http\Controllers\Restaurant\RestaurantMenusController;
@@ -45,11 +46,13 @@ Route::get('/healthy', function () {
 
 
 // 토큰 불필요
+Route::get('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->name('user.login');
     Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
+    Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('user.reset.pw');
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
@@ -60,7 +63,6 @@ Route::prefix('admin')->group(function () {
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
     Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueAdminEmail'])->name('admin.verify.email');
     Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
-    Route::get('/reset-password/verify', [AdminController::class, 'verifyPasswordResetCode'])->name('admin.reset.pw.verify');
 });
 
 // 관리자
