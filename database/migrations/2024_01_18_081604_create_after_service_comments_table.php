@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('after_service_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('after_service_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('comment');
             $table->timestamps();
@@ -27,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('after_service_comments', function (Blueprint $table) {
             $table->dropForeign(['after_service_id']);
-            $table->dropForeign(['admin_id']);
+            $table->dropForeign(['user_id']);
             $table->dropIfExists();
         });
     }

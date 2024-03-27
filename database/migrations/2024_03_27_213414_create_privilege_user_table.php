@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notices', function (Blueprint $table) {
-            $table->id();
+        Schema::create('privilege_user', function (Blueprint $table) {
+            $table->foreignId('privilege_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('title');
-            $table->text('content');
-            $table->string('tag');
-            $table->boolean('urgent')->default(false);
             $table->timestamps();
         });
     }
@@ -27,9 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notices', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropIfExists();
-        });
+        Schema::dropIfExists('privilege_user');
     }
 };
