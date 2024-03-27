@@ -654,14 +654,14 @@
                 }
             }
         },
-        "/api/bus/round/schedule/update/{id}": {
+        "/api/bus/schedule/update/{id}": {
             "patch": {
                 "tags": [
                     "버스"
                 ],
                 "summary": "해당 버스 스케줄 수정",
                 "description": "해당 버스 스케줄 을 수정 합니다",
-                "operationId": "599967abe8920e7e7c5fbc0ddbabdc39",
+                "operationId": "f92bc3111b0c31af1405edd575bfa54b",
                 "parameters": [
                     {
                         "name": "id",
@@ -827,6 +827,27 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/notice/recent/urgent": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "최근 긴급 공지사항",
+                "description": "bus, admis 태그를 가진 최신 긴급 공지사항 1개를 반환합니다.",
+                "operationId": "2e9d9b83c12159317b5baffad8435d7a",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -1966,6 +1987,53 @@
                 }
             }
         },
+        "/api/admin/reset-password": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "비밀번호 초기화",
+                "description": "회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
+                "operationId": "997c6f81d699525a62687e2045296d32",
+                "requestBody": {
+                    "description": "name & email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "testname"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "test@test.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
         "/api/user": {
             "get": {
                 "tags": [
@@ -2305,6 +2373,53 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/reset-password": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "비밀번호 초기화",
+                "description": "회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
+                "operationId": "fd28ffa8acd728bc29c4dbfa2a212841",
+                "requestBody": {
+                    "description": "name & email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "testname"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "test@test.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
                     },
                     "422": {
                         "description": "ValidationException"
@@ -2672,6 +2787,50 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/reset-password/verify": {
+            "get": {
+                "tags": [
+                    "비밀번호"
+                ],
+                "summary": "비밀번호 초기화 코드 검증",
+                "description": "메일로 받은 코드를 인증",
+                "operationId": "694dded8b7293385025c0812df89c98c",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "이메일로부터 받은 코드",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "사용자의 이메일",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -3816,6 +3975,24 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show/user": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 유저 정보",
+                "description": "주말 식수 유저 정보 확인",
+                "operationId": "46864d0b6114d3d7d8286a465024b138",
                 "responses": {
                     "200": {
                         "description": "Success"
