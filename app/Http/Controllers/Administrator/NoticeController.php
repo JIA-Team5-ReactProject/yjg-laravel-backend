@@ -109,6 +109,17 @@ class NoticeController extends Controller
         return response()->json(['notices' => $notices]);
     }
 
+    /**
+     * @OA\Get (
+     *     path="/api/notice/recent/urgent",
+     *     tags={"공지사항"},
+     *     summary="최근 긴급 공지사항",
+     *     description="bus, admis 태그를 가진 최신 긴급 공지사항 1개를 반환합니다.",
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
     public function recentUrgent(): \Illuminate\Http\JsonResponse
     {
         $notice = Notice::with('noticeImages')->whereIn('tag', ['bus', 'admin'])->latest()->first();
