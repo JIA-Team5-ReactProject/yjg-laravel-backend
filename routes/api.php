@@ -44,7 +44,6 @@ Route::get('/healthy', function () {
     return response()->json(['message' => 'HELLO WORLD ^_^']);
 });
 
-
 // 토큰 불필요
 Route::get('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
 Route::prefix('user')->group(function () {
@@ -126,7 +125,6 @@ Route::middleware(['auth:admins', 'token.type:access', 'approve:users,admins'])-
         Route::patch('/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
     });
 
-
 });
 
 // 유저 및 공용
@@ -189,7 +187,8 @@ Route::middleware(['auth:users,admins', 'token.type:access', 'approve:users,admi
 
     Route::prefix('notice')->group(function () {
         Route::get('/', [NoticeController::class, 'index'])->name('notice.index');
-        Route::get('/recent', [NoticeController::class, 'recentIndex'])->name('notice.index.recent');
+        Route::get('/recent', [NoticeController::class, 'recentIndex'])->name('notice.recent');
+        Route::get('/recent/urgent', [NoticeController::class, 'recentUrgent'])->name('notice.recent.urgent');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('notice.show');
     });
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
