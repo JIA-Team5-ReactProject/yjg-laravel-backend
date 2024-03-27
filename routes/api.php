@@ -65,7 +65,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // 관리자
-Route::middleware(['auth:admins', 'token.type:access', 'approve:users,admins'])->group(function () {
+Route::middleware(['auth:admins', 'token.type:access', 'approve:admins'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::get('/', [AdminController::class, 'admin'])->name('admin.info');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
