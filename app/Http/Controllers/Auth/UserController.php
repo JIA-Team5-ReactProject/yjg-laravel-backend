@@ -4,15 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
-use App\Mail\ResetPassword;
-use App\Models\PasswordResetCode;
 use App\Models\User;
+use App\Services\ResetPasswordService;
 use App\Services\TokenService;
 use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -444,14 +442,8 @@ class UserController extends Controller
             return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
-        $secret = sprintf('%06d',rand(000000,999999));
+        $resetPasswordService = new ResetPasswordService($validated['email']);
 
-        $validated['code'] = $secret;
-
-        PasswordResetCode::create($validated);
-
-        Mail::to($request['email'])->send(new ResetPassword($secret));
-
-        return response()->json(['message' => '이메일이 발송되었습니다.']);
+        return $resetPasswordService();
     }
 }
