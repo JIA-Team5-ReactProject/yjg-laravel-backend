@@ -3985,14 +3985,14 @@
                 }
             }
         },
-        "/api/restaurant/weekend/show/user": {
+        "/api/restaurant/weekend/show/user/table": {
             "get": {
                 "tags": [
                     "식수"
                 ],
                 "summary": "주말 식수 유저 정보",
                 "description": "주말 식수 유저 정보 확인",
-                "operationId": "46864d0b6114d3d7d8286a465024b138",
+                "operationId": "3e670008c866aec9f45fb42251b83073",
                 "responses": {
                     "200": {
                         "description": "Success"

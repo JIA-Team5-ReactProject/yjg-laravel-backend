@@ -24,7 +24,7 @@ class RestaurantAccountController extends Controller
     {
         try {
             RestaurantAccount::create([
-                'account' => '은행명 (번호)12345678901234 예금주명',
+                'account' => '(계좌번호)12345678901234',
                 'bank_name' => '은행명',
                 'name' => '예금주명',
             ]);

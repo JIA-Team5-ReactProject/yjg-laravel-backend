@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('restaurant_semesters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('semester_meal_type_id')->constrained('semester_meal_type')->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('payment')->default(false);
             $table->timestamps();
         });
@@ -26,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('restaurant_semesters', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            
+            $table->dropForeign(['semester_meal_type_id']);
         });
         Schema::dropIfExists('restaurant_semesters');
     }

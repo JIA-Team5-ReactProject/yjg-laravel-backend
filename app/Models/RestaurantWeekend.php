@@ -12,6 +12,7 @@ class RestaurantWeekend extends Model
 
     protected $fillable = [
         'user_id',
+        'weekend_meal_type_id',
         'payment',
         'refund',
         'sat',
@@ -20,15 +21,12 @@ class RestaurantWeekend extends Model
     public function user() {
        return $this->belongsTo(User::class);
     }
-    // public function restaurantWeekendMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
-    // {
-    //     return $this->hasMany(RestaurantWeekendMealType::class);
-    // }
 
-    public function WeekendMealType()
-    {
-        return $this->belongsToMany(WeekendMealType::class, 'restaurant_weekend_meal_types')
-                    ->withPivot('weekend_meal_type_id'); 
-    }
+    public function weekendMealType() {
+        return $this->belongsTo(WeekendMealType::class);
+     }
+    
+
+    
     
 }

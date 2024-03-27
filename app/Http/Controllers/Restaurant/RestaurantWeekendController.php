@@ -54,25 +54,19 @@ class RestaurantWeekendController extends Controller
 
         try {
             $user_id = auth('users')->id();
-            Log::info('유저: ' . $user_id);
-            $RestaurantWeekend = RestaurantWeekend::create([
+            $mealTypeId = WeekendMealType::where("meal_type", $validatedData["meal_type"])
+                                        ->first();
+            RestaurantWeekend::create([
                 'user_id' => $user_id,
+                'weekend_meal_type_id' => $mealTypeId->id,
                 'refund' => $validatedData['refund'],
                 'sat' => $validatedData['sat'],
                 'sun' => $validatedData['sun'],
             ]);
+            return response()->json(['message' => '주말 식수 신청이 완료되었습니다.']);
         } catch (\Exception $exception) {
             return response()->json(['error' =>  $exception->getMessage()], 500);
         }
-
-        $weekendMealType = WeekendMealType::where('meal_type', $validatedData['meal_type'])
-                                            ->first();
-        RestaurantWeekendMealType::create([
-            'restaurant_weekend_id' => $RestaurantWeekend->id,
-            'weekend_meal_type_id' => $weekendMealType->id
-        ]);
-        
-        return response()->json(['message' => '주말 식수 신청이 완료되었습니다.']);
     }   
         
        /**
@@ -261,7 +255,7 @@ class RestaurantWeekendController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function sumApply(Request $request)
+    public function sumApplyApp(Request $request)
     {
         try{
             $validatedData = $request->validate([
@@ -286,9 +280,27 @@ class RestaurantWeekendController extends Controller
         }
     }
 
+
+    public function sumApplyWeb()
+    {
+        $mealTypes = weekendMealType::pluck('meal_type');
+        Log::info('식수 유형: ' . $mealTypes);
+
+        $allData = RestaurantWeekend::with('weekendMealType:id,meal_type', 'user:id,phone_number,name,student_id');
+
+        foreach ($mealTypes as $mealType) {
+            $applyData = $allData->whereHas('weekendMealType', function ($query) use ($mealType) {
+                $query->where('meal_type', $mealType);
+            })->count();
+            Log::info('어플리 :' . $applyData);
+        }
+        return response()->json(['applyData' => $applyData]);
+    }
+    
+
     /**
      * @OA\Get (
-     * path="/api/restaurant/weekend/show/user",
+     * path="/api/restaurant/weekend/show/user/table",
      * tags={"식수"},
      * summary="주말 식수 유저 정보",
      * description="주말 식수 유저 정보 확인",
@@ -308,5 +320,4 @@ class RestaurantWeekendController extends Controller
             return response()->json(['error' => $exception->getMessage()]);
         }
     }
-
 }

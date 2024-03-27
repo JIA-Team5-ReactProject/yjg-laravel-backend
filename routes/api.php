@@ -232,7 +232,8 @@ Route::prefix('restaurant')->group(function () {
     Route::get('/semester/show/user/after', [RestaurantSemesterController::class, 'showUserAfter']);
     Route::get('/weekend/show/user/table', [RestaurantWeekendController::class, 'showUserTable']);
 
-    Route::get('/weekend/show/sum', [RestaurantWeekendController::class, 'sumApply']);
+    Route::get('/weekend/show/sumApp', [RestaurantWeekendController::class, 'sumApplyApp']);
+    Route::get('/weekend/show/sumWeb', [RestaurantWeekendController::class, 'sumApplyWeb']);
 
     Route::post('/apply/weekend/auto', [RestaurantApplyDivisionController::class, 'onWeekendAuto']);
     Route::patch('/apply/weekend/set', [RestaurantApplyDivisionController::class, 'setWeekendAuto']);
