@@ -15,14 +15,10 @@ class WeekendMealType extends Model
     ];
 
 
-    // public function restaurantWeekendMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
-    // {
-    //     return $this->hasMany(RestaurantWeekendMealType::class);
-    // }
-
-    public function restaurantWeekends()
+    public function restaurantWeekend(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(RestaurantWeekend::class, 'restaurant_weekend_meal_types')
-                    ->withPivot('restaurant_weekend_id'); // 필요에 따라 추가적인 pivot 정보를 가져올 수 있습니다.
+        return $this->hasMany(RestaurantWeekend::class);
     }
+    
+    
 }

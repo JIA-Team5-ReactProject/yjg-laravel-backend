@@ -47,24 +47,18 @@ class RestaurantSemesterController extends Controller
         }
 
         try {
+
+            $mealTypeId = SemesterMealType::where("meal_type", $validatedData["meal_type"])
+                                        ->first();                            
             $user_id = auth('users')->id();
-            $restaurantSemester = RestaurantSemester::create([
-                'user_id' => $user_id
+            RestaurantSemester::create([
+                'user_id' => $user_id,
+                'semester_meal_type_id' => $mealTypeId->id
             ]);
+            return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
-
-        $semesterMealType = SemesterMealType::where("meal_type", $validatedData["meal_type"])
-                                        ->first();
-
-        
-            RestaurantSemesterMealType::create([
-            'restaurant_semester_id' => $restaurantSemester->id,
-            'semester_meal_type_id' => $semesterMealType->id
-            ]);
-    
-        return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
     }
 
     

@@ -15,8 +15,8 @@ class SemesterMealType extends Model
         'price',
     ];
 
-    public function restaurantSemesterMealType(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function restaurantSemester(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(RestaurantSemesterMealType::class);
+        return $this->hasMany(RestaurantSemester::class);
     }
 }

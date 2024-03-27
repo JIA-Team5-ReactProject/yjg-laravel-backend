@@ -491,6 +491,4 @@ class RestaurantApplyDivisionController extends Controller
         ]);
         return response()->json(['message' => '식수 신청 상태 셋팅 완료되었습니다.']);
     }
-    
-
 }

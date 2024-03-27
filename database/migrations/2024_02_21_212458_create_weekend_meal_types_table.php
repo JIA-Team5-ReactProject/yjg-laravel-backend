@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('weekend_meal_types', function (Blueprint $table) {
             $table->id();
             $table->string('meal_type', 10);
-            $table->string('content',50);
+            $table->string('content',50)->nullable();
             $table->string('price', 10);
             $table->timestamps();
         });
