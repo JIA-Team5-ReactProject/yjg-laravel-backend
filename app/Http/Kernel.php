@@ -68,9 +68,7 @@ class Kernel extends HttpKernel
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'approve' => \App\Http\Middleware\ApproveCheck::class,
-        'admin.approve' => \App\Http\Middleware\AdminLoginApproveCheck::class,
-        'admin.master' => \App\Http\Middleware\AdminMasterCheck::class,
-        'admin.privilege' => \App\Http\Middleware\Adminprivilege::class,
+        'login.approve' => \App\Http\Middleware\LoginApproveCheck::class,
         'token.type' => \App\Http\Middleware\TokenType::class,
     ];
 
