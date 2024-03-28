@@ -180,30 +180,6 @@ class RestaurantSemesterController extends Controller
     }
 
 
-
-    /**
-     * @OA\Get (
-     *     path="/api/restaurant/semester/apply",
-     *     tags={"식수"},
-     *     summary="학기 식수 신청 리스트 가져오기(삭제예정)",
-     *     description="학기 식수 신청 리스트 가져오기",
-     *     
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
-     * )
-     */
-    public function getRestaurantApply()
-    {
-        try{
-            $applyData = RestaurantSemester::with('semesterMealType:id,meal_type', 'user:id,phone_number,name,student_id')->paginate(5);
-            return $applyData;
-            //return SemesterApplyResource::collection($applyData);
-        }catch (\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()]);
-        }
-    }
-
-
     /**
      * @OA\Get (
      * path="/api/restaurant/semester/show",
