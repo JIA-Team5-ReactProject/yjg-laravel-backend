@@ -172,6 +172,7 @@ class AbsenceController extends Controller
      *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="409", description="중복되는 외박/외출 기록이 있을 경우"),
      *     @OA\Response(response="422", description="ValidationException"),
      *     @OA\Response(response="500", description="ServerError"),
      * )
@@ -200,7 +201,7 @@ class AbsenceController extends Controller
             })->exists();
 
         if($absenceList) {
-            return response()->json(['error' => '신청 날짜와 중복되는 외박/외출이 있습니다.'], 400);
+            return response()->json(['error' => '신청 날짜와 중복되는 외박/외출이 있습니다.'], 409);
         }
 
         $absence = AbsenceList::create($validated);

@@ -142,6 +142,9 @@
                     "200": {
                         "description": "Success"
                     },
+                    "409": {
+                        "description": "중복되는 외박/외출 기록이 있을 경우"
+                    },
                     "422": {
                         "description": "ValidationException"
                     },
@@ -1820,38 +1823,6 @@
                     },
                     "404": {
                         "description": "ModelNotFoundException"
-                    },
-                    "422": {
-                        "description": "ValidationException"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            }
-        },
-        "/api/admin/verify-email/{id}": {
-            "get": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "이메일 중복 확인",
-                "description": "관리자 회원가입 시 이메일 중복 확인을 체크할 때 사용합니다.",
-                "operationId": "6fe4ca346bf3f1ab3436980947090730",
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "path",
-                        "description": "중복을 확인할 관리자의 이메일",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
                     },
                     "422": {
                         "description": "ValidationException"
@@ -3954,15 +3925,9 @@
                 "tags": [
                     "식수"
                 ],
-<<<<<<< Updated upstream
-                "summary": "주말 식수 신청 인원 확인",
-                "description": "주말 식수 신청 인원 확인",
-                "operationId": "32da8dc2b380f62d4598e61c056d323f",
-=======
                 "summary": "주말 식수 신청 인원 확인web",
                 "description": "주말 식수 신청 인원 확인web",
                 "operationId": "55abbd04cc86367fead818fb01eb3012",
->>>>>>> Stashed changes
                 "requestBody": {
                     "description": "찾고싶은 요일",
                     "required": true,
