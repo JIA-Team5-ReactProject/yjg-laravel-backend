@@ -98,7 +98,6 @@ class SalonBusinessHourController extends Controller
         $salonBreakTimes = $this->salonBreakTimeController->index()->where('date', $validated['date']);
 
         // 예약불가 시간이 있을 경우, 동작합니다.
-        // TODO: 효율적으로 만들 필요 있음
         if($salonBreakTimes->isNotEmpty()) {
             $breakTimes = [];
 

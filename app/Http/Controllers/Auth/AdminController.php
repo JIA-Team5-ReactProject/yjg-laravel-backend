@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
-use App\Models\Privilege;
 use App\Models\User;
 use App\Services\ResetPasswordService;
 use App\Services\TokenService;
@@ -311,9 +310,8 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'admin_id'     => 'required|numeric',
-                'salon'       => 'required|boolean',
-                'admin'       => 'required|boolean',
-                'restaurant'  => 'required|boolean',
+                'privileges'   => 'required|array',
+                'privileges.*' => 'required|exist:privileges,id',
             ]);
         } catch(ValidationException $validateException) {
             $errorStatus = $validateException->status;
@@ -327,33 +325,11 @@ class AdminController extends Controller
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
-        if(!$admin->admin) {
-            return response()->json(['error' => '관리자가 아닙니다.'], 403);
-        }
-
-        //TODO: 수정해야함 현재는 임시
         unset($validated['admin_id']);
 
         $admin->privileges()->detach();
 
-         if($validated['salon']) {
-             $salon = Privilege::where('privilege', 'salon');
-             $admin->privileges()->attach($salon->id);
-         }
-
-        if($validated['admin']) {
-            $adminPrivilege = Privilege::where('privilege', 'admin');
-            $admin->privileges()->attach($adminPrivilege->id);
-        }
-
-        if($validated['restaurant']) {
-            $restaurant = Privilege::where('privilege', 'restaurant');
-            $admin->privileges()->attach($restaurant->id);
-        }
-
-        if(!$admin->save()) {
-            return response()->json(['error' => '관리자 권한 변경에 실패하였습니다.'], 500);
-        }
+        $admin->privileges()->attach($validated['privileges']);
 
         return response()->json(['message' => '관리자 권한이 변경되었습니다.']);
     }
@@ -520,7 +496,6 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        // TODO: 오류나는지 체크 해야함
         if(!Hash::check($validated['password'], auth('users')->user()->getAuthPassword())) {
             return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
         }

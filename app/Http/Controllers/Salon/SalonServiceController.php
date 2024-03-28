@@ -27,14 +27,14 @@ class SalonServiceController extends Controller
      *     @OA\Parameter(
      *          name="category_id",
      *          description="카테고리 아이디",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(type="string"),
      *      ),
      *      @OA\Parameter(
      *          name="gender",
      *          description="성별(male or female)",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(type="string"),
      *     ),
@@ -54,13 +54,20 @@ class SalonServiceController extends Controller
             $errorMessage = $validationException->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
-        // TODO : 수정할 필요 있음
-        if(empty($validated['id']) && empty($validated['gender'])) {
-            $services = SalonService::all(['id', 'salon_category_id', 'service', 'price', 'gender']);
-        } else {
-            $services = SalonService::where('salon_category_id', $validated['category_id'])
-                ->where('gender', $validated['gender'])->get();
+
+        $services = SalonService::query()->select('id', 'salon_category_id', 'service', 'price', 'gender');
+
+        // category_id가 있는 경우
+        if (isset($validated['category_id'])) {
+            $services = $services->where('salon_category_id', $validated['category_id']);
         }
+
+        // gender가 있는 경우
+        if (isset($validated['gender'])) {
+            $services = $services->where('gender', $validated['gender']);
+        }
+
+        $services = $services->get();
 
         return response()->json(['services' => $services]);
     }

@@ -81,8 +81,7 @@ class AfterServiceController extends Controller
         }
 
         // 최신순으로 정렬하여 페이지네이션
-        // TODO: latest 메서드를 사용할 것
-        $afterServices = $afterServices->orderByDesc('created_at')->paginate(8);
+        $afterServices = $afterServices->latest()->paginate(8);
 
         // 프론트엔드에서 필요한 정보만 반환하도록 구현
         foreach ($afterServices as $afterService) {

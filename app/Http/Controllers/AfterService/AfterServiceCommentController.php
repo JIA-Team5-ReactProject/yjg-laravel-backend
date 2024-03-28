@@ -106,7 +106,6 @@ class AfterServiceCommentController extends Controller
             'comment'  => $validated['comment'],
         ]);
 
-        // TODO: if문 제거하도록 수정
         if(!$comment) return response()->json(['error' => '댓글 작성에 실패하였습니다.'], 500);
 
         return response()->json(['message' => '성공적으로 댓글이 작성되었습니다.'], 201);
@@ -164,7 +163,6 @@ class AfterServiceCommentController extends Controller
             return response()->json(['error' => '해당하는 댓글이 존재하지 않습니다.'], 404);
         }
 
-        // TODO: if문 제거
         // 위 모델의 연관관계를 이용하여 수정
         $asComment->comment = $validated['comment'];
 
