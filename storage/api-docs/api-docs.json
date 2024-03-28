@@ -3270,31 +3270,13 @@
                 }
             }
         },
-        "/api/restaurant/apply/manual/get/app": {
+        "/api/restaurant/apply/state": {
             "get": {
                 "tags": [
                     "식수 신청 기간"
                 ],
-                "summary": "식수 수동 신청 App get",
-                "description": "식수 수동 신청 App get",
-                "operationId": "e2d4282912e943779ef96a20d8bdd4fa",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/apply/state": {
-            "get": {
-                "tags": [
-                    "식수 신청 상태"
-                ],
-                "summary": "식수 신청 상태",
-                "description": "식수 신청 상태",
+                "summary": "식수 신청 기간 on/off 확인",
+                "description": "식수 신청 기간 on/off 확인",
                 "operationId": "043084d94d5bf47be12a7342b016305e",
                 "responses": {
                     "200": {
@@ -3309,11 +3291,47 @@
         "/api/restaurant/apply/state/on": {
             "post": {
                 "tags": [
-                    "식수 신청 상태"
+                    "식수 신청 기간"
                 ],
-                "summary": "식수 신청 상태 셋팅",
-                "description": "식수 신청 상태 셋팅",
+                "summary": "식수 신청 기간 셋팅",
+                "description": "식수 신청 기간 셋팅",
                 "operationId": "0c6267777c09dab5e16c73b1fb07c88e",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/check/semester": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 신청 기간 app",
+                "description": "학기 식수 신청 기간 app에서 확인",
+                "operationId": "3b3418edcc43c72e7ca08ce3f2d94650",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/check/weekend": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 신청 기간 app",
+                "description": "학기 식수 신청 기간 app에서 확인",
+                "operationId": "49eafdb53216c4bc3cd7787d0e7a498b",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3884,14 +3902,14 @@
                 }
             }
         },
-        "/api/restaurant/weekend/show/sum": {
+        "/api/restaurant/weekend/show/sumApp": {
             "get": {
                 "tags": [
                     "식수"
                 ],
                 "summary": "주말 식수 신청 인원 확인",
                 "description": "주말 식수 신청 인원 확인",
-                "operationId": "32da8dc2b380f62d4598e61c056d323f",
+                "operationId": "a784fa32adefee180a694c9761df3cf6",
                 "requestBody": {
                     "description": "찾고싶은 요일",
                     "required": true,

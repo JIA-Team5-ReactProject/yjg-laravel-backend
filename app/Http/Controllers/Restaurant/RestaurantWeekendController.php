@@ -213,7 +213,7 @@ class RestaurantWeekendController extends Controller
 
 /**
      * @OA\Get (
-     * path="/api/restaurant/weekend/show/sum",
+     * path="/api/restaurant/weekend/show/sumApp",
      * tags={"식수"},
      * summary="주말 식수 신청 인원 확인",
      * description="주말 식수 신청 인원 확인",
