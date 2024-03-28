@@ -2,8 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Admin;
-use App\Models\SalonBreakTime;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -12,16 +10,22 @@ class SalonBreakTimePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function store(Admin $admin): bool
+    public function store(User $admin): bool
     {
-        return $admin->salon_privilege;
+        if($admin->privileges()->where('privilege', 'salon')->exists()) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function destroy(Admin $admin): bool
+    public function destroy(User $admin): bool
     {
-        return $admin->salon_privilege;
+        if($admin->privileges()->where('privilege', 'salon')->exists()) {
+            return true;
+        }
+        return false;
     }
 }

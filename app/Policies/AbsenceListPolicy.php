@@ -3,17 +3,24 @@
 namespace App\Policies;
 
 use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class AbsenceListPolicy
 {
-    public function absenceCount(Admin $admin): bool
+    public function absenceCount(User $admin): bool
     {
-        return $admin->admin_privilege;
+        if($admin->privileges()->where('privilege', 'admin')->exists()) {
+            return true;
+        }
+        return false;
     }
 
-    public function reject(Admin $admin): bool
+    public function reject(User $admin): bool
     {
-        return $admin->admin_privilege;
+        if($admin->privileges()->where('privilege', 'admin')->exists()) {
+            return true;
+        }
+        return false;
     }
 }

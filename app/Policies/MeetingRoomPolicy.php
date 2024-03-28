@@ -2,8 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Admin;
-use App\Models\MeetingRoom;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -12,16 +10,22 @@ class MeetingRoomPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function store(Admin $admin): bool
+    public function store(User $admin): bool
     {
-        return $admin->admin_privilege;
+        if($admin->privileges()->where('privilege', 'admin')->exists()) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function destroy(Admin $admin): bool
+    public function destroy(User $admin): bool
     {
-        return $admin->admin_privilege;
+        if($admin->privileges()->where('privilege', 'admin')->exists()) {
+            return true;
+        }
+        return false;
     }
 }
