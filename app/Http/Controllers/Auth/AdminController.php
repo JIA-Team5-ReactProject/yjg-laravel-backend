@@ -9,6 +9,7 @@ use App\Models\Privilege;
 use App\Models\User;
 use App\Services\ResetPasswordService;
 use App\Services\TokenService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,11 @@ class AdminController extends Controller
 {
     public function __construct(protected TokenService $tokenService)
     {
+    }
+
+    public function authorize($ability, $arguments = [User::class])
+    {
+        return Parent::authorize($ability, $arguments);
     }
 
     /**
@@ -126,6 +132,12 @@ class AdminController extends Controller
      */
     public function unregisterMaster(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('unregisterMaster');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         if (!User::destroy($id)) {
             throw new DestroyException('회원탈퇴에 실패하였습니다.');
         }
