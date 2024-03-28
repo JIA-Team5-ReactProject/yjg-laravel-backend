@@ -25,7 +25,7 @@ use App\Http\Controllers\Salon\SalonBusinessHourController;
 use App\Http\Controllers\Salon\SalonCategoryController;
 use App\Http\Controllers\Salon\SalonReservationController;
 use App\Http\Controllers\Salon\SalonServiceController;
-use App\Http\Middleware\AdminLoginApproveCheck;
+use App\Http\Middleware\LoginApproveCheck;
 use Illuminate\Support\Facades\Route;
 
 
@@ -56,7 +56,7 @@ Route::prefix('user')->group(function () {
 });
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
-    Route::middleware([AdminLoginApproveCheck::class])->group(function () {
+    Route::middleware([LoginApproveCheck::class])->group(function () {
         Route::post('/login/web', [AdminController::class, 'webLogin'])->name('admin.login.web');
         Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     });
@@ -75,7 +75,7 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
-        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
+        Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->name('admin.master.unregister');
     });
 
     Route::prefix('user')->group(function () {

@@ -9,6 +9,7 @@ use App\Models\Privilege;
 use App\Models\User;
 use App\Services\ResetPasswordService;
 use App\Services\TokenService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,11 @@ class AdminController extends Controller
 {
     public function __construct(protected TokenService $tokenService)
     {
+    }
+
+    public function authorize($ability, $arguments = [User::class])
+    {
+        return Parent::authorize($ability, $arguments);
     }
 
     /**
@@ -126,6 +132,12 @@ class AdminController extends Controller
      */
     public function unregisterMaster(string $id): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('unregisterMaster');
+        } catch (AuthorizationException) {
+            return $this->denied();
+        }
+
         if (!User::destroy($id)) {
             throw new DestroyException('회원탈퇴에 실패하였습니다.');
         }
@@ -261,9 +273,9 @@ class AdminController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *             @OA\Property (property="admin_id", type="integer", description="관리자 아이디", example=1),
-     *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
-     *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
-     *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
+     *             @OA\Property (property="salon", type="boolean", description="미용실 권한", example=true),
+     *             @OA\Property (property="admin", type="boolean", description="행정 권한", example=true),
+     *             @OA\Property (property="restaurant", type="boolean", description="식당 권한", example=true),
      *             )
      *         )
      *     ),
