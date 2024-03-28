@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminLoginApproveCheck
+class LoginApproveCheck
 {
     /**
      * Handle an incoming request.
