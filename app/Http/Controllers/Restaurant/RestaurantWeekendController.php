@@ -171,30 +171,6 @@ class RestaurantWeekendController extends Controller
     }
 
 
-    /**
-     * @OA\Get (
-     *     path="/api/restaurant/weekend/apply",
-     *     tags={"식수"},
-     *     summary="주말 식수 신청 리스트 가져오기(삭제예정)",
-     *     description="주말 식수 신청 리스트 가져오기",
-     *     
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Fail"),
-     * )
-     */
-    public function getRestaurantApply()
-    {
-        try{
-            $applyData = RestaurantWeekend::with(['weekendMealType:id,meal_type,content', 'user:id,phone_number,name,student_id'])->paginate(5);
-            return $applyData;
-            //return WeekendApplyResource::collection($applyData);
-        }catch (\Exception $exception) {
-            return response()->json(['applyData' => []]);
-        }
-        
-    }
-
-
      /**
      * @OA\Get (
      * path="/api/restaurant/weekend/show",
@@ -281,21 +257,62 @@ class RestaurantWeekendController extends Controller
     }
 
 
-    public function sumApplyWeb()
+    /**
+     * @OA\Get (
+     * path="/api/restaurant/weekend/show/sumWeb",
+     * tags={"식수"},
+     * summary="주말 식수 신청 인원 확인web",
+     * description="주말 식수 신청 인원 확인web",
+     *     @OA\RequestBody(
+     *         description="찾고싶은 요일",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="date", type="string", description="요일", example="sat"),
+     *             )
+     *         )
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function sumApplyWeb(Request $request)
     {
-        $mealTypes = weekendMealType::pluck('meal_type');
-        Log::info('식수 유형: ' . $mealTypes);
+        $mealTypes = weekendMealType::all(['id','meal_type']);
+        Log::info('식수 유형ID: ' . $mealTypes);
 
-        $allData = RestaurantWeekend::with('weekendMealType:id,meal_type', 'user:id,phone_number,name,student_id');
+        $applyData = []; // 결과를 저장할 배열 초기화
 
-        foreach ($mealTypes as $mealType) {
-            $applyData = $allData->whereHas('weekendMealType', function ($query) use ($mealType) {
-                $query->where('meal_type', $mealType);
-            })->count();
-            Log::info('어플리 :' . $applyData);
+        if ($request->date == 'sat') {
+            foreach ($mealTypes as $mealType) {
+                // 각 식수 유형별로 해당하는 레코드 수를 조회
+                $count = RestaurantWeekend::where('sat', 1)
+                                        ->where('weekend_meal_type_id', $mealType->id)
+                                        ->count();
+                // 조회한 갯수를 식수 유형 ID를 키로 하여 배열에 저장
+                $applyData[$mealType->meal_type] = $count;
+                Log::info('카운트 배열: ' . $mealType);
+            }
+            Log::info('어플리 최종 : ' . json_encode($applyData));
+
+        }elseif($request->date == 'sun'){
+            foreach ($mealTypes as $mealType) {
+                // 각 식수 유형별로 해당하는 레코드 수를 조회
+                $count = RestaurantWeekend::where('sun', 1)
+                                        ->where('weekend_meal_type_id', $mealType->id)
+                                        ->count();
+                // 조회한 갯수를 식수 유형 ID를 키로 하여 배열에 저장
+                $applyData[$mealType->meal_type] = $count;
+                Log::info('카운트 배열: ' . $mealTypes);
+            }
+            Log::info('어플리 최종 : ' . json_encode($applyData));
+        }else{
+            return response()->json(['error' => 'sat or sun을 입력해주세요.']);
         }
         return response()->json(['applyData' => $applyData]);
     }
+    
     
 
     /**

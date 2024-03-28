@@ -2910,7 +2910,7 @@
         "/api/restaurant/account/set": {
             "patch": {
                 "tags": [
-                    "식당 계좌 수정"
+                    "식당 계좌"
                 ],
                 "summary": "식당 계좌 수정",
                 "description": "식당 계좌 수정을 처리합니다",
@@ -2956,7 +2956,7 @@
         "/api/restaurant/account/show": {
             "get": {
                 "tags": [
-                    "식당 계좌 조회"
+                    "식당 계좌"
                 ],
                 "summary": "식당 계좌 조회",
                 "description": "식당 계좌 조회를 처리합니다",
@@ -3657,24 +3657,6 @@
                 }
             }
         },
-        "/api/restaurant/semester/apply": {
-            "get": {
-                "tags": [
-                    "식수"
-                ],
-                "summary": "학기 식수 신청 리스트 가져오기(삭제예정)",
-                "description": "학기 식수 신청 리스트 가져오기",
-                "operationId": "4062c658b2e67d637c41acc5e8dba26f",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/restaurant/semester/show": {
             "get": {
                 "tags": [
@@ -3895,24 +3877,6 @@
                 }
             }
         },
-        "/api/restaurant/weekend/apply": {
-            "get": {
-                "tags": [
-                    "식수"
-                ],
-                "summary": "주말 식수 신청 리스트 가져오기(삭제예정)",
-                "description": "주말 식수 신청 리스트 가져오기",
-                "operationId": "420c6f5fce0bc003f4bc419bc1ac2481",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/restaurant/weekend/show": {
             "get": {
                 "tags": [
@@ -3957,6 +3921,48 @@
                 "summary": "주말 식수 신청 인원 확인",
                 "description": "주말 식수 신청 인원 확인",
                 "operationId": "32da8dc2b380f62d4598e61c056d323f",
+                "requestBody": {
+                    "description": "찾고싶은 요일",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "description": "요일",
+                                        "type": "string",
+                                        "example": "sat"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show/sumWeb": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+<<<<<<< Updated upstream
+                "summary": "주말 식수 신청 인원 확인",
+                "description": "주말 식수 신청 인원 확인",
+                "operationId": "32da8dc2b380f62d4598e61c056d323f",
+=======
+                "summary": "주말 식수 신청 인원 확인web",
+                "description": "주말 식수 신청 인원 확인web",
+                "operationId": "55abbd04cc86367fead818fb01eb3012",
+>>>>>>> Stashed changes
                 "requestBody": {
                     "description": "찾고싶은 요일",
                     "required": true,

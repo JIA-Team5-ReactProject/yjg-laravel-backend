@@ -39,7 +39,7 @@ class RestaurantAccountController extends Controller
     /**
      * @OA\patch (
      * path="/api/restaurant/account/set",
-     * tags={"식당 계좌 수정"},
+     * tags={"식당 계좌"},
      * summary="식당 계좌 수정",
      * description="식당 계좌 수정을 처리합니다",
      *     @OA\RequestBody(
@@ -88,7 +88,7 @@ class RestaurantAccountController extends Controller
     /**
      * @OA\Get (
      * path="/api/restaurant/account/show",
-     * tags={"식당 계좌 조회"},
+     * tags={"식당 계좌"},
      * summary="식당 계좌 조회",
      * description="식당 계좌 조회를 처리합니다",
      *  @OA\Response(response="200", description="Success"),
