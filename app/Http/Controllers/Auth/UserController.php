@@ -279,8 +279,6 @@ class UserController extends Controller
             return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
-        //TODO: 대량할당으로 수정하기
-
         unset($validated['current_password']);
 
         foreach($validated as $key => $value) {

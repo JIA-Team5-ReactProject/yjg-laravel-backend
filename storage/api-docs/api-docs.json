@@ -2283,45 +2283,6 @@
                 }
             }
         },
-        "/api/user/list": {
-            "get": {
-                "tags": [
-                    "학생"
-                ],
-                "summary": "승인 혹은 미승인 학생 목록",
-                "description": "type 값과 일치하는 학생을 users 배열에 반환",
-                "operationId": "62b5c2ac37f706fd423bff5d2bce3fe2",
-                "requestBody": {
-                    "description": "승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "type": {
-                                        "description": "승인 미승인 여부",
-                                        "type": "boolean",
-                                        "example": true
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "422": {
-                        "description": "ModelNotFoundException"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            }
-        },
         "/api/user/verify-email/{id}": {
             "get": {
                 "tags": [
@@ -4751,7 +4712,7 @@
                         "name": "category_id",
                         "in": "query",
                         "description": "카테고리 아이디",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -4760,7 +4721,7 @@
                         "name": "gender",
                         "in": "query",
                         "description": "성별(male or female)",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }

@@ -88,7 +88,6 @@ class SalonReservationController extends Controller
 
         $reservations = $query->get();
 
-        // TODO: 효율적으로 구현하도록 수정할 필요 있음
         $reservations->map(function ($item) {
             $item['user_name'] = $item->user['name'];
             $item['service_name'] = $item->salonService['service'];

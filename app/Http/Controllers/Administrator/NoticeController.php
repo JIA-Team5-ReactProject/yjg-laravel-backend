@@ -307,7 +307,6 @@ class NoticeController extends Controller
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
-        // TODO: 효율적으로 삭제 가능한지 좀 생각해봐야 함
         // delete_images 배열을 확인하여, 해당하는 이미지의 아이디로 삭제
         if(isset($validated['delete_images'])) {
             foreach ($validated['delete_images'] as $deleteImage) {
