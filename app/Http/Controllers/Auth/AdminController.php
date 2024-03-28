@@ -173,8 +173,11 @@ class AdminController extends Controller
         }
         $refreshToken = $this->tokenService->createRefreshToken($credentials);
 
-        // TODO: findOrFail
-        $admin = User::with('privileges:id,privilege')->find(auth()->id());
+        try {
+            $admin = User::findOrFail(auth()->id());
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
+        }
 
         return response()->json([
             'user' => $admin,
@@ -275,9 +278,9 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'admin_id'              => 'required|numeric',
-                'salon_privilege'       => 'required|boolean',
-                'admin_privilege'       => 'required|boolean',
-                'restaurant_privilege'  => 'required|boolean',
+                'salon'       => 'required|boolean',
+                'admin'       => 'required|boolean',
+                'restaurant'  => 'required|boolean',
             ]);
         } catch(ValidationException $validateException) {
             $errorStatus = $validateException->status;
@@ -291,21 +294,22 @@ class AdminController extends Controller
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
+        //TODO: 수정해야함 현재는 임시
         unset($validated['admin_id']);
 
         $admin->privileges()->detach();
 
-         if($validated['salon_privilege']) {
+         if($validated['salon']) {
              $salon = Privilege::where('privilege', 'salon');
              $admin->privileges()->attach($salon->id);
          }
 
-        if($validated['admin_privilege']) {
+        if($validated['admin']) {
             $adminPrivilege = Privilege::where('privilege', 'admin');
             $admin->privileges()->attach($adminPrivilege->id);
         }
 
-        if($validated['restaurant_privilege']) {
+        if($validated['restaurant']) {
             $restaurant = Privilege::where('privilege', 'restaurant');
             $admin->privileges()->attach($restaurant->id);
         }

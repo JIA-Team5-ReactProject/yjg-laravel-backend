@@ -3956,7 +3956,7 @@
                 ],
                 "summary": "주말 식수 신청 인원 확인",
                 "description": "주말 식수 신청 인원 확인",
-                "operationId": "54ac28f8ee3d52c8373530b535c63f97",
+                "operationId": "32da8dc2b380f62d4598e61c056d323f",
                 "requestBody": {
                     "description": "찾고싶은 요일",
                     "required": true,
