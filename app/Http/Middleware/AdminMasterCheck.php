@@ -26,7 +26,6 @@ class AdminMasterCheck
         }
         $master = Privilege::where('privilege', 'master')->first();
 
-        return response()->json($admin->privileges()->where('id', $master->privilege)->exists());
         if($admin->privileges()->where('id', $master->id)->exists()) {
             return $next($request);
         }
