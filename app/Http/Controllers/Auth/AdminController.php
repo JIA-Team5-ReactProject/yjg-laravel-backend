@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
 use App\Models\Privilege;
 use App\Models\User;
 use App\Services\ResetPasswordService;
@@ -13,7 +12,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -77,18 +75,23 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admin = User::create([
-            'name'         => $validated['name'],
-            'phone_number' => $validated['phone_number'],
-            'email'        => $validated['email'],
-            'password'     => Hash::make($validated['password']),
-            'approved'     => true,
-        ]);
+        $validated['approved'] = true;
+        $validated['admin']    = true;
+
+        $admin = new User();
+
+        foreach ($validated as $key => $value) {
+            if($key == 'password') {
+                $admin->$key = Hash::make($value);
+                continue;
+            }
+            $admin->$key = $value;
+        }
+
+        if(!$admin->save()) return response()->json(['error' => '관리자 회원가입에 실패하였습니다.'],500);
 
         $admin['admin_id'] = $admin['id'];
         unset($admin['id']);
-
-        if(!$admin) return response()->json(['error' => '관리자 회원가입에 실패하였습니다.'],500);
 
         return response()->json($admin, 201);
     }
@@ -105,6 +108,12 @@ class AdminController extends Controller
      */
     public function unregister(): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('admin');
+        } catch (AuthorizationException) {
+            return $this->denied('관리자 권한이 없습니다.');
+        }
+
         $adminId = auth()->id();
         if (!User::destroy($adminId)) {
             throw new DestroyException('회원탈퇴에 실패하였습니다.');
@@ -133,7 +142,7 @@ class AdminController extends Controller
     public function unregisterMaster(string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('unregisterMaster');
+            $this->authorize('master');
         } catch (AuthorizationException) {
             return $this->denied();
         }
@@ -256,6 +265,12 @@ class AdminController extends Controller
      */
     public function logout(): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('admin');
+        } catch (AuthorizationException) {
+            return $this->denied('관리자 권한이 없습니다.');
+        }
+
         auth()->logout();
         return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
     }
@@ -288,8 +303,14 @@ class AdminController extends Controller
     public function privilege(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+            $this->authorize('master');
+        } catch (AuthorizationException) {
+            return $this->denied('마스터 관리자 권한이 없습니다.');
+        }
+
+        try {
             $validated = $request->validate([
-                'admin_id'              => 'required|numeric',
+                'admin_id'     => 'required|numeric',
                 'salon'       => 'required|boolean',
                 'admin'       => 'required|boolean',
                 'restaurant'  => 'required|boolean',
@@ -304,6 +325,10 @@ class AdminController extends Controller
             $admin = User::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
+        }
+
+        if(!$admin->admin) {
+            return response()->json(['error' => '관리자가 아닙니다.'], 403);
         }
 
         //TODO: 수정해야함 현재는 임시
@@ -358,6 +383,12 @@ class AdminController extends Controller
     public function approveRegistration(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+            $this->authorize('master');
+        } catch (AuthorizationException) {
+            return $this->denied('마스터 관리자 권한이 없습니다.');
+        }
+
+        try {
             $validated = $request->validate([
                 'admin_id' => 'required|numeric',
             ]);
@@ -409,6 +440,12 @@ class AdminController extends Controller
     public function updateProfile(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+            $this->authorize('admin');
+        } catch (AuthorizationException) {
+            return $this->denied('관리자 권한이 없습니다.');
+        }
+
+        try {
             $validated = $request->validate([
                 'name'             => 'string',
                 'phone_number'     => 'string|unique:admins',
@@ -421,7 +458,7 @@ class AdminController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $adminId = auth('admins')->id();
+        $adminId = auth()->id();
 
         try {
             $admin = User::findOrFail($adminId);
@@ -467,6 +504,12 @@ class AdminController extends Controller
      */
     public function verifyPassword(Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            $this->authorize('admin');
+        } catch (AuthorizationException) {
+            return $this->denied('관리자 권한이 없습니다.');
+        }
+
         try {
             $validated = $request->validate([
                 'password' => 'required|string',
@@ -555,6 +598,12 @@ class AdminController extends Controller
         $typeRule = ['approved', 'unapproved'];
 
         try {
+            $this->authorize('admin');
+        } catch (AuthorizationException) {
+            return $this->denied('관리자 권한이 없습니다.');
+        }
+
+        try {
             $validated = $request->validate([
                 'type' => ['string', Rule::in($typeRule)],
             ]);
@@ -564,7 +613,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admins = User::has('privileges')->get();
+        $admins = User::has('privileges')->where('admin', true)->get();
 
         if(isset($validated['type'])) {
             if($validated['type'] == 'unapproved') {
