@@ -44,6 +44,7 @@ class RestaurantMenuImport implements ToCollection
                         switch ($i) {
                             case 12:
                                 $meal_time = 'b';
+                                
                                 break;
                             case 18:
                                 $meal_time = 'l';
