@@ -46,6 +46,7 @@ Route::get('/healthy', function () {
 
 // 토큰 불필요
 Route::get('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
+Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'token.type:refresh', 'approve:users']);
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
@@ -63,7 +64,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
 });
 
-// 관리자
+// 토큰 필요
 Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
     Route::prefix('admin')->group(function() {
         Route::get('/', [AdminController::class, 'admin'])->name('admin.info');
@@ -75,6 +76,16 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->middleware('admin.master')->name('admin.master.unregister');
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'user'])->name('user.info');
+        Route::get('/qr', [QRController::class, 'generator'])->name('qr');
+        Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
+        Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
+        Route::get('/list', [UserController::class, 'userList'])->name('user.list');
+        Route::patch('/' , [UserController::class, 'update'])->name('user.update');
+        Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve');
     });
 
     Route::prefix('salon')->group(function () {
@@ -124,22 +135,7 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::patch('/reject/{id}', [AbsenceController::class, 'reject'])->name('absence.reject');
     });
 
-});
-
-// 유저 및 공용
-Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'token.type:refresh', 'approve:users']);
-
-Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
-    Route::prefix('user')->group(function () {
-        Route::get('/', [UserController::class, 'user'])->name('user.info');
-        Route::get('/qr', [QRController::class, 'generator'])->name('qr');
-        Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
-        Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
-        Route::get('/list', [UserController::class, 'userList'])->name('user.list');
-        Route::patch('/' , [UserController::class, 'update'])->name('user.update');
-        Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve');
-    });
-
+    // 공용
     Route::prefix('salon')->group(function () {
         Route::prefix('reservation')->group(function () {
             Route::get('/user', [SalonReservationController::class, 'index'])->name('salon.reservation.index.user');
@@ -190,6 +186,7 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::get('/recent/urgent', [NoticeController::class, 'recentUrgent'])->name('notice.recent.urgent');
         Route::get('/{id}', [NoticeController::class, 'show'])->name('notice.show');
     });
+
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
     Route::get('/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);

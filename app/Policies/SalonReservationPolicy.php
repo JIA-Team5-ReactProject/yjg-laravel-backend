@@ -2,8 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Admin;
-use App\Models\SalonReservation;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -12,8 +10,11 @@ class SalonReservationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Admin $admin): bool
+    public function update(User $admin): bool
     {
-        return $admin->salon_privilege;
+        if($admin->privileges()->where('privilege', 'salon')->exists()) {
+            return true;
+        }
+        return false;
     }
 }
