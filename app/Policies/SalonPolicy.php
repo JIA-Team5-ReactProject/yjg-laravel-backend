@@ -3,14 +3,13 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
-class AfterServicePolicy
+class SalonPolicy
 {
     /**
-     * Determine whether the user can update the model.
+     * Create a new policy instance.
      */
-    public function updateStatus(User $admin): bool
+    public function salon(User $admin): bool
     {
         return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
