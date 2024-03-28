@@ -588,7 +588,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admins = User::all();
+        $admins = User::has('privileges')->get();
 
         if(isset($validated['type'])) {
             if($validated['type'] == 'unapproved') {
