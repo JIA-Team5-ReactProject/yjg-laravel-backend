@@ -433,42 +433,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Get (
-     *     path="/api/admin/verify-email/{id}",
-     *     tags={"관리자"},
-     *     summary="이메일 중복 확인",
-     *     description="관리자 회원가입 시 이메일 중복 확인을 체크할 때 사용합니다.",
-     *      @OA\Parameter(
-     *            name="email",
-     *            description="중복을 확인할 관리자의 이메일",
-     *            required=true,
-     *            in="path",
-     *            @OA\Schema(type="string"),
-     *        ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function verifyUniqueAdminEmail(string $email): \Illuminate\Http\JsonResponse
-    {
-        $rules = [
-            'email' => 'required|email|unique:admins,email'
-        ];
-        $validator = Validator::make(['email' => $email], $rules);
-
-        try {
-            $validator->validate();
-        } catch(ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
-        }
-
-        return response()->json(['check' => true]);
-    }
-
-    /**
      * @OA\Post (
      *     path="/api/admin/verify-password",
      *     tags={"관리자"},
@@ -502,7 +466,7 @@ class AdminController extends Controller
         }
 
         // TODO: 오류나는지 체크 해야함
-        if(!Hash::check($validated['password'], auth('admins')->user()->getAuthPassword())) {
+        if(!Hash::check($validated['password'], auth('users')->user()->getAuthPassword())) {
             return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
         }
 
