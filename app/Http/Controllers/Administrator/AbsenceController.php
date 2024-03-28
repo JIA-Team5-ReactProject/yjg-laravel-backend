@@ -38,7 +38,7 @@ class AbsenceController extends Controller
     public function absenceCount(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('absenceCount');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }
@@ -327,7 +327,7 @@ class AbsenceController extends Controller
     public function reject(string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('reject');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }
