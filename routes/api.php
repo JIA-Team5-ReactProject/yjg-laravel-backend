@@ -83,7 +83,6 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
         Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
-        Route::get('/list', [UserController::class, 'userList'])->name('user.list');
         Route::patch('/' , [UserController::class, 'update'])->name('user.update');
         Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve');
     });

@@ -31,7 +31,7 @@ class UserController extends Controller
      */
     public function user(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['user' => auth('users')->user()]);
+        return response()->json(['user' => auth()->user()]);
     }
 
     /**
@@ -70,7 +70,7 @@ class UserController extends Controller
         }
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['approved']   = true;
+        $validated['approved'] = true;
 
         $user = User::create($validated);
 
@@ -122,7 +122,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function googleRegisterOrLogin(Request $request)
+    public function googleRegisterOrLogin(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $credentials = $request->validate([
@@ -323,45 +323,6 @@ class UserController extends Controller
             return response()->json(['error' => '유저를 승인하는 데 실패하였습니다.'], 500);
         }
         return response()->json(['message' => '유저가 승인되었습니다.']);
-    }
-
-    /**
-     * @OA\Get (
-     *     path="/api/user/list",
-     *     tags={"학생"},
-     *     summary="승인 혹은 미승인 학생 목록",
-     *     description="type 값과 일치하는 학생을 users 배열에 반환",
-     *     @OA\Requestbody(
-     *     description="승인 학생 조회의 경우 true, 미승인 학생 조회의 경우 false, 전체 조회 시에는 body 없이 요청만",
-     *     required=false,
-     *         @OA\Mediatype(
-     *         mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="type", type="boolean", description="승인 미승인 여부", example=true),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="ModelNotFoundException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function userList(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'type' => 'boolean',
-            ]);
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getmessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        if(!isset($validated['type'])) $users = User::all();
-        else $users = User::where('approved' , $validated['type'])->get();
-
-        return response()->json(['users' => $users]);
     }
 
     /**
