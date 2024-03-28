@@ -173,7 +173,7 @@ class SalonReservationController extends Controller
     public function update(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('update');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }

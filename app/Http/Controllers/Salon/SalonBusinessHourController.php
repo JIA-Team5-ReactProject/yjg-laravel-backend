@@ -144,7 +144,7 @@ class SalonBusinessHourController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('store');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }
@@ -196,7 +196,7 @@ class SalonBusinessHourController extends Controller
     public function update(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('update');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }

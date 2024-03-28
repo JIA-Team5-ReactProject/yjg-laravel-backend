@@ -11,7 +11,7 @@ class AfterServiceComment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'admin_id',
+        'user_id',
         'after_service_id',
         'comment',
     ];
@@ -21,7 +21,7 @@ class AfterServiceComment extends Model
         return $this->belongsTo(AfterService::class);
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

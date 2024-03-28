@@ -79,7 +79,7 @@ class AfterServiceCommentController extends Controller
     public function store(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('store');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }
@@ -102,7 +102,7 @@ class AfterServiceCommentController extends Controller
 
         // 위에서 찾은 모델의 연관관계를 이용하여 새 댓글을 작성
         $comment = $afterService->afterServiceComments()->create([
-            'admin_id' => auth('admins')->id(),
+            'user_id' => auth()->id(),
             'comment'  => $validated['comment'],
         ]);
 
@@ -143,7 +143,7 @@ class AfterServiceCommentController extends Controller
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('update');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }
@@ -194,7 +194,7 @@ class AfterServiceCommentController extends Controller
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('destroy');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }

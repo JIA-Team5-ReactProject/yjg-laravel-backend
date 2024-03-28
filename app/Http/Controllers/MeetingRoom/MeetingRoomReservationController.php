@@ -218,7 +218,7 @@ class MeetingRoomReservationController extends Controller
     public function reject(string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('reject');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }

@@ -2,6 +2,19 @@
 
 namespace App\Providers;
 
+use App\Models\AbsenceList;
+use App\Models\AfterService;
+use App\Models\AfterServiceComment;
+use App\Models\MeetingRoom;
+use App\Models\MeetingRoomReservation;
+use App\Models\Notice;
+use App\Models\SalonBreakTime;
+use App\Models\SalonBusinessHour;
+use App\Models\SalonCategory;
+use App\Models\SalonReservation;
+use App\Models\SalonService;
+use App\Policies\AdminPolicy;
+use App\Policies\SalonPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +26,20 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 모든 정책은 컨벤션에 맞게 작성하여, DI 하도록 함
+        // 관리자
+        AbsenceList::class => AdminPolicy::class,
+        AfterServiceComment::class => AdminPolicy::class,
+        AfterService::class => AdminPolicy::class,
+        MeetingRoom::class => AdminPolicy::class,
+        MeetingRoomReservation::class => AdminPolicy::class,
+        Notice::class => AdminPolicy::class,
+
+        // 미용실
+        SalonBreakTime::class => SalonPolicy::class,
+        SalonBusinessHour::class => SalonPolicy::class,
+        SalonCategory::class => SalonPolicy::class,
+        SalonReservation::class => SalonPolicy::class,
+        SalonService::class => SalonPolicy::class,
     ];
 
     /**

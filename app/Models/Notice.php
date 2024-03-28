@@ -10,7 +10,7 @@ class Notice extends Model
     use HasFactory;
 
     protected $fillable = [
-        'admin_id',
+        'user_id',
         'title',
         'content',
         'tag',
