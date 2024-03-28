@@ -60,7 +60,6 @@ Route::prefix('admin')->group(function () {
         Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     });
     Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
-    Route::get('/verify-email/{email}', [AdminController::class, 'verifyUniqueAdminEmail'])->name('admin.verify.email');
     Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
 });
 
