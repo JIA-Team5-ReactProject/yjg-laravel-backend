@@ -12,10 +12,7 @@ class MeetingRoomPolicy
      */
     public function store(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'admin')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
 
     /**
@@ -23,9 +20,6 @@ class MeetingRoomPolicy
      */
     public function destroy(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'admin')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
 }

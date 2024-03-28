@@ -12,9 +12,6 @@ class SalonReservationPolicy
      */
     public function update(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'salon')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'salon')->exists();
     }
 }

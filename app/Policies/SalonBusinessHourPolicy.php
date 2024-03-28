@@ -23,10 +23,7 @@ class SalonBusinessHourPolicy
      */
     public function update(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'salon')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'salon')->exists();
     }
 
     /**
@@ -34,9 +31,6 @@ class SalonBusinessHourPolicy
      */
     public function destroy(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'salon')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'salon')->exists();
     }
 }

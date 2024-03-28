@@ -12,9 +12,6 @@ class MeetingRoomReservationPolicy
      */
     public function reject(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'admin')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
 }

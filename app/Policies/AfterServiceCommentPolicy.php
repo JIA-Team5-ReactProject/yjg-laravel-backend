@@ -12,10 +12,7 @@ class AfterServiceCommentPolicy
      */
     public function store(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'admin')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
 
     /**
@@ -23,10 +20,7 @@ class AfterServiceCommentPolicy
      */
     public function update(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'admin')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
 
     /**
@@ -34,9 +28,6 @@ class AfterServiceCommentPolicy
      */
     public function destroy(User $admin): bool
     {
-        if($admin->privileges()->where('privilege', 'admin')->exists()) {
-            return true;
-        }
-        return false;
+        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
     }
 }
