@@ -197,7 +197,11 @@ class AbsenceController extends Controller
             ->whereBetween('start_date', [$validated['start_date'], $validated['end_date']])
             ->orWhere(function ($query) use ($validated) {
                 $query->whereBetween('end_date', [$validated['start_date'], $validated['end_date']]);
-            });
+            })->exists();
+
+        if($absenceList) {
+            return response()->json(['error' => '신청 날짜와 중복되는 외박/외출이 있습니다.'], 400);
+        }
 
         $absence = AbsenceList::create($validated);
 
