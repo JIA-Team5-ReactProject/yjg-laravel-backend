@@ -1754,17 +1754,17 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "salon_privilege": {
+                                    "salon": {
                                         "description": "미용실 권한",
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "admin_privilege": {
+                                    "admin": {
                                         "description": "행정 권한",
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "restaurant_privilege": {
+                                    "restaurant": {
                                         "description": "식당 권한",
                                         "type": "boolean",
                                         "example": true

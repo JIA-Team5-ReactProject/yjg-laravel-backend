@@ -273,9 +273,9 @@ class AdminController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *             @OA\Property (property="admin_id", type="integer", description="관리자 아이디", example=1),
-     *             @OA\Property (property="salon_privilege", type="boolean", description="미용실 권한", example=true),
-     *             @OA\Property (property="admin_privilege", type="boolean", description="행정 권한", example=true),
-     *             @OA\Property (property="restaurant_privilege", type="boolean", description="식당 권한", example=true),
+     *             @OA\Property (property="salon", type="boolean", description="미용실 권한", example=true),
+     *             @OA\Property (property="admin", type="boolean", description="행정 권한", example=true),
+     *             @OA\Property (property="restaurant", type="boolean", description="식당 권한", example=true),
      *             )
      *         )
      *     ),
