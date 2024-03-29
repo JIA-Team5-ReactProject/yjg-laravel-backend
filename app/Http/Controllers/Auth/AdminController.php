@@ -311,7 +311,7 @@ class AdminController extends Controller
             $validated = $request->validate([
                 'admin_id'     => 'required|numeric',
                 'privileges'   => 'required|array',
-                'privileges.*' => 'required|exist:privileges,id',
+                'privileges.*' => 'required|exists:privileges,id',
             ]);
         } catch(ValidationException $validateException) {
             $errorStatus = $validateException->status;
