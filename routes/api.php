@@ -7,6 +7,7 @@ use App\Http\Controllers\AfterService\AfterServiceCommentController;
 use App\Http\Controllers\AfterService\AfterServiceController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\PasswordResetCodeController;
+use App\Http\Controllers\Auth\PrivilegeController;
 use App\Http\Controllers\Auth\RefreshController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\MeetingRoom\MeetingRoomController;
@@ -69,7 +70,8 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::get('/', [AdminController::class, 'admin'])->name('admin.info');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/verify-password', [AdminController::class, 'verifyPassword'])->name('admin.verify.pw');
-        Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege');
+        Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege.update');
+        Route::get('/privilege', PrivilegeController::class)->name('admin.privilege.list');
         Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
         Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
