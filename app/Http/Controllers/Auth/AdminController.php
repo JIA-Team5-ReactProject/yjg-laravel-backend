@@ -413,7 +413,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function updateProfile(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $this->authorize('admin');

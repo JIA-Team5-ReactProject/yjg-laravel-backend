@@ -64,6 +64,10 @@ Route::prefix('admin')->group(function () {
     Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
 });
 
+// 이메일 타입의 토큰도 허용함
+Route::patch('/user/recover' , [UserController::class, 'recoverPassword'])
+    ->name('user.update')->middleware(['auth:users', 'token.type:email']);
+
 // 토큰 필요
 Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
     Route::prefix('admin')->group(function() {
@@ -73,7 +77,6 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::patch('/privilege', [AdminController::class, 'privilege'])->name('admin.privilege.update');
         Route::get('/privilege', PrivilegeController::class)->name('admin.privilege.list');
         Route::patch('/approve', [AdminController::class, 'approveRegistration'])->name('admin.approve');
-        Route::patch('/', [AdminController::class, 'updateProfile'])->name('admin.update');
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->name('admin.master.unregister');
@@ -84,7 +87,6 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
         Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
-        Route::patch('/' , [UserController::class, 'update'])->name('user.update');
         Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve');
     });
 
