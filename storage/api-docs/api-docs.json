@@ -1549,7 +1549,7 @@
                 ],
                 "summary": "개인정보 수정",
                 "description": "관리자 개인정보 수정 시 사용합니다.",
-                "operationId": "c2d73bf06e181007910988b0f079736f",
+                "operationId": "2855115d6bc9cd15557fd4d715221961",
                 "requestBody": {
                     "description": "수정할 관리자 정보",
                     "required": true,
@@ -2439,6 +2439,48 @@
                     },
                     "500": {
                         "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/password": {
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "비밀번호 재설정",
+                "description": "유저의 비밀번호 재설정 시 사용합니다.",
+                "operationId": "a99eeb982e343cc05a2eedefe7af6337",
+                "requestBody": {
+                    "description": "수정할 유저의 비밀번호",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
             }

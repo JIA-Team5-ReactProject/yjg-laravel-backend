@@ -35,6 +35,6 @@ class RefreshController extends Controller
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
-        return response()->json(['refresh_token' => $this->tokenService->createAccessTokenByModel($model)]);
+        return response()->json(['access_token' => $this->tokenService->generateTokenByModel($model, 'access')]);
     }
 }

@@ -152,10 +152,10 @@ class UserController extends Controller
             'name' => $credentials['displayName'],
         ]);
 
-        if (!$user || !$token = $this->tokenService->createAccessToken($credentials)) {
+        if (!$user || !$token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
-        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+        $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
         return response()->json([
             'user' => auth()->user(),
@@ -200,11 +200,11 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        if (! $token = $this->tokenService->createAccessToken($credentials)) {
+        if (! $token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
 
-        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+        $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
         return response()->json([
             'user' => auth()->user(),
@@ -404,5 +404,47 @@ class UserController extends Controller
         $resetPasswordService = new ResetPasswordService($validated['email']);
 
         return $resetPasswordService();
+    }
+
+    /**
+     * @OA\Patch (
+     *     path="/api/user/password",
+     *     tags={"학생"},
+     *     summary="비밀번호 재설정",
+     *     description="유저의 비밀번호 재설정 시 사용합니다.",
+     *     @OA\Requestbody(
+     *         description="수정할 유저의 비밀번호",
+     *         required=true,
+     *         @OA\Mediatype(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
+     *             )
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function recoverPassword(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'password' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
+
+        $user = auth()->user();
+        $user->password = Hash::make($validated['password']);
+
+        if(!$user->save()) return response()->json(['error' => '비밀번호 변경에 실패하였습니다.'], 500);
+
+        return response()->json(['message' => '비밀번호가 변경되었습니다.']);
     }
 }

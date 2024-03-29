@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\PasswordResetCode;
+use App\Models\User;
+use App\Services\TokenService;
 use DateTime;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -11,6 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class PasswordResetCodeController extends Controller
 {
+    public function __construct(protected TokenService $tokenService)
+    {
+    }
+
     /**
      * @OA\Get (
      *     path="/api/reset-password/verify",
@@ -67,6 +73,16 @@ class PasswordResetCodeController extends Controller
             return response()->json(['error' => '만료된 인증코드입니다.'], 401);
         }
 
-        return response()->json(['message' => '코드가 인증되었습니다.']);
+        // 이메일을 토대로 모델을 검색하고, 모델을 통해 토큰 생성
+        try {
+            $user = User::where('email', $validated['email'])->firstOrFail();
+        } catch (ModelNotFoundException) {
+            return response()->json(['error' => '이메일과 일치하는 유저를 찾을 수 없습니다.'], 404);
+        }
+
+        // email 타입 5분짜리 토큰
+        $emailToken = $this->tokenService->generateTokenByModel($user, 'email');
+
+        return response()->json(['message' => '코드가 인증되었습니다.', 'email_token' => $emailToken]);
     }
 }

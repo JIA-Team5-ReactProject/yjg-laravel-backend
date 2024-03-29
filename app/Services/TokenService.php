@@ -6,20 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class TokenService
 {
-    public function createAccessToken(array $credentials)
+    public function generateToken(array $credentials, string $type)
     {
-        return auth()->claims(['typ' => 'access'])->attempt($credentials);
+        if($type == 'refresh') {
+            return auth()->claims(['typ' => 'refresh'])->setTTL(1440 * 7)->attempt($credentials);
+        }
+        return auth()->claims(['typ' => $type])->attempt($credentials);
     }
 
-    public function createAccessTokenByModel(Model $user)
+    public function generateTokenByModel(Model $user, string $type)
     {
-        return auth()->claims(['typ' => 'access'])->login($user);
+        return auth()->claims(['typ' => $type])->login($user);
     }
-
-    public function createRefreshToken(array $credentials)
-    {
-        return auth()->claims(['typ' => 'refresh'])->setTTL(1440 * 7)->attempt($credentials);
-    }
-
-
 }

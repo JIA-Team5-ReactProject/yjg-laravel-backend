@@ -231,7 +231,7 @@ class AfterServiceController extends Controller
     public function updateStatus(string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('updateStatus');
+            $this->authorize('admin');
         } catch (AuthorizationException) {
             return $this->denied();
         }
