@@ -406,11 +406,42 @@ class UserController extends Controller
         return $resetPasswordService();
     }
 
-    public function recoverPassword(Request $request)
+    /**
+     * @OA\Patch (
+     *     path="/api/user/password",
+     *     tags={"학생"},
+     *     summary="비밀번호 재설정",
+     *     description="유저의 비밀번호 재설정 시 사용합니다.",
+     *     @OA\Requestbody(
+     *         description="수정할 유저의 비밀번호",
+     *         required=true,
+     *         @OA\Mediatype(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
+     *             )
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function recoverPassword(Request $request): \Illuminate\Http\JsonResponse
     {
-        $user = auth()->user();
+        try {
+            $validated = $request->validate([
+                'password' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            $errorStatus = $exception->status;
+            $errorMessage = $exception->getMessage();
+            return response()->json(['error' => $errorMessage], $errorStatus);
+        }
 
-        $user->password = Hash::make($request->password);
+        $user = auth()->user();
+        $user->password = Hash::make($validated['password']);
 
         if(!$user->save()) return response()->json(['error' => '비밀번호 변경에 실패하였습니다.'], 500);
 
