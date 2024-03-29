@@ -188,10 +188,10 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if (!$token = $this->tokenService->createAccessToken($credentials)) {
+        if (!$token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
         }
-        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+        $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
         try {
             $admin = User::findOrFail(auth()->id());
@@ -241,10 +241,10 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        if (!$token = $this->tokenService->createAccessToken($credentials)) {
+        if (!$token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
         }
-        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+        $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
         return response()->json([
             'user' => auth()->user(),

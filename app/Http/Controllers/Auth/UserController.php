@@ -152,10 +152,10 @@ class UserController extends Controller
             'name' => $credentials['displayName'],
         ]);
 
-        if (!$user || !$token = $this->tokenService->createAccessToken($credentials)) {
+        if (!$user || !$token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
-        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+        $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
         return response()->json([
             'user' => auth()->user(),
@@ -200,11 +200,11 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        if (! $token = $this->tokenService->createAccessToken($credentials)) {
+        if (! $token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
         }
 
-        $refreshToken = $this->tokenService->createRefreshToken($credentials);
+        $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
         return response()->json([
             'user' => auth()->user(),
