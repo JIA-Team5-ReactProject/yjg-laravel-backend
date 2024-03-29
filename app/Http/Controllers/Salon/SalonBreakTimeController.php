@@ -70,7 +70,7 @@ class SalonBreakTimeController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('admin');
+            $this->authorize('salon');
         } catch (AuthorizationException) {
             return $this->denied();
         }
@@ -124,7 +124,7 @@ class SalonBreakTimeController extends Controller
     public function destroy(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $this->authorize('admin');
+            $this->authorize('salon');
         } catch (AuthorizationException) {
             return $this->denied();
         }
