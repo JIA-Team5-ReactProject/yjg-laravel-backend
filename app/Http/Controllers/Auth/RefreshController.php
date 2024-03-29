@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
-use App\Models\Admin;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

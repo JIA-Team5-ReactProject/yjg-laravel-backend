@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\PasswordResetCode;
 use DateTime;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
