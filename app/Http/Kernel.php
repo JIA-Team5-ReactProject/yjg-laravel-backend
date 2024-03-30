@@ -81,6 +81,5 @@ class Kernel extends HttpKernel
      */
     protected $middlewarePriority = [
         \App\Http\Middleware\Authenticate::class,
-        \App\Http\Middleware\Adminprivilege::class,
     ];
 }
