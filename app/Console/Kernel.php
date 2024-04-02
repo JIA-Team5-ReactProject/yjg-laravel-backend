@@ -16,8 +16,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
             DB::table('password_reset_codes')
-                ->where('expires_at', '<', now('Asia/Seoul')->format('Y-m-d H:i:s'))->delete();
-        })->daily();
+                ->where('expires_at', '<',
+                    Carbon::now('Asia/Seoul')->addHours(9)->format('Y-m-d H:i:s'))->delete();
+        })->name('clean_up_password_code')->everySixHours()->onOneServer();
     }
 
     /**
