@@ -147,7 +147,7 @@ class NoticeController extends Controller
     public function show(string $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $notice = Notice::with(['noticeImages', 'admin'])->findOrFail($id);
+            $notice = Notice::with(['noticeImages', 'user'])->findOrFail($id);
         } catch (ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
