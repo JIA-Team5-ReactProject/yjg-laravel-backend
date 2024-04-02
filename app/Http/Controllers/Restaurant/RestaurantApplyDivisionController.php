@@ -495,7 +495,7 @@ class RestaurantApplyDivisionController extends Controller
         $semester = RestaurantApplyState::pluck('semester')->first();
         $autoState = RestaurantSemesterAuto::pluck('state')->first();
         Log::info('확인semester: '.$semester.'확인state: '.$autoState);
-        if($semester and $autoState){
+        if($semester == true and $autoState == true){
             Log::info('트루 트루');
             try {
                 $semesterAuto = RestaurantSemesterAuto::first();
@@ -516,6 +516,7 @@ class RestaurantApplyDivisionController extends Controller
             $autoState = RestaurantApplyManual::where('division', "semester")->first('state');
             return response()->json(['state' => $autoState]);
         }
+        return response()->json(['semester' => $semester]);
     }
 
     
@@ -523,8 +524,8 @@ class RestaurantApplyDivisionController extends Controller
      * @OA\Get(
      * path="/api/restaurant/apply/state/check/weekend",
      * tags={"식수 신청 기간"},
-     * summary="학기 식수 신청 기간 app",
-     * description="학기 식수 신청 기간 app에서 확인",
+     * summary="주말 식수 신청 기간 app",
+     * description="주말 식수 신청 기간 app에서 확인",
      *     
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),

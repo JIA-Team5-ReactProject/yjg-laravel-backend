@@ -3348,8 +3348,8 @@
                 "tags": [
                     "식수 신청 기간"
                 ],
-                "summary": "학기 식수 신청 기간 app",
-                "description": "학기 식수 신청 기간 app에서 확인",
+                "summary": "주말 식수 신청 기간 app",
+                "description": "주말 식수 신청 기간 app에서 확인",
                 "operationId": "49eafdb53216c4bc3cd7787d0e7a498b",
                 "responses": {
                     "200": {
