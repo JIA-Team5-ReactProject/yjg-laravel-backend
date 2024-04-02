@@ -588,13 +588,13 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $admins = User::has('privileges')->where('admin', true)->get();
+        $admins = User::where('admin', true)->get();
 
         if(isset($validated['type'])) {
             if($validated['type'] == 'unapproved') {
-                $admins = $admins->where('approved', '=', false)->values();
+                $admins = $admins->where('approved', false);
             } else if($validated['type'] == 'approved') {
-                $admins = $admins->where('approved','=', true)->values();
+                $admins = $admins->where('approved', true);
             }
         }
 
