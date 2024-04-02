@@ -14,7 +14,7 @@ use Illuminate\Validation\ValidationException;
 
 class NoticeController extends Controller
 {
-    private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
+    private array $tagRules = ['user', 'salon', 'restaurant', 'bus'];
 
     public function authorize($ability, $arguments = [Notice::class])
     {
