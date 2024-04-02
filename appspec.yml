@@ -1,0 +1,36 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        # 연결할 태스크의 ARN을 입력
+        TaskDefinition: <TASK_DEFINITION>
+        # 로드밸런서 설정
+        LoadBalancerInfo:
+          # 로드밸런서가 연결될 컨테이너 명
+          ContainerName: "nginx"
+          # 컨테이너가 리스닝할 포트
+          ContainerPort: 80
+        # Optional properties
+        # 플랫폼의 버전 같은데 여기서 말하는 어떤 것을 지칭하는지 모르겠음
+        PlatformVersion: "LATEST"
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            # 사용할 서브넷의 ID
+            Subnets: ["subnet-05918a570571ec82d","subnet-0865d4a10e6f7cbdd"]
+            # 보안 그룹
+            SecurityGroups: ["sg-0603b8efd43077c75"]
+            # 공개 IP 할당 여부
+            AssignPublicIp: "ENABLED"
+        # 용량 제공자 전략
+        CapacityProviderStrategy:
+          - Base: 1
+            CapacityProvider: "FARGATE"
+            Weight: 1
+# 배포 생명주기동안 실행할 훅 목록
+#Hooks:
+#  - BeforeInstall: "LambdaFunctionToValidateBeforeInstall"
+#  - AfterInstall: "LambdaFunctionToValidateAfterInstall"
+#  - AfterAllowTestTraffic: "LambdaFunctionToValidateAfterTestTrafficStarts"
+#  - BeforeAllowTraffic: "LambdaFunctionToValidateBeforeAllowingProductionTraffic"
+#  - AfterAllowTraffic: "LambdaFunctionToValidateAfterAllowingProductionTraffic"

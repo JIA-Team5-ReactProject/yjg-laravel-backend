@@ -1,0 +1,79 @@
+{
+    "family": "yeungjin-global",
+    "executionRoleArn": "arn:aws:iam::992382483620:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "php",
+            "image": "992382483620.dkr.ecr.ap-northeast-2.amazonaws.com/yjg-laravel-backend:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "php",
+                    "containerPort": 9000,
+                    "hostPort": 9000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [
+                {
+                    "value": "arn:aws:s3:::yjg-s3-bucket/yjg-backend.env",
+                    "type": "s3"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/yeungjin-global",
+                    "awslogs-region": "ap-northeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        },
+        {
+            "name": "nginx",
+            "image": "992382483620.dkr.ecr.ap-northeast-2.amazonaws.com/yjg-nginx-server:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "nginx",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/yeungjin-global",
+                    "awslogs-region": "ap-northeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}

@@ -1,0 +1,4944 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Yeungjin-Global",
+        "description": "YJG API Documentation",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/absence/count": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "외출/외박 신청 인원 수",
+                "description": "Query string으로 받은 날짜에 외출(go)과 외박(sleep)을 신청한 인원 수",
+                "operationId": "58ef4594579b3d2990c2f590dcebd79e",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜",
+                        "required": true,
+                        "schema": {
+                            "type": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/absence": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "전체 목록",
+                "description": "외출/외박의 전체 목록을 반환함. type과 date는 필수 값이며,\n     *                  추가적으로 user_name을 입력하면 사용자 이름과 일치하는 결과를 가져옴",
+                "operationId": "2a57a66e0987de2e01b371c394865109",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "타입(외박:sleep 혹은 외출:go)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "페이지",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜(예약 생성일 기준)",
+                        "required": true,
+                        "schema": {
+                            "type": "date"
+                        }
+                    },
+                    {
+                        "name": "user_name",
+                        "in": "query",
+                        "description": "사용자 이름",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "외출/외박 신청",
+                "description": "유저의 외출/외박 신청",
+                "operationId": "809d1ea044d518f83d53d93564d9d2ae",
+                "requestBody": {
+                    "description": "외출/외박 시작 및 종료일자, 사유, 타입을 입력받습니다.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "description": "출발일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "end_date": {
+                                        "description": "복귀일(외출의 경우에는 복귀일과 동일하게)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-02"
+                                    },
+                                    "content": {
+                                        "description": "사유",
+                                        "type": "string",
+                                        "example": "병원 진료로 인한 외박"
+                                    },
+                                    "type": {
+                                        "description": "외박, 외출 여부 (go, sleep)",
+                                        "type": "string",
+                                        "example": "sleep"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "409": {
+                        "description": "중복되는 외박/외출 기록이 있을 경우"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/absence/user": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "유저의 외출/외박 목록",
+                "description": "현재 유저의 외출/외박 목록",
+                "operationId": "e87c2ab46ca2ca70531bdd2bbb037da0",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/absence/{id}": {
+            "get": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "특정 외출/외박 내용",
+                "description": "파라미터로 받은 외출/외박의 기록의 아이디와 일치하는 외출/외박 기록을 불러옴",
+                "operationId": "8bd3f3d5a5d2a926677c3e2b3e789f45",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "외출/외박 기록의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "삭제(취소)",
+                "description": "외출/외박 기록 삭제(취소) 기능입니다. 유저가 본인의 예약을 삭제(취소)할 때 사용합니다.",
+                "operationId": "b450dea9241557fdae071c77c24dc019",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제(취소)할 외박/외출 기록의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "수정",
+                "description": "외출/외박 내용을 수정할 때 사용합니다. 변경할 값만 Request Body에 보내면 됩니다.",
+                "operationId": "218ff4a03253d983ec3d229657f166a1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 외출/외박 기록의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 날짜 혹은 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "description": "출발일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "end_date": {
+                                        "description": "복귀일(외출의 경우에는 복귀일과 동일하게)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-02"
+                                    },
+                                    "content": {
+                                        "description": "사유",
+                                        "type": "string",
+                                        "example": "병원 진료로 인한 외박"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/absence/reject/{id}": {
+            "patch": {
+                "tags": [
+                    "외출/외박"
+                ],
+                "summary": "거절(관리자)",
+                "description": "외출/외박을 거절할 때 사용합니다. 해당하는 아이디의 status를 false로 변경합니다.",
+                "operationId": "3ba23d9680f6b50418221f664a6724b3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "거절할 외출/외박 기록의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/bus/schedule": {
+            "post": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 시간표 추가",
+                "description": "버스 시간표를 추가",
+                "operationId": "3855ad7fb75c49feb1a36dfbedd68508",
+                "requestBody": {
+                    "description": "추가할 시간표 내용,노선,회차",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "round_id": {
+                                        "description": "버스회차id",
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "station": {
+                                        "description": "정류장",
+                                        "type": "string",
+                                        "example": "태전역"
+                                    },
+                                    "bus_time": {
+                                        "description": "버스시간",
+                                        "type": "date_format",
+                                        "example": "08:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/round/{id}": {
+            "delete": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 회차 삭제",
+                "description": "버스 회차 삭제",
+                "operationId": "9d40f611cc6cd16a494418287413e857",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 버스 회차의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 회차 수정",
+                "description": "버스 회차를 수정",
+                "operationId": "c219275d35cac0ba4e1932e5f326d7c7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 회차 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 회차 내용, 회차id",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "round": {
+                                        "description": "회차",
+                                        "type": "string",
+                                        "example": "3회차"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/schedule/{id}": {
+            "delete": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 시간표 삭제",
+                "description": "버스 시간표 삭제",
+                "operationId": "57ffe4db821e1218cbc475928ecf1987",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 버스 시간표의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/round": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 버스 회차 가져오기",
+                "description": "해당하는 id의 버스 회차 리스트 가져오기",
+                "operationId": "8063d770ddfac870340ced876704bec1",
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 bus_route값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "B"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "버스 회차 추가",
+                "description": "버스 회차 추가 ",
+                "operationId": "26dfbd2c977f9da516b460cfb49693e2",
+                "requestBody": {
+                    "description": "추가할 버스 회차",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "round": {
+                                        "description": "회차",
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": "false"
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 방향",
+                                        "type": "string",
+                                        "example": "B"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/round/schedule/{id}": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 회차의 버스 시간표",
+                "description": "해당 회차의 버스 시간표",
+                "operationId": "4885b263ba7ae33a64f75e59ab622855",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "가져올 버스 회차의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/bus/round/appSchedule": {
+            "get": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "App 에서 해당 버스 회차, 스케줄 가져오기",
+                "description": "App 해당하는 버스의 회차, 스케줄 리스트 가져오기",
+                "operationId": "1fc5cb3ce01bfff1da4272d47b4aaf4b",
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 bus_route값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "weekend": {
+                                        "description": "주말/평일",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "semester": {
+                                        "description": "학기/방학",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "bus_route_direction": {
+                                        "description": "버스 노선 ",
+                                        "type": "string",
+                                        "example": "s_english"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/bus/schedule/update/{id}": {
+            "patch": {
+                "tags": [
+                    "버스"
+                ],
+                "summary": "해당 버스 스케줄 수정",
+                "description": "해당 버스 스케줄 을 수정 합니다",
+                "operationId": "f92bc3111b0c31af1405edd575bfa54b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 스케줄 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "가져오고 싶은 회차의 id값, 수정할 스케줄의 값",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "station": {
+                                        "description": "수정할 station 값",
+                                        "type": "string",
+                                        "example": "정류장"
+                                    },
+                                    "bus_time": {
+                                        "description": "수정할 bus_time 값",
+                                        "type": "string",
+                                        "example": "08:20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/notice": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 검색",
+                "description": "body로 보낸 값에 맞는 공지사항을 검색하는 기능입니다. 검색할 값을 보내지 않으면 전체 공지사항을 반환합니다.",
+                "operationId": "ed717a5273b1f0fe69b37754d9f9d4ae",
+                "requestBody": {
+                    "description": "페이지, 공지사항의 태그(admin, salon, restaurant, bus), 제목으로 검색합니다.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "page": {
+                                        "description": "페이지",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "Bus"
+                                    },
+                                    "title": {
+                                        "description": "검색어",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 작성(관리자)",
+                "description": "공지사항 작성에 사용됩니다. 사진은 이미지 파일 그대로 보내면 됩니다.",
+                "operationId": "af5200b6f4c7031334269d8f6162d2dd",
+                "requestBody": {
+                    "description": "공지사항에 들어갈 내용 및 사진",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "행정"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/notice/recent": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "최근 3건의 공지사항",
+                "description": "Query string과 일치하는 태그를 가진 최신 공지사항 3개를 반환합니다.",
+                "operationId": "cbcdfc23b6bb7395b90a1cf7f8687b4a",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "찾을 공지사항의 태그",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/notice/recent/urgent": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "최근 긴급 공지사항",
+                "description": "bus, admis 태그를 가진 최신 긴급 공지사항 1개를 반환합니다.",
+                "operationId": "2e9d9b83c12159317b5baffad8435d7a",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/notice/{id}": {
+            "get": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 검색",
+                "description": "아이디와 일치하는 공지사항을 반환합니다.",
+                "operationId": "1c64bdae7a0193c179e08e51221a81e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "찾을 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 삭제(관리자)",
+                "description": "공지사항 삭제 시 사용됩니다.",
+                "operationId": "fb8e594d035f144948c965e87861738b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "공지사항"
+                ],
+                "summary": "공지사항 수정(관리자)",
+                "description": "공지사항을 수정할 때 사용됩니다. 수정할 값만 request body에 전송하면 됩니다.\n     *                  삭제할 이미지의 경우에는 delete_images 배열에 이미지의 아이디 값을 문자열로,\n     *                  추가할 이미지는 기존 images 배열에 파일로 추가하면 됩니다.",
+                "operationId": "e441ee7d745bd097bd3a7e161ba3b0f2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 공지사항의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 글 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "urgent": {
+                                        "description": "긴급",
+                                        "type": "boolean",
+                                        "example": "긴급 여부"
+                                    },
+                                    "tag": {
+                                        "description": "태그",
+                                        "type": "string",
+                                        "example": "행정"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "string"
+                                        }
+                                    },
+                                    "delete_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/after-service/{id}/comment": {
+            "get": {
+                "tags": [
+                    "AS 댓글"
+                ],
+                "summary": "특정 AS의 댓글 불러오기",
+                "description": "아이디에 해당하는 AS의 댓글을 받아옵니다.",
+                "operationId": "74eec2920314fff302b3f1fc52a6dee2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "as의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "AS 댓글"
+                ],
+                "summary": "작성(관리자)",
+                "description": "AS에 대한 댓글을 작성할 때 사용하는 기능입니다.",
+                "operationId": "35a68b8ca07169e492723788c3f4021d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "댓글을 작성할 AS의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "작성할 댓글의 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "comment": {
+                                        "description": "댓글의 내용",
+                                        "type": "string",
+                                        "example": "2월 30일 12시에 방문하겠습니다"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/after-service/comment/{id}": {
+            "delete": {
+                "tags": [
+                    "AS 댓글"
+                ],
+                "summary": "삭제(관리자)",
+                "description": "아이디에 해당하는 AS의 댓글 삭제할 때 사용합니다.",
+                "operationId": "63099045e99be9f4202a585d57fd5a87",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 댓글의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "AS 댓글"
+                ],
+                "summary": "수정(관리자)",
+                "description": "AS의 댓글을 수정할 때 사용하는 기능입니다.",
+                "operationId": "0b968502133ea46dcd50307bd5d080cd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 댓글의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "설명",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "comment": {
+                                        "description": "수정할 댓글의 내용",
+                                        "type": "string",
+                                        "example": "3월 32일 24시에 방문하겠습니다."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/after-service": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "AS 검색",
+                "description": "Query string의 조건에 맞게 AS 검색",
+                "operationId": "39023939c2f7fb47db515c6a6c21a51f",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "신청인",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "상태 (true or false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "현재 페이지",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "AS 작성",
+                "description": "새로운 AS를 신청할 때 사용합니다.",
+                "operationId": "42083e7135cfabfb9054d7977cd24a60",
+                "requestBody": {
+                    "description": "생성할 AS의 내용",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "visit_place": {
+                                        "description": "방문 장소",
+                                        "type": "string",
+                                        "example": "101호"
+                                    },
+                                    "visit_date": {
+                                        "description": "희망 방문 일자",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/after-service/user": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "유저의 AS 검색",
+                "description": "유저 아이디와 일치하는 AS 검색",
+                "operationId": "69d73d642fe4b2cf9ad4ecfba94b14c0",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/after-service/{id}": {
+            "get": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "특정 AS 불러오기",
+                "description": "아이디에 해당하는 AS 정보를 받아옵니다.",
+                "operationId": "cc4f70e320e34debbc8f44690932e15f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "as의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "삭제",
+                "description": "아이디에 해당하는 AS를 삭제",
+                "operationId": "1c3c56511efb47683d340b509a04e84f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "수정",
+                "description": "아이디에 해당하는 AS를 수정할 때 사용합니다.",
+                "operationId": "3a852e86ec1f6bfa9d402af1b64b3ce8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 AS 글 내용",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "제목",
+                                        "type": "string",
+                                        "example": "제목입니다."
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "내용입니다."
+                                    },
+                                    "visit_place": {
+                                        "description": "방문 장소",
+                                        "type": "string",
+                                        "example": "101호"
+                                    },
+                                    "visit_date": {
+                                        "description": "희망 방문 일자",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "file"
+                                        }
+                                    },
+                                    "delete_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "numeric"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/after-service/status/{id}": {
+            "patch": {
+                "tags": [
+                    "AS"
+                ],
+                "summary": "상태 변경(관리자)",
+                "description": "AS의 상태를 완료로 변경할 때 사용합니다.",
+                "operationId": "6c59ba3b3c3b738daebaece16f6c14a2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "상태를 변경할 AS의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "관리자 정보",
+                "description": "현재 인증된 관리자의 정보를 반환",
+                "operationId": "6d0cf02b419b0df0eb46c97d4101d25b",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "회원가입",
+                "description": "관리자 회원가입",
+                "operationId": "30b7f2d9502f3881080d7e762ebd7c7a",
+                "requestBody": {
+                    "description": "관리자 회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "관리자"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "탈퇴(본인)",
+                "description": "관리자 본인이 계정 탈퇴 시 사용합니다.",
+                "operationId": "8c83a6dce32306b18f5e57597e88e71c",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "개인정보 수정",
+                "description": "관리자 개인정보 수정 시 사용합니다.",
+                "operationId": "2855115d6bc9cd15557fd4d715221961",
+                "requestBody": {
+                    "description": "수정할 관리자 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "변경할 이름",
+                                        "type": "string",
+                                        "example": "hyun"
+                                    },
+                                    "phone_number": {
+                                        "description": "변경할 휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "current_password": {
+                                        "description": "이전 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf321"
+                                    },
+                                    "new_password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin/master/{id}": {
+            "delete": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "탈퇴(마스터)",
+                "description": "마스터 관리자가 다른 관리자를 탈퇴시킬 때 사용합니다.",
+                "operationId": "9aeb249050f344e6dc4e7469cac44213",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 관리자의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/login": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "로그인",
+                "description": "관리자 로그인 시 사용합니다.",
+                "operationId": "7fa91d413b4099cb3908a831f02580eb",
+                "requestBody": {
+                    "description": "관리자 로그인을 위한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/login/web": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "로그인(웹)",
+                "description": "관리자가 웹에서 로그인 시 사용합니다.",
+                "operationId": "5f39d5fc1aa6cde3d7b9f9a8f82e6f9e",
+                "requestBody": {
+                    "description": "관리자 로그인을 위한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/admin/logout": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "로그아웃",
+                "description": "관리자 로그아웃",
+                "operationId": "2dd98745fdd9f4d4babe7b667b5ebf92",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/admin/privilege": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "전체 권한 목록",
+                "description": "privileges 테이블에 저장된 모든 권한 목록을 반환합니다.",
+                "operationId": "2b77defadc587860f28ee2dd9ed16c80",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "권한 변경",
+                "description": "관리자의 서비스 권한 변경 시 사용합니다.",
+                "operationId": "a07ea5249312c0e20c135f5623126c6a",
+                "requestBody": {
+                    "description": "관리자 권한 변경을 위한 값 및 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "관리자 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "salon": {
+                                        "description": "미용실 권한",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "admin": {
+                                        "description": "행정 권한",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "restaurant": {
+                                        "description": "식당 권한",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin/approve": {
+            "patch": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "회원가입 승인",
+                "description": "관리자 회원가입 승인 (거부는 회원 탈퇴 API 사용 해주세요)",
+                "operationId": "889ba268794e3f04796d8b05d4c33fad",
+                "requestBody": {
+                    "description": "아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "admin_id": {
+                                        "description": "권한을 부여할 관리자의 아이디",
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin/verify-password": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "PW 체크",
+                "description": "관리자 회원정보 수정 페이지 접속 시 PW 체크",
+                "operationId": "1e07b81c9d3b0084bf28ad5c3b3c7ab6",
+                "requestBody": {
+                    "description": "PW",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin/find-email": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "이메일 찾기",
+                "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
+                "operationId": "6dcba9c37ddea839e0490fcea50bdfce",
+                "requestBody": {
+                    "description": "name & phone_number(without hyphen)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "testname"
+                                    },
+                                    "phone_number": {
+                                        "description": "휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin/list": {
+            "get": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "승인 혹은 미승인 관리자 목록",
+                "description": "파라미터 값에 맞는 관리자를 admins 배열에 반환",
+                "operationId": "4a65dd56b1d92c0a0ee528ec480c4e6d",
+                "requestBody": {
+                    "description": "승인 관리자 조회의 경우 approved, 미승인 관리자 조회의 경우 unapproved, 전체 조회 시에는 body 없이 요청만",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "승인 미승인 여부",
+                                        "type": "string",
+                                        "example": "approved"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/admin/reset-password": {
+            "post": {
+                "tags": [
+                    "관리자"
+                ],
+                "summary": "비밀번호 초기화",
+                "description": "회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
+                "operationId": "997c6f81d699525a62687e2045296d32",
+                "requestBody": {
+                    "description": "name & email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "testname"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "test@test.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/reset-password/verify": {
+            "get": {
+                "tags": [
+                    "비밀번호"
+                ],
+                "summary": "비밀번호 초기화 코드 검증",
+                "description": "메일로 받은 코드를 인증",
+                "operationId": "9b8909ff14919ad027682e80fb9aa0ff",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "이메일로부터 받은 코드",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "사용자의 이메일",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/refresh": {
+            "get": {
+                "tags": [
+                    "토큰"
+                ],
+                "summary": "새 액세스 토큰 발급",
+                "description": "헤더에 리프레쉬 토큰을 포함시켜 요청을 보내면, 해당 토큰을 통해 새 액세스 토큰을 반환",
+                "operationId": "737e846a7977eef5b50455057ab9cded",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "유저"
+                ],
+                "summary": "유저 정보",
+                "description": "현재 인증된 유저의 정보를 반환",
+                "operationId": "2183352f835b442102aaa60ac0d76c29",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "회원가입(인증X)",
+                "description": "회원가입",
+                "operationId": "86f09d8ce9fe52b8e6b777dd707385ad",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "사용자 이름",
+                                        "type": "string",
+                                        "example": "관리자"
+                                    },
+                                    "student_id": {
+                                        "description": "학번",
+                                        "type": "string",
+                                        "example": "1901234"
+                                    },
+                                    "phone_number": {
+                                        "description": "전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "탈퇴",
+                "description": "학생 유저의 회원 탈퇴 시 사용합니다.",
+                "operationId": "c256e11ea1b42e32fea712214efd4c4d",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "개인정보 수정",
+                "description": "유저의 개인정보 수정 시 사용합니다.",
+                "operationId": "401c87ec9c114bfb23532be2e7ab6228",
+                "requestBody": {
+                    "description": "수정할 유저의 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "student_id": {
+                                        "description": "정보를 수정할 유저의 아이디",
+                                        "type": "string",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "변경할 이름",
+                                        "type": "string",
+                                        "example": "hyun"
+                                    },
+                                    "phone_number": {
+                                        "description": "변경할 휴대폰 번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "current_password": {
+                                        "description": "이전 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf321"
+                                    },
+                                    "new_password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/user/google-login": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "로그인",
+                "description": "유저 google 로그인 시 사용합니다.",
+                "operationId": "ef19ddde5df8c5453e5425bdac9b35df",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "displayName": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "로그인",
+                "description": "일반 로그인 시 사용합니다.",
+                "operationId": "b361a49b7041e04422d9e27f6edc43d0",
+                "requestBody": {
+                    "description": "회원가입 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/logout": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "로그아웃",
+                "description": "유저 로그아웃",
+                "operationId": "8b589eead1accdf2271a4ebc07a06168",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/user/approve": {
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "회원가입 승인",
+                "description": "학생 회원가입 승인",
+                "operationId": "713a7fe5d63265247af733f4a4ee9117",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/verify-email/{id}": {
+            "get": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "이메일 중복 확인",
+                "description": "학생 이메일 중복 여부를 확인할 때 사용합니다.",
+                "operationId": "8e576b925607f3969b0e9119e3b1c1be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "중복을 확인할 학생의 이메일",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/reset-password": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "비밀번호 초기화",
+                "description": "회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
+                "operationId": "fd28ffa8acd728bc29c4dbfa2a212841",
+                "requestBody": {
+                    "description": "name & email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "이름",
+                                        "type": "string",
+                                        "example": "testname"
+                                    },
+                                    "email": {
+                                        "description": "이메일",
+                                        "type": "string",
+                                        "example": "test@test.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/password": {
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "비밀번호 재설정",
+                "description": "유저의 비밀번호 재설정 시 사용합니다.",
+                "operationId": "a99eeb982e343cc05a2eedefe7af6337",
+                "requestBody": {
+                    "description": "수정할 유저의 비밀번호",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 목록",
+                "description": "전체 회의실 목록을 불러올 때 사용합니다.",
+                "operationId": "35a6d34c65183dfeb2121d73fca463b5",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 추가(관리자)",
+                "description": "회의실 추가 시 사용합니다.",
+                "operationId": "bc8f08e387f754ab91969cc045dd6690",
+                "requestBody": {
+                    "description": "설명",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "room_number": {
+                                        "description": "추가할 회의실의 번호",
+                                        "type": "string",
+                                        "example": "203"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/check": {
+            "get": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실의 예약된 시간 목록",
+                "description": "특정 날짜 및 특정 회의실의 예약된 시간 목록을 불러올 때 사용합니다.",
+                "operationId": "35858fffe07d0cedda12d0bd709b3103",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "room_number",
+                        "in": "query",
+                        "description": "회의실의 룸 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/{id}": {
+            "delete": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 삭제(관리자)",
+                "description": "특정 회의실을 삭제할 때 사용합니다.",
+                "operationId": "5e1782da2fbbeae4a4b55dd7343d1e42",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "회의실의 룸 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "회의실"
+                ],
+                "summary": "회의실 상태 변경(관리자)",
+                "description": "회의실을 닫거나 열 때 사용합니다.",
+                "operationId": "ed98368b4d82048f7447deef2e52ab4e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "변경할 회의실 룸 번호",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "회의실 오픈 여부",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "open": {
+                                        "description": "오픈 여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation": {
+            "get": {
+                "tags": [
+                    "회의실 - 예약"
+                ],
+                "summary": "예약 검색",
+                "description": "주어진 날짜, 호실을 통해 조건에 맞는 예약을 검색합니다.",
+                "operationId": "e21f90e81243d2cb8e164589f29dc0d0",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "조회할 날짜",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "room_number",
+                        "in": "query",
+                        "description": "회의실의 번호",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "VaildationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "회의실 - 예약"
+                ],
+                "summary": "예약하기",
+                "description": "회의실 예약 시 사용합니다.",
+                "operationId": "cc0b596d1b4e31f5638c07bbddfed1e2",
+                "requestBody": {
+                    "description": "예약 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meeting_room_number": {
+                                        "description": "예약할 방 번호",
+                                        "type": "string",
+                                        "example": "206"
+                                    },
+                                    "reservation_date": {
+                                        "description": "예약할 날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-03-01"
+                                    },
+                                    "reservation_s_time": {
+                                        "description": "예약 시작(분까지)",
+                                        "type": "time",
+                                        "example": "17:00"
+                                    },
+                                    "reservation_e_time": {
+                                        "description": "예약 종료(분까지)",
+                                        "type": "time",
+                                        "example": "20:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation/user": {
+            "get": {
+                "tags": [
+                    "회의실 - 예약"
+                ],
+                "summary": "유저의 예약",
+                "description": "로그인한 유저의 회의실 예약 목록을 불러올 때 사용합니다.",
+                "operationId": "bfbc41c4f523a9f4e11021167546d416",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation/{id}": {
+            "get": {
+                "tags": [
+                    "회의실 - 예약"
+                ],
+                "summary": "특정 예약",
+                "description": "특정 아이디에 해당하는 예약 정보를 받아올 때 사용합니다.",
+                "operationId": "80560eb9854189053cb0f3e466c8de81",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "예약 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "회의실 - 예약"
+                ],
+                "summary": "회의실의 예약을 삭제할 때 사용합니다.",
+                "description": "",
+                "operationId": "379eb476d189c0815a054785f2f9f09b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 예약의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/meeting-room/reservation/reject/{id}": {
+            "patch": {
+                "tags": [
+                    "회의실 - 예약"
+                ],
+                "summary": "예약 거절(관리자)",
+                "description": "관리자의 사유에 의해 예약을 거절할 때 사용합니다. status를 false로 바꿉니다.",
+                "operationId": "26c472a58b53de8d0c95b55ae88d478c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "예약을 거절할 ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/user/qr": {
+            "get": {
+                "tags": [
+                    "QR코드"
+                ],
+                "summary": "QR코드 생성",
+                "description": "QR코드 생성해서 이미지로 반환",
+                "operationId": "d65f357ad241ec05238bb7de17bfdbf8",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/account": {
+            "post": {
+                "tags": [
+                    "식당 계좌"
+                ],
+                "summary": "식당 계좌 저장",
+                "description": "식당 계좌 저장을 처리합니다",
+                "operationId": "823f5c7fa71aa09db8ba0afe63a27aaf",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/account/set": {
+            "patch": {
+                "tags": [
+                    "식당 계좌"
+                ],
+                "summary": "식당 계좌 수정",
+                "description": "식당 계좌 수정을 처리합니다",
+                "operationId": "8126a21cc60d0a4a04ded59933abb7da",
+                "requestBody": {
+                    "description": "식당 계좌 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "account": {
+                                        "description": "계좌",
+                                        "type": "string",
+                                        "example": "계좌번호"
+                                    },
+                                    "bank_name": {
+                                        "description": "은행명",
+                                        "type": "string",
+                                        "example": "은행명"
+                                    },
+                                    "name": {
+                                        "description": "예금주명",
+                                        "type": "string",
+                                        "example": "예금주명"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/account/show": {
+            "get": {
+                "tags": [
+                    "식당 계좌"
+                ],
+                "summary": "식당 계좌 조회",
+                "description": "식당 계좌 조회를 처리합니다",
+                "operationId": "de82951b97ad5bc29301fe56fdf7aabb",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/weekend/auto": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "주말 식수 신청 날짜 디폴트 넣기",
+                "description": "주말 식수 신청 날짜 디폴트 넣기",
+                "operationId": "7ff75571683c8d490a1a1b215f913548",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/weekend/set": {
+            "patch": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "주말 식수 자동 신청 설정",
+                "description": "주말 식수 자동 신청 설정",
+                "operationId": "412485bdcff35e66e839b11bbefb17a6",
+                "requestBody": {
+                    "description": "설정할 시간",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_week": {
+                                        "description": "시작 요일(0~6)",
+                                        "type": "string",
+                                        "example": "2"
+                                    },
+                                    "end_week": {
+                                        "description": "종료 요일(0~6)",
+                                        "type": "string",
+                                        "example": "5"
+                                    },
+                                    "start_time": {
+                                        "description": "시작 시간",
+                                        "type": "string",
+                                        "example": "08:00"
+                                    },
+                                    "end_time": {
+                                        "description": "종료 시간",
+                                        "type": "string",
+                                        "example": "22:00"
+                                    },
+                                    "state": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/weekend/get": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "방학 식수 자동 신청 get",
+                "description": "방학 식수 자동 신청 get",
+                "operationId": "b7eebae810495613ba6b9109fb036286",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/weekend/get/app": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "방학 식수 자동 신청App get",
+                "description": "방학 식수 자동 신청App get",
+                "operationId": "71d8706215058ac0e508f55047f008ae",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/auto": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 신청 날짜 디폴트 넣기",
+                "description": "학기 식수 신청 날짜 디폴트 넣기",
+                "operationId": "715b2045b579cdebb159bea21833938c",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/set": {
+            "patch": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 자동 신청 설정",
+                "description": "학기 식수 자동 신청 설정",
+                "operationId": "6d28734bed742015a3a9524be5ecc346",
+                "requestBody": {
+                    "description": "설정할 시간",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "description": "시작 날짜",
+                                        "type": "string",
+                                        "example": "2024-03-19"
+                                    },
+                                    "end_date": {
+                                        "description": "종료 날짜",
+                                        "type": "string",
+                                        "example": "2024-06-22"
+                                    },
+                                    "state": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/get": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 자동 신청 get",
+                "description": "학기 식수 자동 신청 get",
+                "operationId": "7dfba620aa4e0971fdfcfc4448dd5f82",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/semester/get/app": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 자동 신청App get",
+                "description": "학기 식수 자동 신청App get",
+                "operationId": "aeace256d7f5619eb2a7d6bdf9b3ba21",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/manual": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 수동 신청 디폴트 넣기",
+                "description": "식수 수동 디폴트 넣기",
+                "operationId": "e7a5fc8d447573027ea53c07fc21be37",
+                "requestBody": {
+                    "description": "학기인지 방학인지, 열지 닫을지",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "division": {
+                                        "description": "학기,방학 구분",
+                                        "type": "string",
+                                        "example": "semester or weekend"
+                                    },
+                                    "state": {
+                                        "description": "열림/닫힘",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/manual/set": {
+            "patch": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 수동 신청 수정",
+                "description": "식수 수동 신청 수정",
+                "operationId": "96f1092f01eec289d0f3527b3617d111",
+                "requestBody": {
+                    "description": "학기인지 방학인지, 열지 닫을지",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "division": {
+                                        "description": "학기,방학 구분",
+                                        "type": "string",
+                                        "example": "semester or weekend"
+                                    },
+                                    "state": {
+                                        "description": "상태",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/manual/get": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 수동 신청 get",
+                "description": "식수 수동 신청 get",
+                "operationId": "85cd8cc99c73d2af0c240c4c3ff92c78",
+                "requestBody": {
+                    "description": "학기인지 방학인지",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "division": {
+                                        "description": "학기,방학 구분",
+                                        "type": "string",
+                                        "example": "semester or weekend"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 신청 기간 on/off 확인",
+                "description": "식수 신청 기간 on/off 확인",
+                "operationId": "043084d94d5bf47be12a7342b016305e",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/on": {
+            "post": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "식수 신청 기간 셋팅",
+                "description": "식수 신청 기간 셋팅",
+                "operationId": "0c6267777c09dab5e16c73b1fb07c88e",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/check/semester": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 신청 기간 app",
+                "description": "학기 식수 신청 기간 app에서 확인",
+                "operationId": "3b3418edcc43c72e7ca08ce3f2d94650",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/check/weekend": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "주말 식수 신청 기간 app",
+                "description": "주말 식수 신청 기간 app에서 확인",
+                "operationId": "49eafdb53216c4bc3cd7787d0e7a498b",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu": {
+            "post": {
+                "tags": [
+                    "식단표"
+                ],
+                "summary": "식단표 업로드",
+                "description": "바디에 엑셀 파일 담아서 보내면 됩니다.",
+                "operationId": "28629b4122a88063a4a5d8401fcfb969",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "excel_file": {
+                                        "description": "식단표 엑셀 파일",
+                                        "type": "file",
+                                        "example": "1월.xsl"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/get/year": {
+            "get": {
+                "tags": [
+                    "식단표"
+                ],
+                "summary": "년도 전부 가져오기",
+                "description": "년도 전부 가져오기",
+                "operationId": "3db3193b76f097daed61caab8dcd7dbd",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/get/w": {
+            "get": {
+                "tags": [
+                    "식단표"
+                ],
+                "summary": "식단표 1주치 가져오기",
+                "description": "식단표 1주치 가져오기",
+                "operationId": "009925aeffd85b427d15a20803b294ce",
+                "requestBody": {
+                    "description": "가져올 식단표의 년도, 월",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "year": {
+                                        "description": "년도",
+                                        "type": "string",
+                                        "example": "2024"
+                                    },
+                                    "month": {
+                                        "description": "월",
+                                        "type": "string",
+                                        "example": "03"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/get/d": {
+            "get": {
+                "tags": [
+                    "식단표"
+                ],
+                "summary": "식수 식단표 하루치 가져오기",
+                "description": "식수 식단표 하루치를 가져옵니다",
+                "operationId": "3b26d245c4ec9a032d80e4373639a043",
+                "requestBody": {
+                    "description": "받고싶은 날짜(년,월,일)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "description": "년-월-일",
+                                        "type": "string",
+                                        "example": "2023-11-14"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/menu/d/{id}": {
+            "delete": {
+                "tags": [
+                    "식단표"
+                ],
+                "summary": "식단표 삭제",
+                "description": "식단표 삭제",
+                "operationId": "368bef47816da39a3860fd4b9f4e0780",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 식단표의 date_id 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 학기 신청",
+                "description": "식수 학기 신청을 처리합니다",
+                "operationId": "4aad784a36b64dea17b0450cf35fa5b2",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "payment": {
+                                        "description": "입금 확인",
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/g/payment{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 학기 신청 입금여부",
+                "description": "식수 학기 신청의 입금여부를 확인 합니다",
+                "operationId": "cad43b7b850c5562c601f66a44414c1a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "조회 할 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/p/payment/{id}": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 입금여부 수정",
+                "description": "학기 입금여부를 수정",
+                "operationId": "5625fe8196b922a488b72c7af3cf9d15",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 입금여부(true,false), 신청id",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "payment": {
+                                        "description": "입금여부",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 신청 삭제",
+                "description": "학기 식수 신청 삭제",
+                "operationId": "2a0bf69d8561082237eeb76058ed04ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 학기 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/show": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 신청 리스트 보기, 검색",
+                "description": "학기 식수 신청 리스트 보기, 검색하기",
+                "operationId": "5adfde227d85d6dd22f2d3461f192e8c",
+                "requestBody": {
+                    "description": "찾고싶은 학생 이름",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "학생이름",
+                                        "type": "string",
+                                        "example": "권지훈"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/show/user": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유저 정보",
+                "description": "학기 식수 유조 정보 확인",
+                "operationId": "e28765ed7d54a2d28b8aa78b05cd511d",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/show/user/after": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "학기 식수 유저 정보(신청 후)",
+                "description": "학기 식수 유조 정보 확인(신청 후)",
+                "operationId": "6ccda42e9859f785e8f3100006436ecc",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "식수 주말 신청",
+                "description": "식수 주말 신청을 처리합니다",
+                "operationId": "d0d1ebc739f5709e5b5ac23cf73d0907",
+                "requestBody": {
+                    "description": "학생 식사 신청 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사유형",
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "refund": {
+                                        "description": "환불여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "sat": {
+                                        "description": "토욜",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "sun": {
+                                        "description": "일욜",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/g/payment/{id}": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 삭제 확인",
+                "description": "주말 식수 삭제 확인",
+                "operationId": "054cc9d10ec30323087e31bcfa00868c",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/p/payment/{id}": {
+            "post": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 입금여부 수정",
+                "description": "주말 입금여부를 수정",
+                "operationId": "5e5483fbcfda1f3e0d49e1f3341aaa15",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "확인할 식수신청 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "수정할 입금여부(true,false)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "payment": {
+                                        "description": "입금여부",
+                                        "type": "boolean",
+                                        "example": "true"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "Validation Exception"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 삭제",
+                "description": "주말 식수 신청 삭제",
+                "operationId": "a6a527f56ec109744dc05d0334b068ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 주말 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 리스트 보기, 검색",
+                "description": "주말 식수 신청 리스트 보기, 검색하기",
+                "operationId": "87686a62c4f504e397e54a5309038041",
+                "requestBody": {
+                    "description": "찾고싶은 학생 이름",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "학생이름",
+                                        "type": "string",
+                                        "example": "권지훈"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show/sumApp": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 인원 확인",
+                "description": "주말 식수 신청 인원 확인",
+                "operationId": "a784fa32adefee180a694c9761df3cf6",
+                "requestBody": {
+                    "description": "찾고싶은 요일",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "description": "요일",
+                                        "type": "string",
+                                        "example": "sat"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show/sumWeb": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 신청 인원 확인web",
+                "description": "주말 식수 신청 인원 확인web",
+                "operationId": "55abbd04cc86367fead818fb01eb3012",
+                "requestBody": {
+                    "description": "찾고싶은 요일",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "description": "요일",
+                                        "type": "string",
+                                        "example": "sat"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/show/user/table": {
+            "get": {
+                "tags": [
+                    "식수"
+                ],
+                "summary": "주말 식수 유저 정보",
+                "description": "주말 식수 유저 정보 확인",
+                "operationId": "3e670008c866aec9f45fb42251b83073",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/semester/meal-type": {
+            "post": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "학기 식수 유형 생성",
+                "description": "학기 식수 유형을 생성",
+                "operationId": "0ac0af536d3ba1cc624237fda7be686c",
+                "requestBody": {
+                    "description": "학기 식수 유형 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사 유형",
+                                        "type": "string",
+                                        "example": "C"
+                                    },
+                                    "content": {
+                                        "description": "설명",
+                                        "type": "string",
+                                        "example": "점심+저녁"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "5600"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/m/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "학기 식수 유형 삭제",
+                "description": "학기 식수 유형 삭제",
+                "operationId": "944ecd35c9632d3972d6b37c334ccaa9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 학기 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/semester/meal-type/get": {
+            "get": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "학기 식수 유형 가져오기",
+                "description": "학기 식수 유형 가져오기",
+                "operationId": "fb8d542020a5413326b33427282848f8",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/weekend/meal-type": {
+            "post": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "주말 식수 유형 신청",
+                "description": "주말 식수 유형 신청을 처리합니다",
+                "operationId": "f40d5bab708f5e0678d276eee0b04e87",
+                "requestBody": {
+                    "description": "주말 식수 유형 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사유형",
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "아침"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "750,000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/m/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "주말 식수 유형 삭제",
+                "description": "주말 식수 유형 삭제",
+                "operationId": "81499f0ccb46c1808826bc5a8ff2e96f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 주말 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/meal-type/get": {
+            "get": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "주말 식수 유형 가져오기",
+                "description": "주말 식수 유형 가져오기",
+                "operationId": "b958e1056af79132183df379fd27f4da",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/salon/break": {
+            "post": {
+                "tags": [
+                    "미용실 - 예약불가 시간"
+                ],
+                "summary": "예약불가 시간 생성(관리자)",
+                "description": "미용실 예약불가 시간을 추가할 때 사용합니다.",
+                "operationId": "78cd0390b419426ab5cc8a5f17bf1ea2",
+                "requestBody": {
+                    "description": "예약불가 시간 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "break_time": {
+                                        "type": "array",
+                                        "items": {
+                                            "example": "10:00"
+                                        }
+                                    },
+                                    "date": {
+                                        "description": "날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "미용실 - 예약불가 시간"
+                ],
+                "summary": "예약불가 시간 삭제(관리자)(수정)",
+                "description": "미용실 예약불가 시간 삭제 시 사용합니다.",
+                "operationId": "600755daac791c47e52d7f48d06ff14c",
+                "requestBody": {
+                    "description": "예약불가 시간 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "break_time": {
+                                        "description": "삭제할 시간",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "time"
+                                        }
+                                    },
+                                    "date": {
+                                        "description": "삭제할 날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/hour": {
+            "get": {
+                "tags": [
+                    "미용실 - 영업시간"
+                ],
+                "summary": "전체 영업시간(수정)",
+                "description": "모든 요일의 미용실 영업 시간을 불러올 때 사용합니다.",
+                "operationId": "5d8f5516ca0f10c27c548179b490e444",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "미용실 - 영업시간"
+                ],
+                "summary": "영업시간 생성(관리자)(수정)",
+                "description": "미용실 영업시간 생성 시 사용합니다.",
+                "operationId": "c72e4e70afdd46843c079e9100632d80",
+                "requestBody": {
+                    "description": "영업시간 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "s_time": {
+                                        "description": "영업 시작",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "e_time": {
+                                        "description": "영업 종료",
+                                        "type": "time",
+                                        "example": "21:00:00"
+                                    },
+                                    "date": {
+                                        "description": "요일(대문자, 기존 DB 내에 중복 값 없어야함)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "MON"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실 - 영업시간"
+                ],
+                "summary": "영업시간 업데이트(관리자)",
+                "description": "미용실 영업시간을 업데이트 시 사용합니다.",
+                "operationId": "e9386f263352bec05036d689ef7405b2",
+                "requestBody": {
+                    "description": "업데이트할 영업시간 및 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "b_hour_id": {
+                                        "description": "영업시간 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "s_time": {
+                                        "description": "영업 시작",
+                                        "type": "time",
+                                        "example": "08:00:00"
+                                    },
+                                    "e_time": {
+                                        "description": "영업 종료",
+                                        "type": "time",
+                                        "example": "21:00:00"
+                                    },
+                                    "open": {
+                                        "description": "영업 여부",
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/hour/{day}": {
+            "get": {
+                "tags": [
+                    "미용실 - 영업시간"
+                ],
+                "summary": "특정 날짜의 영업시간(수정)",
+                "description": "특정 날짜의 미용실 영업 시간을 한시간 단위로 얻을 때 사용합니다.",
+                "operationId": "4c64758e02416aa8128c9fb409c2b583",
+                "parameters": [
+                    {
+                        "name": "day",
+                        "in": "path",
+                        "description": "2024-01-01",
+                        "required": true,
+                        "schema": {
+                            "type": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/category": {
+            "get": {
+                "tags": [
+                    "미용실 - 카테고리"
+                ],
+                "summary": "카테고리 목록",
+                "description": "미용실 카테고리 목록을 불러올 때 사용합니다.",
+                "operationId": "e9dab9130d9bb060f36367c584153d89",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "미용실 - 카테고리"
+                ],
+                "summary": "카테고리 생성(관리자)",
+                "description": "미용실 카테고리 생성 시 사용합니다.",
+                "operationId": "245c13580daa7c3d1d996fdf083f5f88",
+                "requestBody": {
+                    "description": "카테고리 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category": {
+                                        "description": "카테고리 명",
+                                        "type": "string",
+                                        "example": "커트"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실 - 카테고리"
+                ],
+                "summary": "카테고리 수정(관리자)",
+                "description": "카테고리 이름 수정 시 사용합니다.",
+                "operationId": "4cdf995fbceefaf5a93d299a469f34cb",
+                "requestBody": {
+                    "description": "수정할 카테고리의 이름과 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "description": "카테고리 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category": {
+                                        "description": "카테고리명",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/category/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실 - 카테고리"
+                ],
+                "summary": "카테고리 삭제(관리자)",
+                "description": "미용실 카테고리 삭제 시 사용합니다.",
+                "operationId": "3a6756a06609c503ae1aa80ec4b65a60",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 카테고리의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/reservation/user": {
+            "get": {
+                "tags": [
+                    "미용실 - 예약"
+                ],
+                "summary": "현재 유저의 예약 정보 가져오기",
+                "description": "현재 로그인한 유저의 예약 정보를 불러옵니다.",
+                "operationId": "8104b9871a64c2de786981c0de638bd2",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/salon/reservation": {
+            "get": {
+                "tags": [
+                    "미용실 - 예약"
+                ],
+                "summary": "예약 검색(수정)",
+                "description": "미용실 예약을 검색할 때 사용합니다.",
+                "operationId": "be1a4f3e1c995fe3e9d8caa27c325781",
+                "requestBody": {
+                    "description": "검색할 옵션",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "description": "예약의 상태(submit confirm reject 중 하나로 보내면 됨)",
+                                        "type": "char",
+                                        "example": "submit"
+                                    },
+                                    "r_date": {
+                                        "description": "검색일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2001-01-29"
+                                    },
+                                    "r_time": {
+                                        "description": "검색 시간",
+                                        "type": "time",
+                                        "example": "12:00:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "미용실 - 예약"
+                ],
+                "summary": "예약",
+                "description": "학생 미용실 예약 시 사용",
+                "operationId": "04bc773a4ddbda66441540ed912aa72c",
+                "requestBody": {
+                    "description": "예약 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "salon_service_id": {
+                                        "description": "미용실 서비스 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reservation_date": {
+                                        "description": "예약 날짜",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "reservation_time": {
+                                        "description": "예약 시간",
+                                        "type": "time",
+                                        "example": "12:12:12"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실 - 예약"
+                ],
+                "summary": "예약 상태 수정(관리자)",
+                "description": "미용실 예약 상태를 수정할 때 사용합니다.",
+                "operationId": "a6dd69497381c8f788c4c0d96ec409cb",
+                "requestBody": {
+                    "description": "수정할 상태 및 아이디",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "예약 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "description": "true로 보내면 승인(confirm), false로 보내면 거절(reject)",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/reservation/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실 - 예약"
+                ],
+                "summary": "예약 취소",
+                "description": "유저가 미용실 예약 취소 시 사용합니다.",
+                "operationId": "0dd6584ef00085cc6f661e325b0d20e9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "취소할 예약의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/service": {
+            "get": {
+                "tags": [
+                    "미용실 - 서비스"
+                ],
+                "summary": "카테고리 서비스 목록",
+                "description": "미용실 특정 카테고리의 서비스 목록을 반환합니다.",
+                "operationId": "5ac811c0d9e04d04b7f14f2bf687b1d5",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "카테고리 아이디",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "성별(male or female)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "미용실 - 서비스"
+                ],
+                "summary": "서비스 생성(관리자)",
+                "description": "미용실 서비스 생성할 때 사용합니다.",
+                "operationId": "324d39b0007a87c770f23d02fda59160",
+                "requestBody": {
+                    "description": "서비스 관련 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "description": "카테고리 아이디",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "service": {
+                                        "description": "서비스 명",
+                                        "type": "string",
+                                        "example": "커트"
+                                    },
+                                    "gender": {
+                                        "description": "성별",
+                                        "type": "string",
+                                        "example": "male"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "10000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/salon/service/{id}": {
+            "delete": {
+                "tags": [
+                    "미용실 - 서비스"
+                ],
+                "summary": "서비스 삭제(관리자)",
+                "description": "미용실 서비스 삭제에 사용됩니다.",
+                "operationId": "fbdeea1998aca5a638b04f05d95d54c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "미용실 - 서비스"
+                ],
+                "summary": "서비스 수정(관리자)",
+                "description": "미용실의 서비스 정보를 수정 시 사용합니다.",
+                "operationId": "55e312867778885f210d484dc04a31cd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "삭제할 서비스의 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "서비스 수정을 위한 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "service": {
+                                        "description": "카테고리 명",
+                                        "type": "string",
+                                        "example": "엄준식"
+                                    },
+                                    "gender": {
+                                        "description": "성별",
+                                        "type": "string",
+                                        "example": "male"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "20000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        }
+    }
+}
