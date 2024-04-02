@@ -66,7 +66,7 @@ Route::prefix('admin')->group(function () {
 
 // 이메일 타입의 토큰도 허용함
 Route::patch('/user/password' , [UserController::class, 'recoverPassword'])
-    ->name('user.update')->middleware(['auth:users', 'token.type:email']);
+    ->name('user.update.password')->middleware(['auth:users', 'token.type:email']);
 
 // 토큰 필요
 Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
