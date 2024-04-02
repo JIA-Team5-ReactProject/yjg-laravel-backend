@@ -67,7 +67,7 @@ class MeetingRoomController extends Controller
 
         try {
             $validated = $request->validate([
-                'room_number' => 'required|numeric',
+                'room_number' => 'required|numeric|unique:meeting_rooms,room_number',
             ]);
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
