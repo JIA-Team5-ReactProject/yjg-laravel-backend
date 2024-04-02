@@ -20,7 +20,7 @@ class PrivilegeController extends Controller
      */
     public function __invoke(): \Illuminate\Http\JsonResponse
     {
-        $privileges = Privilege::all('id', 'privilege');
+        $privileges = Privilege::where('privilege', '<>', 'master')->get();
 
         return response()->json(['privileges' => $privileges]);
     }
