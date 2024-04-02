@@ -208,7 +208,7 @@ class NoticeController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $validated['admin_id'] = auth()->id();
+        $validated['user_id'] = auth()->id();
 
         // 불필요하다고 판단되어 모델에서 현재 인증된 사용자를 찾는 로직은 삭제함
 
