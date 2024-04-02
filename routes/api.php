@@ -80,9 +80,11 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::get('/list', [AdminController::class, 'adminList'])->name('admin.list');
         Route::delete('/',[AdminController::class, 'unregister'])->name('admin.unregister');
         Route::delete('/master/{id}', [AdminController::class, 'unregisterMaster'])->name('admin.master.unregister');
+        Route::patch('/', [AdminController::class, 'update'])->name('admin.update');
     });
 
     Route::prefix('user')->group(function () {
+        Route::patch('/', [UserController::class, 'update'])->name('user.update');
         Route::get('/', [UserController::class, 'user'])->name('user.info');
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
