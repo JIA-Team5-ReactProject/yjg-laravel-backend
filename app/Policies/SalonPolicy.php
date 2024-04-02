@@ -11,6 +11,6 @@ class SalonPolicy
      */
     public function salon(User $admin): bool
     {
-        return $admin->admin && $admin->privileges()->where('privilege', 'admin')->exists();
+        return $admin->admin && $admin->privileges()->where('privilege', 'salon')->exists();
     }
 }
