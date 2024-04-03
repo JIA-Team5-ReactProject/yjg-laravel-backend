@@ -247,8 +247,8 @@ class AdminController extends Controller
 
         return response()->json([
             'user' => auth()->user(),
-            'refresh_token' => $refreshToken,
-        ])->cookie('access_token',$token);
+            'access_token' => $token,
+        ])->cookie('refresh_token', $refreshToken);
     }
 
     /**
@@ -597,7 +597,7 @@ class AdminController extends Controller
             }
         }
 
-        return response()->json(['admins' => $admins]);
+        return response()->json(['admins' => $admins->values()]);
     }
 
     /**
