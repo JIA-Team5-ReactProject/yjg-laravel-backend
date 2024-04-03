@@ -1888,53 +1888,6 @@
                 }
             }
         },
-        "/api/admin/find-email": {
-            "post": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "이메일 찾기",
-                "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
-                "operationId": "6dcba9c37ddea839e0490fcea50bdfce",
-                "requestBody": {
-                    "description": "name & phone_number(without hyphen)",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "description": "이름",
-                                        "type": "string",
-                                        "example": "testname"
-                                    },
-                                    "phone_number": {
-                                        "description": "휴대폰 번호",
-                                        "type": "string",
-                                        "example": "01012345678"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "404": {
-                        "description": "ModelNotFoundException"
-                    },
-                    "422": {
-                        "description": "ValidationException"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            }
-        },
         "/api/admin/list": {
             "get": {
                 "tags": [
@@ -1974,14 +1927,14 @@
                 }
             }
         },
-        "/api/admin/reset-password": {
+        "/api/reset-password": {
             "post": {
                 "tags": [
-                    "관리자"
+                    "학생"
                 ],
                 "summary": "비밀번호 초기화",
                 "description": "회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
-                "operationId": "997c6f81d699525a62687e2045296d32",
+                "operationId": "aa4a35a3eeb922d6296ff2fa34502071",
                 "requestBody": {
                     "description": "name & email",
                     "required": true,
@@ -2017,6 +1970,46 @@
                     },
                     "500": {
                         "description": "ServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "비밀번호 재설정",
+                "description": "유저의 비밀번호 재설정 시 사용합니다.",
+                "operationId": "ab190d362abbe9d3c5cbb10c19016345",
+                "requestBody": {
+                    "description": "수정할 유저의 비밀번호",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "변경할 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
             }
@@ -2184,7 +2177,7 @@
                 "description": "유저의 개인정보 수정 시 사용합니다.",
                 "operationId": "401c87ec9c114bfb23532be2e7ab6228",
                 "requestBody": {
-                    "description": "수정할 유저의 정보",
+                    "description": "수정할 유저의 정보(미승인 유저의 경우에는 student_id 및 phone_number 만 필요합니다.)",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -2396,16 +2389,16 @@
                 }
             }
         },
-        "/api/user/reset-password": {
+        "/api/find-email": {
             "post": {
                 "tags": [
-                    "학생"
+                    "유저"
                 ],
-                "summary": "비밀번호 초기화",
-                "description": "회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
-                "operationId": "fd28ffa8acd728bc29c4dbfa2a212841",
+                "summary": "이메일 찾기",
+                "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
+                "operationId": "1bb7fb1371a80a5c4bd79f439cd0febf",
                 "requestBody": {
-                    "description": "name & email",
+                    "description": "name & phone_number(without hyphen)",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -2416,10 +2409,10 @@
                                         "type": "string",
                                         "example": "testname"
                                     },
-                                    "email": {
-                                        "description": "이메일",
+                                    "phone_number": {
+                                        "description": "휴대폰 번호",
                                         "type": "string",
-                                        "example": "test@test.com"
+                                        "example": "01012345678"
                                     }
                                 },
                                 "type": "object"
@@ -2439,48 +2432,6 @@
                     },
                     "500": {
                         "description": "ServerError"
-                    }
-                }
-            }
-        },
-        "/api/user/password": {
-            "patch": {
-                "tags": [
-                    "학생"
-                ],
-                "summary": "비밀번호 재설정",
-                "description": "유저의 비밀번호 재설정 시 사용합니다.",
-                "operationId": "a99eeb982e343cc05a2eedefe7af6337",
-                "requestBody": {
-                    "description": "수정할 유저의 비밀번호",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "password": {
-                                        "description": "변경할 비밀번호",
-                                        "type": "string",
-                                        "example": "asdf123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "404": {
-                        "description": "ModelNotFoundException"
-                    },
-                    "422": {
-                        "description": "ValidationException"
-                    },
-                    "500": {
-                        "description": "Server Error"
                     }
                 }
             }
@@ -3040,27 +2991,9 @@
                 "tags": [
                     "식수 신청 기간"
                 ],
-                "summary": "방학 식수 자동 신청 get",
-                "description": "방학 식수 자동 신청 get",
+                "summary": "주말 식수 자동 신청 get",
+                "description": "주말 식수 자동 신청 get",
                 "operationId": "b7eebae810495613ba6b9109fb036286",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/apply/weekend/get/app": {
-            "get": {
-                "tags": [
-                    "식수 신청 기간"
-                ],
-                "summary": "방학 식수 자동 신청App get",
-                "description": "방학 식수 자동 신청App get",
-                "operationId": "71d8706215058ac0e508f55047f008ae",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3143,24 +3076,6 @@
                 "summary": "학기 식수 자동 신청 get",
                 "description": "학기 식수 자동 신청 get",
                 "operationId": "7dfba620aa4e0971fdfcfc4448dd5f82",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/apply/semester/get/app": {
-            "get": {
-                "tags": [
-                    "식수 신청 기간"
-                ],
-                "summary": "학기 식수 자동 신청App get",
-                "description": "학기 식수 자동 신청App get",
-                "operationId": "aeace256d7f5619eb2a7d6bdf9b3ba21",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3351,6 +3266,42 @@
                 "summary": "주말 식수 신청 기간 app",
                 "description": "주말 식수 신청 기간 app에서 확인",
                 "operationId": "49eafdb53216c4bc3cd7787d0e7a498b",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/web/weekend": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "학기 식수 신청 기간 web 페이지 확인",
+                "description": "학기 식수 신청 기간 web 페이지 확인",
+                "operationId": "59ceae50bd1582ab71bcfd22704a7c7d",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/apply/state/web/semester": {
+            "get": {
+                "tags": [
+                    "식수 신청 기간"
+                ],
+                "summary": "주말 식수 신청 기간 web 페이지 확인",
+                "description": "주말 식수 신청 기간 web 페이지 확인",
+                "operationId": "8261df27ffb36356625b8aba0ad1ad23",
                 "responses": {
                     "200": {
                         "description": "Success"
