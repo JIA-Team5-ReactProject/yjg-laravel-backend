@@ -503,50 +503,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Post (
-     *     path="/api/admin/find-email",
-     *     tags={"관리자"},
-     *     summary="이메일 찾기",
-     *     description="회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
-     *     @OA\RequestBody(
-     *         description="name & phone_number(without hyphen)",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
-     *                 @OA\Property (property="phone_number", type="string", description="휴대폰 번호", example="01012345678"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="404", description="ModelNotFoundException"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function findEmail(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string',
-                'phone_number' => 'required|string',
-            ]);
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        try {
-            $admin = User::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
-        } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
-        }
-        return response()->json(['admin' => $admin]);
-    }
-
-    /**
      * @OA\Get (
      *     path="/api/admin/list",
      *     tags={"관리자"},
@@ -598,52 +554,5 @@ class AdminController extends Controller
         }
 
         return response()->json(['admins' => $admins->values()]);
-    }
-
-    /**
-     * @OA\Post (
-     *     path="/api/admin/reset-password",
-     *     tags={"관리자"},
-     *     summary="비밀번호 초기화",
-     *     description="회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
-     *     @OA\RequestBody(
-     *         description="name & email",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
-     *                 @OA\Property (property="email", type="string", description="이메일", example="test@test.com"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="404", description="ModelNotFoundException"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'email' => 'required|email|exists:admins,email',
-                'name'  => 'required|string',
-            ]);
-        } catch (ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
-        }
-
-        try {
-            User::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
-        } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 관리자가 존재하지 않습니다.'], 404);
-        }
-
-        $resetPasswordService = new ResetPasswordService($validated['email']);
-
-        return $resetPasswordService();
     }
 }

@@ -44,29 +44,34 @@ Route::get('/healthy', function () {
     return response()->json(['message' => 'HELLO WORLD ^_^']);
 });
 
-// 토큰 불필요
+// 비밀번호 초기화
 Route::get('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
+Route::post('/reset-password', [PasswordResetCodeController::class, 'sendPasswordResetCode'])->name('pw.reset.send');
+Route::patch('/reset-password' , [PasswordResetCodeController::class, 'resetPassword'])
+    ->name('pw.reset')->middleware(['auth:users', 'token.type:email']);// 이메일 타입의 토큰도 허용함
+
+// 이메일 찾기
+Route::post('/find-email', [UserController::class, 'findEmail'])->name('find.email'); // 변경해야할 필요 있음
+
+// 토큰 리프레시
 Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'token.type:refresh', 'approve:users']);
+
+// 유저
 Route::prefix('user')->group(function () {
     Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('user.verify.email');
     Route::post('/', [UserController::class, 'register'])->name('user.register');
     Route::post('/login', [UserController::class, 'login'])->name('user.login');
     Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
-    Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('user.reset.pw');
 });
+
+// 관리자
 Route::prefix('admin')->group(function () {
     Route::post('/',[AdminController::class, 'register'])->name('admin.register');
     Route::middleware([LoginApproveCheck::class])->group(function () {
         Route::post('/login/web', [AdminController::class, 'webLogin'])->name('admin.login.web');
         Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     });
-    Route::post('/find-email', [AdminController::class, 'findEmail'])->name('admin.find.email');
-    Route::post('/reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset.pw');
 });
-
-// 이메일 타입의 토큰도 허용함
-Route::patch('/user/password' , [UserController::class, 'recoverPassword'])
-    ->name('user.update.password')->middleware(['auth:users', 'token.type:email']);
 
 // 토큰 필요
 Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
