@@ -53,6 +53,9 @@ Route::patch('/reset-password' , [PasswordResetCodeController::class, 'resetPass
 /** 메일 찾기 */
 Route::post('/find-email', [UserController::class, 'findEmail'])->name('find.email');
 
+/** 이메일 중복 검사 */
+Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('verify.email'); //수정
+
 /** 토큰 리프레시 */
 Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'token.type:refresh', 'approve:users']);
 
@@ -62,7 +65,6 @@ Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'tok
 Route::prefix('user')->group(function () {
     Route::post('/login', [UserController::class, 'login'])->name('user.login'); // 서비스
     Route::post('/google-login', [UserController::class, 'googleRegisterOrLogin'])->name('user.google.login');
-    Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('verify.email'); //수정
     Route::post('/', [UserController::class, 'register'])->name('user.register'); // 서비스
 });
 
