@@ -26,21 +26,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Get (
-     *     path="/api/admin",
-     *     tags={"관리자"},
-     *     summary="관리자 정보",
-     *     description="현재 인증된 관리자의 정보를 반환",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function admin(): \Illuminate\Http\JsonResponse
-    {
-        return response()->json(['admin' => auth()->user()]);
-    }
-
-    /**
      * @OA\Post (
      *     path="/api/admin",
      *     tags={"관리자"},
@@ -92,32 +77,6 @@ class AdminController extends Controller
         unset($admin['id']);
 
         return response()->json($admin, 201);
-    }
-
-    /**
-     * @OA\Delete (
-     *     path="/api/admin",
-     *     tags={"관리자"},
-     *     summary="탈퇴(본인)",
-     *     description="관리자 본인이 계정 탈퇴 시 사용합니다.",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function unregister(): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('admin');
-        } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
-        }
-
-        $adminId = auth()->id();
-        if (!User::destroy($adminId)) {
-            throw new DestroyException('회원탈퇴에 실패하였습니다.');
-        }
-
-        return response()->json(['message' => '회원탈퇴 되었습니다.']);
     }
 
     /**
@@ -192,14 +151,8 @@ class AdminController extends Controller
         }
         $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
-        try {
-            $admin = User::findOrFail(auth()->id());
-        } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
-        }
-
         return response()->json([
-            'user' => $admin,
+            'user' => auth()->user(),
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
@@ -249,28 +202,6 @@ class AdminController extends Controller
             'user' => auth()->user(),
             'access_token' => $token,
         ])->cookie('refresh_token', $refreshToken);
-    }
-
-    /**
-     * @OA\Post (
-     *     path="/api/admin/logout",
-     *     tags={"관리자"},
-     *     summary="로그아웃",
-     *     description="관리자 로그아웃",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function logout(): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('admin');
-        } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
-        }
-
-        auth()->logout();
-        return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
     }
 
     /**
@@ -454,52 +385,6 @@ class AdminController extends Controller
         if(!$admin->save()) return response()->json(['error' => '관리자 정보 수정에 실패하였습니다.'], 500);
 
         return response()->json(['message' => '관리자 정보가 수정되었습니다.']);
-    }
-
-    /**
-     * @OA\Post (
-     *     path="/api/admin/verify-password",
-     *     tags={"관리자"},
-     *     summary="PW 체크",
-     *     description="관리자 회원정보 수정 페이지 접속 시 PW 체크",
-     *     @OA\RequestBody(
-     *         description="PW",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="password", type="string", description="비밀번호", example="admin123"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function verifyPassword(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('admin');
-        } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
-        }
-
-        try {
-            $validated = $request->validate([
-                'password' => 'required|string',
-            ]);
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        if(!Hash::check($validated['password'], auth('users')->user()->getAuthPassword())) {
-            return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
-        }
-
-        return response()->json(['success' => '비밀번호가 일치합니다.']);
     }
 
     /**
