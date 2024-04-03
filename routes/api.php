@@ -95,6 +95,7 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
         Route::post('/logout', [UserController::class, 'logout'])  ->name('user.logout');
         Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve');
+        Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve')->withoutMiddleware('approve:users'); // 서비스 2
     });
 
     Route::prefix('salon')->group(function () {
