@@ -46,8 +46,10 @@ class AbsenceController extends Controller
             'date' => 'required|date-format:Y-m-d',
         ]);
 
-        $sleep = AbsenceList::where('type', 'sleep')->whereDate('created_at', $validated['date'])->count();
-        $go    = AbsenceList::where('type', 'go')->whereDate('created_at', $validated['date'])->count();
+        $sleep = AbsenceList::where('type', 'sleep')->where('status', true)
+            ->whereDate('created_at', $validated['date'])->count();
+        $go    = AbsenceList::where('type', 'go')->where('status', true)
+            ->whereDate('created_at', $validated['date'])->count();
 
         return response()->json(['sleep_count' => $sleep, 'go_count' => $go]);
     }
