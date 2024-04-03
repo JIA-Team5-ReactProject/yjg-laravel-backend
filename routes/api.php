@@ -84,7 +84,7 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
     });
 
     Route::prefix('user')->group(function () {
-        Route::patch('/', [UserController::class, 'update'])->name('user.update');
+        Route::patch('/', [UserController::class, 'update'])->name('user.update')->withoutMiddleware('approve:users');
         Route::get('/', [UserController::class, 'user'])->name('user.info');
         Route::get('/qr', [QRController::class, 'generator'])->name('qr');
         Route::delete('/',[UserController::class, 'unregister'])->name('user.unregister');
