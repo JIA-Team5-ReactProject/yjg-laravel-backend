@@ -74,8 +74,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $validated['approved'] = true;
-        $validated['admin']    = true;
+        $validated['admin'] = true;
 
         $admin = new User();
 
