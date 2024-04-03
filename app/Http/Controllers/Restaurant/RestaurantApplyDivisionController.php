@@ -93,7 +93,6 @@ class RestaurantApplyDivisionController extends Controller
             $state = RestaurantApplyState::first();
             $state->update([
                 'weekend' => true,
-                'semester' => false
             ]);
 
 
@@ -108,8 +107,8 @@ class RestaurantApplyDivisionController extends Controller
      * @OA\Get (
      * path="/api/restaurant/apply/weekend/get",
      * tags={"식수 신청 기간"},
-     * summary="방학 식수 자동 신청 get",
-     * description="방학 식수 자동 신청 get",
+     * summary="주말 식수 자동 신청 get",
+     * description="주말 식수 자동 신청 get",
      *    
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
@@ -120,42 +119,6 @@ class RestaurantApplyDivisionController extends Controller
         try {
             $weekendAuto = RestaurantWeekendAuto::first();
             return response()->json(['semesterAuto' => $weekendAuto]);
-        }catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
-    }
-
-
-      /**
-     * @OA\Get (
-     * path="/api/restaurant/apply/weekend/get/app",
-     * tags={"식수 신청 기간"},
-     * summary="방학 식수 자동 신청App get",
-     * description="방학 식수 자동 신청App get",
-     *    
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
-    public function getWeekendAutoApp()
-    {
-        try {
-            $weekendAuto = RestaurantWeekendAuto::first();
-            $startTime = $weekendAuto->start_time;
-            $endTime = $weekendAuto->end_time;
-            $startWeek = $weekendAuto->start_week;
-            $endWeek = $weekendAuto->end_week;
-
-            $now = Carbon::now();
-            $nowWeek = $now->dayOfWeekIso;
-
-            if ($nowWeek >= $startWeek && $nowWeek <= $endWeek) {
-                if ($now->between($startTime, $endTime)) {
-                    return response()->json(['result' => true]);
-                } else {
-                    return response()->json(['result' => false]);
-                }
-            }return response()->json(['result' => false]);
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
@@ -239,8 +202,7 @@ class RestaurantApplyDivisionController extends Controller
 
                 $state = RestaurantApplyState::first();
                 $state->update([
-                    'weekend' => false,
-                    'semester' => true
+                    'semester' => true,
                 ]);
 
                 return response()->json(['message' => '학기 식수 신청 시간 수정이 완료되었습니다.']); 
@@ -272,36 +234,6 @@ class RestaurantApplyDivisionController extends Controller
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
         }
-
-
-         /**
-     * @OA\Get (
-     * path="/api/restaurant/apply/semester/get/app",
-     * tags={"식수 신청 기간"},
-     * summary="학기 식수 자동 신청App get",
-     * description="학기 식수 자동 신청App get",
-     *    
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
-    public function getSemesterAutoApp()
-    {
-        try {
-            $semesterAuto = RestaurantSemesterAuto::first();
-            $startDate = $semesterAuto->start_date;
-            $endDate = $semesterAuto->end_date;
-            $now = Carbon::now();
-
-            if ($now->between($startDate, $endDate)) {
-                return response()->json(['result' => true]);
-            } else {
-                return response()->json(['result' => false]);
-            }
-        }catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
-    }
 
 
     /**
@@ -381,15 +313,13 @@ class RestaurantApplyDivisionController extends Controller
                 RestaurantSemesterAuto::query()->update(['state' => false]);
                 $state = RestaurantApplyState::first();
                 $state->update([
-                    'weekend' => false,
                     'semester' => true
                 ]);
-            }elseif($validatedData['state'] == "weekend"){
+            }if($validatedData['state'] == "weekend"){
                 RestaurantWeekendAuto::query()->update(['state' => false]);
                 $state = RestaurantApplyState::first();
                 $state->update([
                     'weekend' => true,
-                    'semester' => false
                 ]);
             }
             
@@ -563,4 +493,61 @@ class RestaurantApplyDivisionController extends Controller
         }
         return response()->json(['weekend' => $weekend]);
     }
+
+
+     /**
+     * @OA\Get(
+     * path="/api/restaurant/apply/state/web/weekend",
+     * tags={"식수 신청 기간"},
+     * summary="학기 식수 신청 기간 web 페이지 확인",
+     * description="학기 식수 신청 기간 web 페이지 확인",
+     *     
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function webSemester(){
+        try{
+            $manualSemester = RestaurantApplyManual::where('division', "semester")->pluck('state')->first();
+            $autoSemester = RestaurantSemesterAuto::first();
+            if ($manualSemester == true) {
+                return response()->json(['manual' => $manualSemester]);
+            }if ($manualSemester == false and $autoSemester->state == true) {
+                return response()->json(['semesterAutoData' => $autoSemester]);
+            }else{
+                return response()->json(['mesage' => '학기 식수 신청 기간이 아닙니다.']);
+            }
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+    }
+
+
+     /**
+     * @OA\Get(
+     * path="/api/restaurant/apply/state/web/semester",
+     * tags={"식수 신청 기간"},
+     * summary="주말 식수 신청 기간 web 페이지 확인",
+     * description="주말 식수 신청 기간 web 페이지 확인",
+     *     
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function webWeekend(){
+        try{
+            $manualWeekend = RestaurantApplyManual::where('division', "weekend")->pluck('state')->first();
+            $autoWeekend = RestaurantWeekendAuto::first();
+            if ($manualWeekend == true) {
+                return response()->json(['manual' => $manualWeekend]);
+            }if ($manualWeekend == false and $autoWeekend->state == true) {
+                return response()->json(['weekendAutoData' => $autoWeekend]);
+            }else{
+                return response()->json(['mesage' => '주말 식수 신청 기간이 아닙니다.']);
+            }
+        }catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+    }
+
 }

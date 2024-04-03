@@ -238,12 +238,10 @@ Route::prefix('restaurant')->group(function () {
         Route::post('/weekend/auto', [RestaurantApplyDivisionController::class, 'onWeekendAuto']);
         Route::patch('/weekend/set', [RestaurantApplyDivisionController::class, 'setWeekendAuto']);
         Route::get('/weekend/get', [RestaurantApplyDivisionController::class, 'getWeekendAuto']);
-        Route::get('/weekend/get/app', [RestaurantApplyDivisionController::class, 'getWeekendAutoApp']);
 
         Route::post('/semester/auto', [RestaurantApplyDivisionController::class, 'onSemesterAuto']);
         Route::patch('/semester/set', [RestaurantApplyDivisionController::class, 'setSemesterAuto']);
         Route::get('/semester/get', [RestaurantApplyDivisionController::class, 'getSemesterAuto']);
-        Route::get('/semester/get/app', [RestaurantApplyDivisionController::class, 'getSemesterAutoApp']);
 
         Route::post('/manual/set', [RestaurantApplyDivisionController::class, 'setManual']);
         Route::patch('/manual', [RestaurantApplyDivisionController::class, 'manual']);
@@ -255,6 +253,8 @@ Route::prefix('restaurant')->group(function () {
 
         Route::get('/state/check/semester', [RestaurantApplyDivisionController::class, 'semesterCheck']);
         Route::get('/state/check/weekend', [RestaurantApplyDivisionController::class, 'weekendCheck']);
+        Route::get('/state/web/semester', [RestaurantApplyDivisionController::class, 'webSemester']);
+        Route::get('/state/web/weekend', [RestaurantApplyDivisionController::class, 'webWeekend']);
 
 
     });
