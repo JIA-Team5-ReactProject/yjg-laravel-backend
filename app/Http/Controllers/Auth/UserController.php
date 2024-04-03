@@ -236,7 +236,7 @@ class UserController extends Controller
      *     summary="개인정보 수정",
      *     description="유저의 개인정보 수정 시 사용합니다.",
      *     @OA\Requestbody(
-     *         description="수정할 유저의 정보",
+     *         description="수정할 유저의 정보(미승인 유저의 경우에는 student_id 및 phone_number 만 필요합니다.)",
      *         required=true,
      *         @OA\Mediatype(
      *             mediaType="application/json",
@@ -257,35 +257,49 @@ class UserController extends Controller
      */
     public function update(Request $request): \Illuminate\Http\JsonResponse
     {
+        $rulesForApproved = [
+            'student_id'       => 'numeric',
+            'name'             => 'string',
+            'phone_number'     => 'string|unique:users,phone_number',
+            'current_password' => 'current_password',
+            'new_password'     => 'string|required_with:current_password',
+        ];
+
+        $rulesForNotApproved = [
+            'student_id'       => 'required|numeric',
+            'phone_number'     => 'required|string|unique:users,phone_number',
+        ];
+
+        $user = auth()->user();
+
         try {
-            $validated = $request->validate([
-                'student_id'       => 'numeric',
-                'name'             => 'string',
-                'phone_number'     => 'string|unique:users,phone_number',
-                'current_password' => 'current_password',
-                'new_password'     => 'string|required_with:current_password',
-            ]);
+            $validated = $request->validate($user['approved'] ? $rulesForApproved : $rulesForNotApproved);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $userId = auth()->id();
-
         try {
-            $user = User::findOrFail($userId);
+            $user = User::findOrFail($user['id']);
         } catch(modelNotFoundException) {
             return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
-        unset($validated['current_password']);
+        if(!$user['approved']) {
+            // 미승인 유저
+            $user->student_id = $validated['student_id'];
+            $user->phone_number = $validated['phone_number'];
+        } else {
+            // 승인 유저
+            unset($validated['current_password']);
 
-        foreach($validated as $key => $value) {
-            if($key == 'new_password') {
-                $user->password = Hash::make($validated['new_password']);
-            } else {
-                $user->$key = $value;
+            foreach($validated as $key => $value) {
+                if($key == 'new_password') {
+                    $user->password = Hash::make($validated['new_password']);
+                } else {
+                    $user->$key = $value;
+                }
             }
         }
 
