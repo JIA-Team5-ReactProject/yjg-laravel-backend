@@ -14,6 +14,7 @@ class Notice extends Model
         'title',
         'content',
         'tag',
+        'urgent',
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
