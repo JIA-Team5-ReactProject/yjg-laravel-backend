@@ -1,11 +1,10 @@
-name: Docker Image CI
+name: Docker image integration
 
 on:
   push:
     branches: [ "develop" ]
 
 jobs:
-
   build_and_push:
     runs-on: ubuntu-latest
     steps:
@@ -24,12 +23,3 @@ jobs:
         REPO: yeungjin-global-test
       run:
         docker push ${{secrets.DOCKER_HUB_USERNAME}}/$REPO
-
-    - name: Docker compose up in EC2
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{secrets.EC2_HOST}}
-        username: ${{secrets.EC2_USERNAME}}
-        key: ${{secrets.EC2_KEY}}
-        script_stop: true
-        script: sh docker.sh #백그라운드 실행
