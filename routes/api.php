@@ -122,7 +122,7 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
             Route::post('/', [SalonCategoryController::class, 'store'])->name('salon.category.store');
             Route::patch('/', [SalonCategoryController::class, 'update'])->name('salon.category.update');
             Route::delete('/{id}', [SalonCategoryController::class, 'destroy'])->name('salon.category.destroy');
-            Route::get('/category', [SalonCategoryController::class, 'index'])->name('salon.category.index');
+            Route::get('/', [SalonCategoryController::class, 'index'])->name('salon.category.index');
         });
         Route::prefix('service')->group(function () {
             Route::post('/', [SalonServiceController::class, 'store'])->name('salon.service.store');
@@ -145,8 +145,10 @@ Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(f
         Route::patch('/{id}', [NoticeController::class, 'update'])->name('admin.notice.update');
         Route::delete('/{id}', [NoticeController::class, 'destroy'])->name('admin.notice.destroy');
         Route::get('/', [NoticeController::class, 'index'])->name('notice.index');
-        Route::get('/recent', [NoticeController::class, 'recentIndex'])->name('notice.recent');
-        Route::get('/recent/urgent', [NoticeController::class, 'recentUrgent'])->name('notice.recent.urgent');
+        Route::prefix('recent')->group(function () {
+            Route::get('/', [NoticeController::class, 'recentIndex'])->name('notice.recent');
+            Route::get('/urgent', [NoticeController::class, 'recentUrgent'])->name('notice.recent.urgent');
+        });
         Route::get('/{id}', [NoticeController::class, 'show'])->name('notice.show');
     });
 
