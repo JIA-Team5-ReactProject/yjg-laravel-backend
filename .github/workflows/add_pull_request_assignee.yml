@@ -1,9 +1,9 @@
-name: 'Auto Assign'
+name: Add assignee for pull request
 
-on: 
+on:
   pull_request_target:
     branches: [ "develop" ]
-    
+
 jobs:
   add-reviews:
     runs-on: ubuntu-latest
