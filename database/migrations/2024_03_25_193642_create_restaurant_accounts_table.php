@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('restaurant_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('bank_name');
-            $table->string('name');
-            $table->string('account');
+            $table->string('bank_name',20);
+            $table->string('name',20);
+            $table->string('account',20);
             $table->timestamps();
         });
     }

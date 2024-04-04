@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             
             $table->foreignId('bus_round_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('station');
-            $table->string('bus_time');
+            $table->string('station',20);
+            $table->string('bus_time',10);
             $table->timestamps();
         });
     }
