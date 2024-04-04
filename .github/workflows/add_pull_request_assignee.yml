@@ -5,7 +5,7 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  add-reviews:
+  add_assignee:
     runs-on: ubuntu-latest
     steps:
       - uses: kentaro-m/auto-assign-action@v2.0.0

@@ -7,11 +7,14 @@ on:
       - completed
 
 jobs:
-  - name: Docker compose up in EC2
-    uses: appleboy/ssh-action@v1.0.0
-    with:
-      host: ${{secrets.EC2_HOST}}
-      username: ${{secrets.EC2_USERNAME}}
-      key: ${{secrets.EC2_KEY}}
-      script_stop: true
-      script: sh docker.sh
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Docker compose up in EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{secrets.EC2_HOST}}
+        username: ${{secrets.EC2_USERNAME}}
+        key: ${{secrets.EC2_KEY}}
+        script_stop: true
+        script: sh docker.sh
