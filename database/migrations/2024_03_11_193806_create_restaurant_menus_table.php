@@ -17,7 +17,6 @@ return new class extends Migration
             $table->date('date');
             $table->string('menu')->nullable();
             $table->char('meal_time',1);
-            
             $table->timestamps();
         });
     }

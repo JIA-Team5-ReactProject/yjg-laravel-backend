@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\RestaurantApplyManual;
 use App\Models\RestaurantApplyState;
 use App\Models\RestaurantSemesterAuto;
-use App\Models\RestaurantWeekend;
 use App\Models\RestaurantWeekendAuto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -19,7 +18,7 @@ class RestaurantApplyDivisionController extends Controller
     /**
      * @OA\Post (
      * path="/api/restaurant/apply/weekend/auto",
-     * tags={"식수 신청 기간"},
+     * tags={"식수 신청 기간"}, 
      * summary="주말 식수 신청 날짜 디폴트 넣기",
      * description="주말 식수 신청 날짜 디폴트 넣기",
      *    
@@ -257,7 +256,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function setManual()//디폴트로 들어가야하는게 학기,방학 2개임
+    public function onManual()//디폴트로 들어가야하는게 학기,방학 2개임
     {
         RestaurantApplyManual::create([
             'division' => 'semester',
@@ -292,7 +291,7 @@ class RestaurantApplyDivisionController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function manual(Request $request)
+    public function setManual(Request $request)
     {
         try {
             
