@@ -2,7 +2,7 @@ name: Deployment
 
 on:
   workflow_run:
-    workflows: [Docker image integration]
+    workflows: ["Docker image integration"]
     types:
       - completed
 
