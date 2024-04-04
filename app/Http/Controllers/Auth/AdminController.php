@@ -26,21 +26,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Get (
-     *     path="/api/admin",
-     *     tags={"관리자"},
-     *     summary="관리자 정보",
-     *     description="현재 인증된 관리자의 정보를 반환",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function admin(): \Illuminate\Http\JsonResponse
-    {
-        return response()->json(['admin' => auth()->user()]);
-    }
-
-    /**
      * @OA\Post (
      *     path="/api/admin",
      *     tags={"관리자"},
@@ -74,8 +59,7 @@ class AdminController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $validated['approved'] = true;
-        $validated['admin']    = true;
+        $validated['admin'] = true;
 
         $admin = new User();
 
@@ -93,32 +77,6 @@ class AdminController extends Controller
         unset($admin['id']);
 
         return response()->json($admin, 201);
-    }
-
-    /**
-     * @OA\Delete (
-     *     path="/api/admin",
-     *     tags={"관리자"},
-     *     summary="탈퇴(본인)",
-     *     description="관리자 본인이 계정 탈퇴 시 사용합니다.",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function unregister(): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('admin');
-        } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
-        }
-
-        $adminId = auth()->id();
-        if (!User::destroy($adminId)) {
-            throw new DestroyException('회원탈퇴에 실패하였습니다.');
-        }
-
-        return response()->json(['message' => '회원탈퇴 되었습니다.']);
     }
 
     /**
@@ -193,14 +151,8 @@ class AdminController extends Controller
         }
         $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
-        try {
-            $admin = User::findOrFail(auth()->id());
-        } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
-        }
-
         return response()->json([
-            'user' => $admin,
+            'user' => auth()->user(),
             'access_token' => $token,
             'refresh_token' => $refreshToken,
         ]);
@@ -248,30 +200,8 @@ class AdminController extends Controller
 
         return response()->json([
             'user' => auth()->user(),
-            'refresh_token' => $refreshToken,
-        ])->cookie('access_token',$token);
-    }
-
-    /**
-     * @OA\Post (
-     *     path="/api/admin/logout",
-     *     tags={"관리자"},
-     *     summary="로그아웃",
-     *     description="관리자 로그아웃",
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="500", description="Server Error"),
-     * )
-     */
-    public function logout(): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('admin');
-        } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
-        }
-
-        auth()->logout();
-        return response()->json(['success' => '성공적으로 로그아웃 되었습니다.']);
+            'access_token' => $token,
+        ])->cookie('refresh_token', $refreshToken);
     }
 
     /**
@@ -458,96 +388,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @OA\Post (
-     *     path="/api/admin/verify-password",
-     *     tags={"관리자"},
-     *     summary="PW 체크",
-     *     description="관리자 회원정보 수정 페이지 접속 시 PW 체크",
-     *     @OA\RequestBody(
-     *         description="PW",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="password", type="string", description="비밀번호", example="admin123"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function verifyPassword(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $this->authorize('admin');
-        } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
-        }
-
-        try {
-            $validated = $request->validate([
-                'password' => 'required|string',
-            ]);
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        if(!Hash::check($validated['password'], auth('users')->user()->getAuthPassword())) {
-            return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
-        }
-
-        return response()->json(['success' => '비밀번호가 일치합니다.']);
-    }
-
-    /**
-     * @OA\Post (
-     *     path="/api/admin/find-email",
-     *     tags={"관리자"},
-     *     summary="이메일 찾기",
-     *     description="회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
-     *     @OA\RequestBody(
-     *         description="name & phone_number(without hyphen)",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
-     *                 @OA\Property (property="phone_number", type="string", description="휴대폰 번호", example="01012345678"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="404", description="ModelNotFoundException"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function findEmail(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string',
-                'phone_number' => 'required|string',
-            ]);
-        } catch (ValidationException $validationException) {
-            $errorStatus = $validationException->status;
-            $errorMessage = $validationException->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        try {
-            $admin = User::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
-        } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
-        }
-        return response()->json(['admin' => $admin]);
-    }
-
-    /**
      * @OA\Get (
      *     path="/api/admin/list",
      *     tags={"관리자"},
@@ -598,53 +438,6 @@ class AdminController extends Controller
             }
         }
 
-        return response()->json(['admins' => $admins]);
-    }
-
-    /**
-     * @OA\Post (
-     *     path="/api/admin/reset-password",
-     *     tags={"관리자"},
-     *     summary="비밀번호 초기화",
-     *     description="회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
-     *     @OA\RequestBody(
-     *         description="name & email",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
-     *                 @OA\Property (property="email", type="string", description="이메일", example="test@test.com"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="404", description="ModelNotFoundException"),
-     *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="ServerError"),
-     * )
-     */
-    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'email' => 'required|email|exists:admins,email',
-                'name'  => 'required|string',
-            ]);
-        } catch (ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
-        }
-
-        try {
-            User::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
-        } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 관리자가 존재하지 않습니다.'], 404);
-        }
-
-        $resetPasswordService = new ResetPasswordService($validated['email']);
-
-        return $resetPasswordService();
+        return response()->json(['admins' => $admins->values()]);
     }
 }

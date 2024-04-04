@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\ResetPasswordService;
 use App\Services\TokenService;
 use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,16 +21,18 @@ class UserController extends Controller
     /**
      * @OA\Get (
      *     path="/api/user",
-     *     tags={"유저"},
-     *     summary="유저 정보",
-     *     description="현재 인증된 유저의 정보를 반환",
+     *     tags={"학생"},
+     *     summary="학생/관리자 정보",
+     *     description="현재 인증된 학생/관리자의 정보를 반환",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
     public function user(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(['user' => auth()->user()]);
+        $user = auth()->user();
+
+        return response()->json([$user['admin'] ? 'admin' : 'user' => $user]);
     }
 
     /**
@@ -81,10 +82,10 @@ class UserController extends Controller
 
     /**
      * @OA\Delete (
-     *     path="/api/user",
+     *     path="/api/unregister",
      *     tags={"학생"},
      *     summary="탈퇴",
-     *     description="학생 유저의 회원 탈퇴 시 사용합니다.",
+     *     description="학생 및 관리자의 회원 탈퇴 시 사용합니다.",
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="ServerError"),
      * )
@@ -92,7 +93,7 @@ class UserController extends Controller
      */
     public function unregister(): \Illuminate\Http\JsonResponse
     {
-        $userId = auth('users')->id();
+        $userId = auth()->id();
         if (!User::destroy($userId)) {
             throw new destroyException('회원탈퇴에 실패하였습니다.', 500);
         }
@@ -215,7 +216,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/user/logout",
+     *     path="/api/logout",
      *     tags={"학생"},
      *     summary="로그아웃",
      *     description="유저 로그아웃",
@@ -225,7 +226,7 @@ class UserController extends Controller
      */
     public function logout(): \Illuminate\Http\JsonResponse
     {
-        auth('users')->logout();
+        auth()->logout();
         return response()->json(['message' => '로그아웃 되었습니다.']);
     }
 
@@ -236,7 +237,7 @@ class UserController extends Controller
      *     summary="개인정보 수정",
      *     description="유저의 개인정보 수정 시 사용합니다.",
      *     @OA\Requestbody(
-     *         description="수정할 유저의 정보",
+     *         description="수정할 유저의 정보(미승인 유저의 경우에는 student_id 및 phone_number 만 필요합니다.)",
      *         required=true,
      *         @OA\Mediatype(
      *             mediaType="application/json",
@@ -257,35 +258,49 @@ class UserController extends Controller
      */
     public function update(Request $request): \Illuminate\Http\JsonResponse
     {
+        $rulesForApproved = [
+            'student_id'       => 'numeric',
+            'name'             => 'string',
+            'phone_number'     => 'string|unique:users,phone_number',
+            'current_password' => 'current_password',
+            'new_password'     => 'string|required_with:current_password',
+        ];
+
+        $rulesForNotApproved = [
+            'student_id'       => 'required|numeric',
+            'phone_number'     => 'required|string|unique:users,phone_number',
+        ];
+
+        $user = auth()->user();
+
         try {
-            $validated = $request->validate([
-                'student_id'       => 'numeric',
-                'name'             => 'string',
-                'phone_number'     => 'string|unique:admins',
-                'current_password' => 'current_password',
-                'new_password'     => 'string|required_with:current_password',
-            ]);
+            $validated = $request->validate($user['approved'] ? $rulesForApproved : $rulesForNotApproved);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
             return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
-        $userId = auth()->id();
-
         try {
-            $user = User::findOrFail($userId);
+            $user = User::findOrFail($user['id']);
         } catch(modelNotFoundException) {
             return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
-        unset($validated['current_password']);
+        if(!$user['approved']) {
+            // 미승인 유저
+            $user->student_id = $validated['student_id'];
+            $user->phone_number = $validated['phone_number'];
+        } else {
+            // 승인 유저
+            unset($validated['current_password']);
 
-        foreach($validated as $key => $value) {
-            if($key == 'new_password') {
-                $user->password = Hash::make($validated['new_password']);
-            } else {
-                $user->$key = $value;
+            foreach($validated as $key => $value) {
+                if($key == 'new_password') {
+                    $user->password = Hash::make($validated['new_password']);
+                } else {
+                    $user->$key = $value;
+                }
             }
         }
 
@@ -361,18 +376,18 @@ class UserController extends Controller
 
     /**
      * @OA\Post (
-     *     path="/api/user/reset-password",
+     *     path="/api/find-email",
      *     tags={"학생"},
-     *     summary="비밀번호 초기화",
-     *     description="회원가입 시 입력한 이름, 이메일을 검증하고, 메일 전송 후 코드를 인증",
+     *     summary="이메일 찾기",
+     *     description="회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
      *     @OA\RequestBody(
-     *         description="name & email",
+     *         description="name & phone_number(without hyphen)",
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="name", type="string", description="이름", example="testname"),
-     *                 @OA\Property (property="email", type="string", description="이메일", example="test@test.com"),
+     *                 @OA\Property (property="phone_number", type="string", description="휴대폰 번호", example="01012345678"),
      *             )
      *         )
      *     ),
@@ -382,69 +397,64 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
+    public function findEmail(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
-                'email' => 'required|email|exists:users,email',
-                'name'  => 'required|string',
+                'name' => 'required|string',
+                'phone_number' => 'required|string',
             ]);
-        } catch (ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
         try {
-            User::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
+            $admin = User::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
+            return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
-
-        $resetPasswordService = new ResetPasswordService($validated['email']);
-
-        return $resetPasswordService();
+        return response()->json(['admin' => $admin]);
     }
 
     /**
-     * @OA\Patch (
-     *     path="/api/user/password",
+     * @OA\Post (
+     *     path="/api/verify-password",
      *     tags={"학생"},
-     *     summary="비밀번호 재설정",
-     *     description="유저의 비밀번호 재설정 시 사용합니다.",
-     *     @OA\Requestbody(
-     *         description="수정할 유저의 비밀번호",
+     *     summary="PW 체크",
+     *     description="현재 로그인한 학생 및 관리자의 PW 체크",
+     *     @OA\RequestBody(
+     *         description="PW",
      *         required=true,
-     *         @OA\Mediatype(
+     *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema (
-     *                  @OA\Property (property="password", type="string", description="변경할 비밀번호", example="asdf123"),
+     *                 @OA\Property (property="password", type="string", description="비밀번호", example="admin123"),
      *             )
-     *         ),
+     *         )
      *     ),
      *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="404", description="ModelNotFoundException"),
      *     @OA\Response(response="422", description="ValidationException"),
-     *     @OA\Response(response="500", description="Server Error"),
+     *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function recoverPassword(Request $request): \Illuminate\Http\JsonResponse
+    public function verifyPassword(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = $request->validate([
                 'password' => 'required|string',
             ]);
-        } catch (ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
+        } catch (ValidationException $validationException) {
+            $errorStatus = $validationException->status;
+            $errorMessage = $validationException->getMessage();
+            return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        $user = auth()->user();
-        $user->password = Hash::make($validated['password']);
+        if(!Hash::check($validated['password'], auth()->user()->getAuthPassword())) {
+            return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
+        }
 
-        if(!$user->save()) return response()->json(['error' => '비밀번호 변경에 실패하였습니다.'], 500);
-
-        return response()->json(['message' => '비밀번호가 변경되었습니다.']);
+        return response()->json(['success' => '비밀번호가 일치합니다.']);
     }
 }
