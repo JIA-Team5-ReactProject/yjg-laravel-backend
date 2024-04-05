@@ -197,9 +197,9 @@ class AbsenceController extends Controller
         $validated['user_id'] = auth('users')->id();
 
         $absenceList = AbsenceList::where('user_id', $validated['user_id'])
-            ->whereBetween('start_date', [$validated['start_date'], $validated['end_date']])
-            ->orWhere(function ($query) use ($validated) {
-                $query->whereBetween('end_date', [$validated['start_date'], $validated['end_date']]);
+            ->where(function ($query) use ($validated) {
+                $query->whereBetween('start_date', [$validated['start_date'], $validated['end_date']])
+                    ->orWhereBetween('end_date', [$validated['start_date'], $validated['end_date']]);
             })->exists();
 
         if($absenceList) {

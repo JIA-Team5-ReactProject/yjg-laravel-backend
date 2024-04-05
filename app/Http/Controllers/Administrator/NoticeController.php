@@ -122,7 +122,7 @@ class NoticeController extends Controller
      */
     public function recentUrgent(): \Illuminate\Http\JsonResponse
     {
-        $notice = Notice::with('noticeImages')->whereIn('tag', ['bus', 'admin'])->latest()->first();
+        $notice = Notice::with('noticeImages')->latest()->first();
         return response()->json(['notices' => $notice]);
     }
 
