@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use App\Services\TokenService;
 use Google_Client;
@@ -63,7 +64,13 @@ class UserController extends Controller
     public function register(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $validated = $request->validate($this->userValidateRules);
+            $validated = $request->validate([
+                'name' => 'required|string',
+                'student_id' => 'required|string',
+                'phone_number' => 'required|string',
+                'email' => 'required|string|unique:users',
+                'password' => 'required|string',
+            ]);
         } catch(ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
@@ -188,18 +195,9 @@ class UserController extends Controller
      * )
      * @throws ValidationException
      */
-    public function login(Request $request): \Illuminate\Http\JsonResponse
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
-        try {
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-        } catch(Validationexception $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error' => $errorMessage], $errorStatus);
-        }
+        $credentials = $request->validated();
 
         if (! $token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);

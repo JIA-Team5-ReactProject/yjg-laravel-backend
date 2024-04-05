@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
-use App\Services\ResetPasswordService;
 use App\Services\TokenService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -52,7 +52,12 @@ class AdminController extends Controller
     public function register(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $validated = $request->validate($this->adminValidateRules);
+            $validated = $request->validate([
+                'name' => 'required|string',
+                'phone_number' => 'required|string',
+                'email' => 'required|string|unique:users',
+                'password' => 'required|string',
+            ]);
         } catch(ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
@@ -133,18 +138,9 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function login(Request $request): \Illuminate\Http\JsonResponse
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
-        try {
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-        } catch(ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
+        $credentials = $request->validated();
 
         if (!$token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
@@ -180,18 +176,9 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function webLogin(Request $request): \Illuminate\Http\JsonResponse
+    public function webLogin(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
-        try {
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-        } catch(ValidationException $exception) {
-            $errorStatus = $exception->status;
-            $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
+        $credentials = $request->validated();
 
         if (!$token = $this->tokenService->generateToken($credentials, 'access')) {
             return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
