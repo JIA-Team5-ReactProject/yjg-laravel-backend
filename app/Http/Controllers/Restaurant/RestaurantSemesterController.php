@@ -19,7 +19,7 @@ class RestaurantSemesterController extends Controller
     /**
      * @OA\Post (
      * path="/api/restaurant/semester",
-     * tags={"식수"},
+     * tags={"식수 신청 학기"},
      * summary="식수 학기 신청",
      * description="식수 학기 신청을 처리합니다",
      *     @OA\RequestBody(
@@ -68,7 +68,7 @@ class RestaurantSemesterController extends Controller
     /**
          * @OA\Get (
          * path="/api/restaurant/semester/g/payment{id}",
-         * tags={"식수"},
+         * tags={"식수 신청 학기"},
          * summary="식수 학기 신청 입금여부",
          * description="식수 학기 신청의 입금여부를 확인 합니다",
          *     @OA\Parameter(
@@ -101,7 +101,7 @@ class RestaurantSemesterController extends Controller
        /**
      * @OA\Post (
      *     path="/api/restaurant/semester/p/payment/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 신청 학기"},
      *     summary="학기 입금여부 수정",
      *     description="학기 입금여부를 수정",
      *      @OA\Parameter(
@@ -153,7 +153,7 @@ class RestaurantSemesterController extends Controller
     /**
      * @OA\Delete (
      *     path="/api/restaurant/semester/delete/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 신청 학기"},
      *     summary="학기 식수 신청 삭제",
      *     description="학기 식수 신청 삭제",
      *     @OA\Parameter(
@@ -183,7 +183,7 @@ class RestaurantSemesterController extends Controller
     /**
      * @OA\Get (
      * path="/api/restaurant/semester/show",
-     * tags={"식수"},
+     * tags={"식수 신청 학기"},
      * summary="학기 식수 신청 리스트 보기, 검색",
      * description="학기 식수 신청 리스트 보기, 검색하기",
      *     @OA\RequestBody(
@@ -224,7 +224,7 @@ class RestaurantSemesterController extends Controller
     /**
      * @OA\Get (
      * path="/api/restaurant/semester/show/user",
-     * tags={"식수"},
+     * tags={"식수 신청 학기"},
      * summary="학기 식수 유저 정보",
      * description="학기 식수 유조 정보 확인",
      *    
@@ -246,7 +246,7 @@ class RestaurantSemesterController extends Controller
 /**
      * @OA\Get (
      * path="/api/restaurant/semester/show/user/after",
-     * tags={"식수"},
+     * tags={"식수 신청 학기"},
      * summary="학기 식수 유저 정보(신청 후)",
      * description="학기 식수 유조 정보 확인(신청 후)",
      *    

@@ -16,7 +16,7 @@ class RestaurantWeekendController extends Controller
     /**
      * @OA\Post (
      *     path="/api/restaurant/weekend",
-     *     tags={"식수"},
+     *     tags={"식수 신청 주말"},
      *     summary="식수 주말 신청",
      *     description="식수 주말 신청을 처리합니다",
      *         @OA\RequestBody(
@@ -72,7 +72,7 @@ class RestaurantWeekendController extends Controller
        /**
      * @OA\get (
      *     path="/api/restaurant/weekend/g/payment/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 신청 주말"},
      *     summary="주말 식수 삭제 확인",
      *     description="주말 식수 삭제 확인",
      *   
@@ -95,7 +95,7 @@ class RestaurantWeekendController extends Controller
 /**
      * @OA\Post (
      *     path="/api/restaurant/weekend/p/payment/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 신청 주말"},
      *     summary="주말 입금여부 수정",
      *     description="주말 입금여부를 수정",
      *      @OA\Parameter(
@@ -144,7 +144,7 @@ class RestaurantWeekendController extends Controller
     /**
      * @OA\Delete (
      *     path="/api/restaurant/weekend/delete/{id}",
-     *     tags={"식수"},
+     *     tags={"식수 신청 주말"},
      *     summary="주말 식수 신청 삭제",
      *     description="주말 식수 신청 삭제",
      *     @OA\Parameter(
@@ -174,7 +174,7 @@ class RestaurantWeekendController extends Controller
      /**
      * @OA\Get (
      * path="/api/restaurant/weekend/show",
-     * tags={"식수"},
+     * tags={"식수 신청 주말"},
      * summary="주말 식수 신청 리스트 보기, 검색",
      * description="주말 식수 신청 리스트 보기, 검색하기",
      *     @OA\RequestBody(
@@ -214,7 +214,7 @@ class RestaurantWeekendController extends Controller
 /**
      * @OA\Get (
      * path="/api/restaurant/weekend/show/sumApp",
-     * tags={"식수"},
+     * tags={"식수 신청 주말"},
      * summary="주말 식수 신청 인원 확인",
      * description="주말 식수 신청 인원 확인",
      *     @OA\RequestBody(
@@ -260,7 +260,7 @@ class RestaurantWeekendController extends Controller
     /**
      * @OA\Get (
      * path="/api/restaurant/weekend/show/sumWeb",
-     * tags={"식수"},
+     * tags={"식수 신청 주말"},
      * summary="주말 식수 신청 인원 확인web",
      * description="주말 식수 신청 인원 확인web",
      *     @OA\RequestBody(
@@ -318,7 +318,7 @@ class RestaurantWeekendController extends Controller
     /**
      * @OA\Get (
      * path="/api/restaurant/weekend/show/user/table",
-     * tags={"식수"},
+     * tags={"식수 신청 주말"},
      * summary="주말 식수 유저 정보",
      * description="주말 식수 유저 정보 확인",
      *    

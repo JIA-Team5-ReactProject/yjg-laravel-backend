@@ -102,17 +102,7 @@ class RestaurantApplyDivisionController extends Controller
     }
 
 
-    /**
-     * @OA\Get (
-     * path="/api/restaurant/apply/weekend/get",
-     * tags={"식수 신청 기간"},
-     * summary="주말 식수 자동 신청 get",
-     * description="주말 식수 자동 신청 get",
-     *    
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
+//   일단 스웨거 문서에는 없음
     public function getWeekendAuto()
     {
         try {
@@ -212,17 +202,7 @@ class RestaurantApplyDivisionController extends Controller
 
 
 
-        /**
-     * @OA\Get (
-     * path="/api/restaurant/apply/semester/get",
-     * tags={"식수 신청 기간"},
-     * summary="학기 식수 자동 신청 get",
-     * description="학기 식수 자동 신청 get",
-     *    
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
+//    일단 스웨거 문서에는 없음
         public function getSemesterAuto()
         {
             try {
@@ -346,57 +326,7 @@ class RestaurantApplyDivisionController extends Controller
     }
 
 
-
-     /**
-     * @OA\Get(
-     * path="/api/restaurant/apply/manual/get",
-     * tags={"식수 신청 기간"},
-     * summary="식수 수동 신청 get",
-     * description="식수 수동 신청 get",
-     *     @OA\RequestBody(
-     *         description="학기인지 방학인지",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema (
-     *                 @OA\Property (property="division", type="string", description="학기,방학 구분", example="semester or weekend"),
-     *             )
-     *         )
-     *     ),
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
-    public function getManual(Request $request)
-    {
-        try {
-            $validatedData = $request->validate([
-                'division' => 'required|string|in:semester,weekend',
-            ]);
-        }catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
-
-        try {
-            $apply = RestaurantApplyManual::where('division', $validatedData['division'])->firstOrFail();
-            return response()->json(['open' => $apply->state]);
-        }catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
-        }
-    }
-
-
-    /**
-     * @OA\Get(
-     * path="/api/restaurant/apply/state",
-     * tags={"식수 신청 기간"},
-     * summary="식수 신청 기간 on/off 확인",
-     * description="식수 신청 기간 on/off 확인",
-     *     
-     *  @OA\Response(response="200", description="Success"),
-     *  @OA\Response(response="500", description="Fail"),
-     * )
-     */
+    //일단 스웨거 문서에는 없음
     public function showApplyState()
     {
         $applyState = RestaurantApplyState::all();
@@ -529,7 +459,6 @@ class RestaurantApplyDivisionController extends Controller
             $manualSemester = RestaurantApplyManual::where('division', "semester")->pluck('state')->first();
             $semester = RestaurantApplyManual::where('division', "semester")->first();
             $autoSemester = RestaurantSemesterAuto::first();
-            $state = [];
             if ($manualSemester == true) {
                 return response()->json(['manual' => $semester]);
             }if ($manualSemester == false and $autoSemester->state == true) {
