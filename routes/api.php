@@ -226,6 +226,8 @@ Route::prefix('restaurant')->group(function () {
 
     Route::get('/semester/meal-type/get', [SemesterMealTypeController::class, 'getMealType']);
     Route::get('/weekend/meal-type/get', [WeekendMealTypeController::class, 'getMealType']);
+    Route::patch('/semester/m/update/{id}', [SemesterMealTypeController::class, 'update']);
+    Route::patch('/weekend/m/update/{id}', [WeekendMealTypeController::class, 'update']);
 
     Route::delete('/semester/m/delete/{id}', [SemesterMealTypeController::class, 'delete']);
     Route::delete('/weekend/m/delete/{id}', [WeekendMealTypeController::class, 'delete']);

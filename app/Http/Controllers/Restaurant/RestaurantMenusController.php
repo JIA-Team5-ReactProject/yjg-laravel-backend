@@ -50,7 +50,7 @@ class RestaurantMenusController extends Controller
     }
 
 
-/**
+/**석게이 왔다감
      * @OA\Get (
      * path="/api/restaurant/menu/get/year",
      * tags={"식단표"},
