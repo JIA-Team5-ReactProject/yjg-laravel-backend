@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bus_rounds', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bus_route_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('round');
+            $table->string('round',5);
             $table->timestamps();
         });
     }

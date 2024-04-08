@@ -1459,22 +1459,6 @@
             }
         },
         "/api/admin": {
-            "get": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "관리자 정보",
-                "description": "현재 인증된 관리자의 정보를 반환",
-                "operationId": "6d0cf02b419b0df0eb46c97d4101d25b",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            },
             "post": {
                 "tags": [
                     "관리자"
@@ -1524,22 +1508,6 @@
                     },
                     "500": {
                         "description": "ServerError"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "탈퇴(본인)",
-                "description": "관리자 본인이 계정 탈퇴 시 사용합니다.",
-                "operationId": "8c83a6dce32306b18f5e57597e88e71c",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
                     }
                 }
             },
@@ -1716,24 +1684,6 @@
                 }
             }
         },
-        "/api/admin/logout": {
-            "post": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "로그아웃",
-                "description": "관리자 로그아웃",
-                "operationId": "2dd98745fdd9f4d4babe7b667b5ebf92",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Server Error"
-                    }
-                }
-            }
-        },
         "/api/admin/privilege": {
             "get": {
                 "tags": [
@@ -1839,45 +1789,6 @@
                     },
                     "404": {
                         "description": "ModelNotFoundException"
-                    },
-                    "422": {
-                        "description": "ValidationException"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            }
-        },
-        "/api/admin/verify-password": {
-            "post": {
-                "tags": [
-                    "관리자"
-                ],
-                "summary": "PW 체크",
-                "description": "관리자 회원정보 수정 페이지 접속 시 PW 체크",
-                "operationId": "1e07b81c9d3b0084bf28ad5c3b3c7ab6",
-                "requestBody": {
-                    "description": "PW",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "password": {
-                                        "description": "비밀번호",
-                                        "type": "string",
-                                        "example": "admin123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
                     },
                     "422": {
                         "description": "ValidationException"
@@ -2082,10 +1993,10 @@
         "/api/user": {
             "get": {
                 "tags": [
-                    "유저"
+                    "학생"
                 ],
-                "summary": "유저 정보",
-                "description": "현재 인증된 유저의 정보를 반환",
+                "summary": "학생/관리자 정보",
+                "description": "현재 인증된 학생/관리자의 정보를 반환",
                 "operationId": "2183352f835b442102aaa60ac0d76c29",
                 "responses": {
                     "200": {
@@ -2153,22 +2064,6 @@
                     }
                 }
             },
-            "delete": {
-                "tags": [
-                    "학생"
-                ],
-                "summary": "탈퇴",
-                "description": "학생 유저의 회원 탈퇴 시 사용합니다.",
-                "operationId": "c256e11ea1b42e32fea712214efd4c4d",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "ServerError"
-                    }
-                }
-            },
             "patch": {
                 "tags": [
                     "학생"
@@ -2226,6 +2121,24 @@
                     },
                     "500": {
                         "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/unregister": {
+            "delete": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "탈퇴",
+                "description": "학생 및 관리자의 회원 탈퇴 시 사용합니다.",
+                "operationId": "3be1c2f2d46e101ae1808c6f22d7d24a",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "ServerError"
                     }
                 }
             }
@@ -2318,14 +2231,14 @@
                 }
             }
         },
-        "/api/user/logout": {
+        "/api/logout": {
             "post": {
                 "tags": [
                     "학생"
                 ],
                 "summary": "로그아웃",
                 "description": "유저 로그아웃",
-                "operationId": "8b589eead1accdf2271a4ebc07a06168",
+                "operationId": "29573ceac77e01db83ed67bd710fc374",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -2392,7 +2305,7 @@
         "/api/find-email": {
             "post": {
                 "tags": [
-                    "유저"
+                    "학생"
                 ],
                 "summary": "이메일 찾기",
                 "description": "회원가입 시 입력한 이름과 전화번호를 통하여 일치하는 값을 가진 이메일을 찾음",
@@ -2426,6 +2339,45 @@
                     },
                     "404": {
                         "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "ServerError"
+                    }
+                }
+            }
+        },
+        "/api/verify-password": {
+            "post": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "PW 체크",
+                "description": "현재 로그인한 학생 및 관리자의 PW 체크",
+                "operationId": "fa8953ec7306772753df79a44627633e",
+                "requestBody": {
+                    "description": "PW",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "비밀번호",
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     },
                     "422": {
                         "description": "ValidationException"
@@ -2986,24 +2938,6 @@
                 }
             }
         },
-        "/api/restaurant/apply/weekend/get": {
-            "get": {
-                "tags": [
-                    "식수 신청 기간"
-                ],
-                "summary": "주말 식수 자동 신청 get",
-                "description": "주말 식수 자동 신청 get",
-                "operationId": "b7eebae810495613ba6b9109fb036286",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/restaurant/apply/semester/auto": {
             "post": {
                 "tags": [
@@ -3068,24 +3002,6 @@
                 }
             }
         },
-        "/api/restaurant/apply/semester/get": {
-            "get": {
-                "tags": [
-                    "식수 신청 기간"
-                ],
-                "summary": "학기 식수 자동 신청 get",
-                "description": "학기 식수 자동 신청 get",
-                "operationId": "7dfba620aa4e0971fdfcfc4448dd5f82",
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/restaurant/apply/manual": {
             "post": {
                 "tags": [
@@ -3093,7 +3009,7 @@
                 ],
                 "summary": "식수 수동 신청 디폴트 넣기",
                 "description": "식수 수동 디폴트 넣기",
-                "operationId": "e7a5fc8d447573027ea53c07fc21be37",
+                "operationId": "14a7280b2049c8db5bc2a7fed82af651",
                 "requestBody": {
                     "description": "학기인지 방학인지, 열지 닫을지",
                     "required": true,
@@ -3134,7 +3050,7 @@
                 ],
                 "summary": "식수 수동 신청 수정",
                 "description": "식수 수동 신청 수정",
-                "operationId": "96f1092f01eec289d0f3527b3617d111",
+                "operationId": "0a010bbe1c37f21d0f3c9b470ce66861",
                 "requestBody": {
                     "description": "학기인지 방학인지, 열지 닫을지",
                     "required": true,
@@ -3158,60 +3074,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/apply/manual/get": {
-            "get": {
-                "tags": [
-                    "식수 신청 기간"
-                ],
-                "summary": "식수 수동 신청 get",
-                "description": "식수 수동 신청 get",
-                "operationId": "85cd8cc99c73d2af0c240c4c3ff92c78",
-                "requestBody": {
-                    "description": "학기인지 방학인지",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "division": {
-                                        "description": "학기,방학 구분",
-                                        "type": "string",
-                                        "example": "semester or weekend"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/apply/state": {
-            "get": {
-                "tags": [
-                    "식수 신청 기간"
-                ],
-                "summary": "식수 신청 기간 on/off 확인",
-                "description": "식수 신청 기간 on/off 확인",
-                "operationId": "043084d94d5bf47be12a7342b016305e",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3276,14 +3138,14 @@
                 }
             }
         },
-        "/api/restaurant/apply/state/web/weekend": {
+        "/api/restaurant/apply/state/web/semester": {
             "get": {
                 "tags": [
                     "식수 신청 기간"
                 ],
                 "summary": "학기 식수 신청 기간 web 페이지 확인",
                 "description": "학기 식수 신청 기간 web 페이지 확인",
-                "operationId": "59ceae50bd1582ab71bcfd22704a7c7d",
+                "operationId": "2c20aeb09c896f76535dc8442edb4426",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3294,14 +3156,14 @@
                 }
             }
         },
-        "/api/restaurant/apply/state/web/semester": {
+        "/api/restaurant/apply/state/web/weekend": {
             "get": {
                 "tags": [
                     "식수 신청 기간"
                 ],
                 "summary": "주말 식수 신청 기간 web 페이지 확인",
                 "description": "주말 식수 신청 기간 web 페이지 확인",
-                "operationId": "8261df27ffb36356625b8aba0ad1ad23",
+                "operationId": "54fe91b11d0bdba3790f684d3736192b",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3338,24 +3200,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "500": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/restaurant/menu/get/year": {
-            "get": {
-                "tags": [
-                    "식단표"
-                ],
-                "summary": "년도 전부 가져오기",
-                "description": "년도 전부 가져오기",
-                "operationId": "3db3193b76f097daed61caab8dcd7dbd",
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3475,7 +3319,7 @@
         "/api/restaurant/semester": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "식수 학기 신청",
                 "description": "식수 학기 신청을 처리합니다",
@@ -3511,7 +3355,7 @@
         "/api/restaurant/semester/g/payment{id}": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "식수 학기 신청 입금여부",
                 "description": "식수 학기 신청의 입금여부를 확인 합니다",
@@ -3540,7 +3384,7 @@
         "/api/restaurant/semester/p/payment/{id}": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "학기 입금여부 수정",
                 "description": "학기 입금여부를 수정",
@@ -3590,7 +3434,7 @@
         "/api/restaurant/semester/delete/{id}": {
             "delete": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "학기 식수 신청 삭제",
                 "description": "학기 식수 신청 삭제",
@@ -3619,7 +3463,7 @@
         "/api/restaurant/semester/show": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "학기 식수 신청 리스트 보기, 검색",
                 "description": "학기 식수 신청 리스트 보기, 검색하기",
@@ -3655,7 +3499,7 @@
         "/api/restaurant/semester/show/user": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "학기 식수 유저 정보",
                 "description": "학기 식수 유조 정보 확인",
@@ -3673,7 +3517,7 @@
         "/api/restaurant/semester/show/user/after": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 학기"
                 ],
                 "summary": "학기 식수 유저 정보(신청 후)",
                 "description": "학기 식수 유조 정보 확인(신청 후)",
@@ -3691,7 +3535,7 @@
         "/api/restaurant/weekend": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "식수 주말 신청",
                 "description": "식수 주말 신청을 처리합니다",
@@ -3742,7 +3586,7 @@
         "/api/restaurant/weekend/g/payment/{id}": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 식수 삭제 확인",
                 "description": "주말 식수 삭제 확인",
@@ -3760,7 +3604,7 @@
         "/api/restaurant/weekend/p/payment/{id}": {
             "post": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 입금여부 수정",
                 "description": "주말 입금여부를 수정",
@@ -3810,7 +3654,7 @@
         "/api/restaurant/weekend/delete/{id}": {
             "delete": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 식수 신청 삭제",
                 "description": "주말 식수 신청 삭제",
@@ -3839,7 +3683,7 @@
         "/api/restaurant/weekend/show": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 식수 신청 리스트 보기, 검색",
                 "description": "주말 식수 신청 리스트 보기, 검색하기",
@@ -3875,7 +3719,7 @@
         "/api/restaurant/weekend/show/sumApp": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 식수 신청 인원 확인",
                 "description": "주말 식수 신청 인원 확인",
@@ -3911,7 +3755,7 @@
         "/api/restaurant/weekend/show/sumWeb": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 식수 신청 인원 확인web",
                 "description": "주말 식수 신청 인원 확인web",
@@ -3947,7 +3791,7 @@
         "/api/restaurant/weekend/show/user/table": {
             "get": {
                 "tags": [
-                    "식수"
+                    "식수 신청 주말"
                 ],
                 "summary": "주말 식수 유저 정보",
                 "description": "주말 식수 유저 정보 확인",
@@ -4055,6 +3899,63 @@
                 }
             }
         },
+        "/api/restaurant/semester/m/update/{id}": {
+            "patch": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "학기 식수 유형 수정",
+                "description": "학기 식수 유형을 수정",
+                "operationId": "26a71ce6fa175eab5a309e5ca4ff2cd4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 학기 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "학기 식수 유형 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사 유형",
+                                        "type": "string",
+                                        "example": "C"
+                                    },
+                                    "content": {
+                                        "description": "설명",
+                                        "type": "string",
+                                        "example": "점심+저녁"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "5600"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/weekend/meal-type": {
             "post": {
                 "tags": [
@@ -4138,6 +4039,63 @@
                 "summary": "주말 식수 유형 가져오기",
                 "description": "주말 식수 유형 가져오기",
                 "operationId": "b958e1056af79132183df379fd27f4da",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/restaurant/weekend/m/update/{id}": {
+            "patch": {
+                "tags": [
+                    "식수 유형"
+                ],
+                "summary": "주말 식수 유형 수정",
+                "description": "주말 식수 유형 수정",
+                "operationId": "e046193f45aa345a1694ecfa8e7e8bd9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "수정할 주말 식수 유형 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "주말 식수 유형 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "meal_type": {
+                                        "description": "식사유형",
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "content": {
+                                        "description": "내용",
+                                        "type": "string",
+                                        "example": "아침"
+                                    },
+                                    "price": {
+                                        "description": "가격",
+                                        "type": "string",
+                                        "example": "750,000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"

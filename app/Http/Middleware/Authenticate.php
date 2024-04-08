@@ -18,6 +18,11 @@ class Authenticate extends Middleware
      */
     public function handle($request, $next, ...$guards): mixed
     {
+        if($request->cookie('refresh_token') !== null &&
+            $this->auth->setToken($request->cookie('refresh_token'))->check()) {
+            return $next($request);
+        }
+
         foreach ($guards as $guard) {
             if ($this->auth->guard($guard)->check()) {
                 return $next($request);

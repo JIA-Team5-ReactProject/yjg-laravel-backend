@@ -112,4 +112,59 @@ class WeekendMealTypeController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Patch (
+     *     path="/api/restaurant/weekend/m/update/{id}",
+     *     tags={"식수 유형"},
+     *     summary="주말 식수 유형 수정",
+     *     description="주말 식수 유형 수정",
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="수정할 주말 식수 유형 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="주말 식수 유형 정보",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
+     *                 @OA\Property (property="content", type="string", description="내용", example="아침"), 
+     *                 @OA\Property (property="price", type="string", description="가격", example="750,000"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'meal_type' => 'required|string',
+                'content' => 'required|string',
+                'price' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+        try {
+            $RestaurantWeekend = WeekendMealType::findOrFail($id);
+            $RestaurantWeekend->update([
+                'meal_type' => $validatedData['meal_type'],
+                'content' => $validatedData['content'],
+                'price' => $validatedData['price'],
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+
+        return response()->json(['message' => '주말 식사 유형 수정 완료']);
+    }
 }

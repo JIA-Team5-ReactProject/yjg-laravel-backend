@@ -15,7 +15,7 @@
     <div id="content" style="text-align: center; padding: 3%;">
         <h3>인증번호를 확인해주세요.</h3>
         <p style="font-size: 2rem"><strong>{{$secret}}</strong></p>
-        <p>비밀번호 초기화를 위한 인증번호입니다. 10분 내에 인증번호를 입력해주세요.</p>
+        <p>비밀번호 초기화를 위한 인증번호입니다. 3분 내에 인증번호를 입력해주세요.</p>
     </div>
 </body>
 </html>

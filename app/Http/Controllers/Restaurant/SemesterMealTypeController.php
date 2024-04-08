@@ -115,4 +115,61 @@ class SemesterMealTypeController extends Controller
         }
     }
 
+
+
+    /**
+     * @OA\Patch (
+     * path="/api/restaurant/semester/m/update/{id}",
+     * tags={"식수 유형"},
+     * summary="학기 식수 유형 수정",
+     * description="학기 식수 유형을 수정",
+     *     @OA\RequestBody(
+     *         description="학기 식수 유형 정보",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                 @OA\Property (property="meal_type", type="string", description="식사 유형", example="C"),
+     *                 @OA\Property (property="content", type="string", description="설명", example="점심+저녁"),
+     *                 @OA\Property (property="price", type="string", description="가격", example="5600"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="수정할 학기 식수 유형 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
+     *  @OA\Response(response="200", description="Success"),
+     *  @OA\Response(response="500", description="Fail"),
+     * )
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'meal_type' => 'required|string',
+                'content' => 'nullable|string',
+                'price' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+        try {
+            $SemesterMealType = SemesterMealType::findOrFail($id);
+
+            $SemesterMealType->update([
+                'meal_type' => $validatedData['meal_type'],
+                'content' =>$validatedData['content'],
+                'price' =>$validatedData['price'],
+            ]);
+
+            return response()->json(['message' => '학기 식수 유형이 수정되었습니다.']);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
 }

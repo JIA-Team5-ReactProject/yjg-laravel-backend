@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('semester_meal_types', function (Blueprint $table) {
             $table->id();
-            $table->string('meal_type');
-            $table->string('content')->nullable();
+            $table->string('meal_type',1);
+            $table->string('content',50)->nullable();
             $table->string('price', 10);
             $table->timestamps();
         });

@@ -226,6 +226,8 @@ Route::prefix('restaurant')->group(function () {
 
     Route::get('/semester/meal-type/get', [SemesterMealTypeController::class, 'getMealType']);
     Route::get('/weekend/meal-type/get', [WeekendMealTypeController::class, 'getMealType']);
+    Route::patch('/semester/m/update/{id}', [SemesterMealTypeController::class, 'update']);
+    Route::patch('/weekend/m/update/{id}', [WeekendMealTypeController::class, 'update']);
 
     Route::delete('/semester/m/delete/{id}', [SemesterMealTypeController::class, 'delete']);
     Route::delete('/weekend/m/delete/{id}', [WeekendMealTypeController::class, 'delete']);
@@ -250,8 +252,8 @@ Route::prefix('restaurant')->group(function () {
         Route::patch('/semester/set', [RestaurantApplyDivisionController::class, 'setSemesterAuto']);
         Route::get('/semester/get', [RestaurantApplyDivisionController::class, 'getSemesterAuto']);
 
-        Route::post('/manual/set', [RestaurantApplyDivisionController::class, 'setManual']);
-        Route::patch('/manual', [RestaurantApplyDivisionController::class, 'manual']);
+        Route::post('/manual', [RestaurantApplyDivisionController::class, 'onManual']);
+        Route::patch('/manual/set', [RestaurantApplyDivisionController::class, 'setManual']);
         Route::get('/manual/get', [RestaurantApplyDivisionController::class, 'getManual']);
         Route::get('/manual/get/app', [RestaurantApplyDivisionController::class, 'getManualApp']);
 
