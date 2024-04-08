@@ -464,7 +464,7 @@ class RestaurantApplyDivisionController extends Controller
             }if ($manualSemester == false and $autoSemester->state == true) {
                 return response()->json(['auto' => $autoSemester]);
             }else{
-                return response()->json(['mesage' => '학기 식수 신청 기간이 아닙니다.']);
+                return response()->json(['manual' => $manualSemester]);
             }
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -493,7 +493,7 @@ class RestaurantApplyDivisionController extends Controller
             }if ($manualWeekend == false and $autoWeekend->state == true) {
                 return response()->json(['weekendAutoData' => $autoWeekend]);
             }else{
-                return response()->json(['mesage' => '주말 식수 신청 기간이 아닙니다.']);
+                return response()->json(['manual' => $manualWeekend]);
             }
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
