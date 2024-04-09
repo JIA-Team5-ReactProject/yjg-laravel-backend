@@ -376,14 +376,13 @@ class RestaurantApplyDivisionController extends Controller
             Log::info('트루 트루');
             try {
                 $semesterAuto = RestaurantSemesterAuto::first();
-                $startDate = $semesterAuto->start_date;
-                $endDate = $semesterAuto->end_date;
+                $startDate = Carbon::createFromFormat('m-d', $semesterAuto->start_date);
+                $endDate = Carbon::createFromFormat('m-d', $semesterAuto->end_date);
                 $now = Carbon::now();
-    
-                if ($now->between($startDate, $endDate)) {
-                    return response()->json(['result' => true]);
+                if ($now->between($startDate, $endDate)){
+                    return response()->json(['auto' => 1]);
                 } else {
-                    return response()->json(['result' => false]);
+                    return response()->json(['result' => 0]);
                 }
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
@@ -391,7 +390,7 @@ class RestaurantApplyDivisionController extends Controller
         } if ($semester == true and $semesterManual == true) {
             Log::info('트루 펄스');
             $autoState = RestaurantApplyManual::where('division', "semester")->first('state');
-            return response()->json(['result' => $autoState]);
+            return response()->json(['manual' => $autoState->state]);
         }
         return response()->json(['semester' => $semester]);
     }
@@ -427,17 +426,17 @@ class RestaurantApplyDivisionController extends Controller
     
                 if ($nowWeek >= $startWeek && $nowWeek <= $endWeek) {
                     if ($now->between($startTime, $endTime)) {
-                        return response()->json(['result' => true]);
+                        return response()->json(['auto' => 1]);
                     } else {
-                        return response()->json(['result' => false]);
+                        return response()->json(['auto' => 0]);
                     }
-                }return response()->json(['result' => false]);
+                }return response()->json(['error']);
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
         }if($weekend == true and $weekendManual == true) {
             $autoState = RestaurantApplyManual::first('state');
-            return response()->json(['result' => $weekendManual]);
+            return response()->json(['manual' => $weekendManual->state]);
         }
         return response()->json(['weekend' => $weekend]);
     }
@@ -464,7 +463,7 @@ class RestaurantApplyDivisionController extends Controller
             }if ($manualSemester == false and $autoSemester->state == true) {
                 return response()->json(['auto' => $autoSemester]);
             }else{
-                return response()->json(['manual' => $manualSemester]);
+                return response()->json(['manual' => $semester]);
             }
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -493,7 +492,7 @@ class RestaurantApplyDivisionController extends Controller
             }if ($manualWeekend == false and $autoWeekend->state == true) {
                 return response()->json(['weekendAutoData' => $autoWeekend]);
             }else{
-                return response()->json(['manual' => $manualWeekend]);
+                return response()->json(['manual' => $weekend]);
             }
         }catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
