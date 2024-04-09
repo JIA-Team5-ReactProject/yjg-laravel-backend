@@ -3588,8 +3588,8 @@
                 "tags": [
                     "식수 신청 주말"
                 ],
-                "summary": "주말 식수 삭제 확인",
-                "description": "주말 식수 삭제 확인",
+                "summary": "주말 식수 입금 확인",
+                "description": "주말 식수 입금 확인",
                 "operationId": "054cc9d10ec30323087e31bcfa00868c",
                 "responses": {
                     "200": {
