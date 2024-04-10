@@ -70,7 +70,6 @@ class Kernel extends HttpKernel
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'approve' => \App\Http\Middleware\ApproveCheck::class,
         'login.approve' => \App\Http\Middleware\LoginApproveCheck::class,
-        'token.type' => \App\Http\Middleware\TokenType::class,
     ];
 
     /**
