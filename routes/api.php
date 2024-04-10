@@ -57,7 +57,7 @@ Route::post('/find-email', [UserController::class, 'findEmail'])->name('find.ema
 Route::get('/verify-email/{id}', [UserController::class, 'verifyUniqueUserEmail'])->name('verify.email'); //수정
 
 /** 토큰 리프레시 */
-Route::get('/refresh', RefreshController::class)->middleware(['auth:users', 'token.type:refresh', 'approve:users']);
+Route::get('/refresh', RefreshController::class)->middleware(['auth.refresh', 'approve:users']);
 
 /**
  * 학생 인증 관련
@@ -80,7 +80,7 @@ Route::prefix('admin')->group(function () {
 });
 
 /** 토큰이 필요한 기능 */
-Route::middleware(['auth:users', 'token.type:access', 'approve:users'])->group(function () {
+Route::middleware(['auth:users', 'approve:users'])->group(function () {
     /** 학생 및 관리자 공용 */
     Route::delete('/unregister',[UserController::class, 'unregister'])->name('unregister'); // 수정
     Route::post('/logout', [UserController::class, 'logout'])  ->name('logout'); // 수정
