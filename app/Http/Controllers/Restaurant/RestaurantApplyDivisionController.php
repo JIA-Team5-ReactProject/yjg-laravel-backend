@@ -382,15 +382,13 @@ class RestaurantApplyDivisionController extends Controller
                 if ($now->between($startDate, $endDate)){
                     return response()->json(['auto' => 1]);
                 } else {
-                    return response()->json(['result' => 0]);
+                    return response()->json(['auto' => 0]);
                 }
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
         } if ($semester == true and $semesterManual == true) {
-            Log::info('트루 펄스');
-            $autoState = RestaurantApplyManual::where('division', "semester")->first('state');
-            return response()->json(['manual' => $autoState->state]);
+            return response()->json(['manual' => $semesterManual]);
         }
         return response()->json(['semester' => $semester]);
     }
@@ -435,8 +433,7 @@ class RestaurantApplyDivisionController extends Controller
                 return response()->json(['error' => $exception->getMessage()], 422);
             }
         }if($weekend == true and $weekendManual == true) {
-            $autoState = RestaurantApplyManual::first('state');
-            return response()->json(['manual' => $weekendManual->state]);
+            return response()->json(['manual' => $weekendManual]);
         }
         return response()->json(['weekend' => $weekend]);
     }
