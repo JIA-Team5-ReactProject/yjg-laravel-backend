@@ -73,8 +73,8 @@ class RestaurantWeekendController extends Controller
      * @OA\get (
      *     path="/api/restaurant/weekend/g/payment/{id}",
      *     tags={"식수 신청 주말"},
-     *     summary="주말 식수 삭제 확인",
-     *     description="주말 식수 삭제 확인",
+     *     summary="주말 식수 입금 확인",
+     *     description="주말 식수 입금 확인",
      *   
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
@@ -83,7 +83,6 @@ class RestaurantWeekendController extends Controller
     public function getPayment()
     {
         $user_id = auth('users')->id();
-
         try {
             $paymentData = RestaurantWeekend::where('user_id', $user_id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);

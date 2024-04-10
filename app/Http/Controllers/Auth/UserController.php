@@ -441,16 +441,12 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'password' => 'required|string',
+                'password' => 'required|string|current_password',
             ]);
         } catch (ValidationException $validationException) {
             $errorStatus = $validationException->status;
             $errorMessage = $validationException->getMessage();
             return response()->json(['error'=>$errorMessage], $errorStatus);
-        }
-
-        if(!Hash::check($validated['password'], auth()->user()->getAuthPassword())) {
-            return response()->json(['error' => '비밀번호가 일치하지 않습니다.'], 500);
         }
 
         return response()->json(['success' => '비밀번호가 일치합니다.']);
