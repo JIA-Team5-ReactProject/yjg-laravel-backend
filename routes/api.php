@@ -200,10 +200,8 @@ Route::middleware(['auth:users', 'approve:users'])->group(function () {
 
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
-    Route::get('/semester/g/payment', [RestaurantSemesterController::class, 'getPayment']);
-    Route::post('/semester/p/payment/', [RestaurantSemesterController::class, 'setPayment']);
-    Route::get('/weekend/g/payment/', [RestaurantWeekendController::class, 'getPayment']);
-    Route::post('/weekend/p/payment/', [RestaurantWeekendController::class, 'setPayment']);
+   
+    
     Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
     Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
 });
@@ -221,7 +219,10 @@ Route::prefix('restaurant')->group(function () {
     Route::patch('/account/set', [RestaurantAccountController::class, 'update']);
     Route::get('/account/show', [RestaurantAccountController::class, 'show']);
 
-   
+    Route::get('/semester/g/payment/{id}', [RestaurantSemesterController::class, 'getPayment']);
+    Route::get('/weekend/g/payment/{id}', [RestaurantWeekendController::class, 'getPayment']);
+    Route::post('/semester/p/payment/{id}', [RestaurantSemesterController::class, 'setPayment']);
+    Route::post('/weekend/p/payment/{id}', [RestaurantWeekendController::class, 'setPayment']);
     Route::get('/semester/apply', [RestaurantSemesterController::class, 'getRestaurantApply']);
     Route::get('/weekend/apply', [RestaurantWeekendController::class, 'getRestaurantApply']);
 

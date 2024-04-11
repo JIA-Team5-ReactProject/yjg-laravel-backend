@@ -3352,14 +3352,14 @@
                 }
             }
         },
-        "/api/restaurant/semester/g/payment{id}": {
+        "/api/restaurant/semester/g/payment/{id}": {
             "get": {
                 "tags": [
                     "식수 신청 학기"
                 ],
                 "summary": "식수 학기 신청 입금여부",
                 "description": "식수 학기 신청의 입금여부를 확인 합니다",
-                "operationId": "cad43b7b850c5562c601f66a44414c1a",
+                "operationId": "b58e33e11eff86fbd81c37ed820e36db",
                 "parameters": [
                     {
                         "name": "id",
@@ -3591,6 +3591,17 @@
                 "summary": "주말 식수 입금 확인",
                 "description": "주말 식수 입금 확인",
                 "operationId": "054cc9d10ec30323087e31bcfa00868c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "조회 할 식수 신청 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3793,7 +3804,7 @@
                 "tags": [
                     "식수 신청 주말"
                 ],
-                "summary": "주말 식수 유저 정보",
+                "summary": "주말 식수 신청자 유저 정보",
                 "description": "주말 식수 유저 정보 확인",
                 "operationId": "3e670008c866aec9f45fb42251b83073",
                 "responses": {
