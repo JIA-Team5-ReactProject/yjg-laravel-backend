@@ -15,10 +15,13 @@ class AuthenticateRefresh
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->cookie('refresh_token') !== null &&
-            auth()->setToken($request->cookie('refresh_token'))->check() &&
-            auth()->payload()->get('typ') == 'refresh') {
-            return $next($request);
+        if($request->cookie('refresh_token') !== null) {
+        $token = $request->cookie('refresh_token');
+             if (auth()->setToken($token)->check() && auth()->setToken($token)->payload()->get('typ') == 'refresh')
+                return $next($request);
+        } else {
+            if (auth()->check() && auth()->payload()->get('typ') == 'refresh')
+                return $next($request);
         }
 
         return response()->json(['error' => '인증되지 않은 유저입니다.(refresh)'], 401);

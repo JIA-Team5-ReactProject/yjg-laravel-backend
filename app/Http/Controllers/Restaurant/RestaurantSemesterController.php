@@ -67,7 +67,7 @@ class RestaurantSemesterController extends Controller
 
     /**
          * @OA\Get (
-         * path="/api/restaurant/semester/g/payment{id}",
+         * path="/api/restaurant/semester/g/payment/{id}",
          * tags={"식수 신청 학기"},
          * summary="식수 학기 신청 입금여부",
          * description="식수 학기 신청의 입금여부를 확인 합니다",
@@ -82,12 +82,10 @@ class RestaurantSemesterController extends Controller
          *  @OA\Response(response="500", description="Fail"),
          * )
          */
-    public function getPayment()
+    public function getPayment($id)
     {
-        $user_id = auth('users')->id();
-        Log::info('유저 아이디: ' . $user_id);
         try {
-            $paymentData = RestaurantSemester::where('user_id', $user_id)->pluck('payment');
+            $paymentData = RestaurantSemester::where('id', $id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);

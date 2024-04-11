@@ -75,16 +75,21 @@ class RestaurantWeekendController extends Controller
      *     tags={"식수 신청 주말"},
      *     summary="주말 식수 입금 확인",
      *     description="주말 식수 입금 확인",
-     *   
+     *     @OA\Parameter(
+     *           name="id",
+     *           description="조회 할 식수 신청 아이디",
+     *           required=true,
+     *           in="path",
+     *           @OA\Schema(type="integer"),
+     *     ),
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getPayment()
+    public function getPayment($id)
     {
-        $user_id = auth('users')->id();
         try {
-            $paymentData = RestaurantWeekend::where('user_id', $user_id)->pluck('payment');
+            $paymentData = RestaurantWeekend::where('id', $id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
             return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
@@ -203,6 +208,7 @@ class RestaurantWeekendController extends Controller
                     $allData->where('name', 'like', '%' . $name . '%');
                 })->paginate(5);
             }
+            
     
             return $applyData;
         } catch (\Exception $exception) {
@@ -279,8 +285,6 @@ class RestaurantWeekendController extends Controller
     public function sumApplyWeb(Request $request)
     {
         $mealTypes = weekendMealType::all(['id','meal_type']);
-        Log::info('식수 유형ID: ' . $mealTypes);
-
         $applyData = []; // 결과를 저장할 배열 초기화
 
         if ($request->date == 'sat') {
@@ -291,9 +295,7 @@ class RestaurantWeekendController extends Controller
                                         ->count();
                 // 조회한 갯수를 식수 유형 ID를 키로 하여 배열에 저장
                 $applyData[$mealType->meal_type] = $count;
-                Log::info('카운트 배열: ' . $mealType);
             }
-            Log::info('어플리 최종 : ' . json_encode($applyData));
 
         }elseif($request->date == 'sun'){
             foreach ($mealTypes as $mealType) {
@@ -303,9 +305,7 @@ class RestaurantWeekendController extends Controller
                                         ->count();
                 // 조회한 갯수를 식수 유형 ID를 키로 하여 배열에 저장
                 $applyData[$mealType->meal_type] = $count;
-                Log::info('카운트 배열: ' . $mealTypes);
             }
-            Log::info('어플리 최종 : ' . json_encode($applyData));
         }else{
             return response()->json(['error' => 'sat or sun을 입력해주세요.']);
         }
@@ -318,7 +318,7 @@ class RestaurantWeekendController extends Controller
      * @OA\Get (
      * path="/api/restaurant/weekend/show/user/table",
      * tags={"식수 신청 주말"},
-     * summary="주말 식수 유저 정보",
+     * summary="주말 식수 신청자 유저 정보",
      * description="주말 식수 유저 정보 확인",
      *    
      *  @OA\Response(response="200", description="Success"),
