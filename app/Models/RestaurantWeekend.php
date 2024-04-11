@@ -27,6 +27,16 @@ class RestaurantWeekend extends Model
      }
     
 
+    // Accessor : 모델에서 특정 속성에 대한 값을 포맷하거나 변환할 때 사용함
+    //  public function getSatAttribute($value)
+    // {
+    //     return $value == 1 ? '토요일' : ''; 
+    // }
+
+    // public function getSunAttribute($value)
+    // {
+    //     return $value == 1 ? '일요일' : ''; 
+    // }
     
     
 }
