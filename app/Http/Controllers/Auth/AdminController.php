@@ -341,7 +341,7 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'name'             => 'string',
-                'phone_number'     => 'string|unique:admins',
+                'phone_number'     => 'string|unique:users,phone_number',
                 'current_password' => 'current_password',
                 'new_password'     => 'string|required_with:current_password',
             ]);
