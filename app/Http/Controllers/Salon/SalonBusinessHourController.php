@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\SalonBusinessHour;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -18,7 +20,7 @@ class SalonBusinessHourController extends Controller
     {
     }
 
-    public function authorize($ability, $arguments = [SalonBusinessHour::class])
+    public function authorize($ability, $arguments = [SalonBusinessHour::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -32,7 +34,7 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="200", description="Success"),
      * )
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): JsonResponse
     {
         return response()->json(['business_hours' => SalonBusinessHour::all(['id', 's_time', 'e_time', 'date', 'open'])]);
     }
@@ -140,7 +142,7 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -192,7 +194,7 @@ class SalonBusinessHourController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');

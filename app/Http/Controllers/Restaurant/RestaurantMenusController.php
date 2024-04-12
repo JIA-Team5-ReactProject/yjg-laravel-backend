@@ -41,7 +41,7 @@ class RestaurantMenusController extends Controller
     {
         try{
             $excel_file = $request->file('excel_file');
-            $excel_file->store('excels');
+//            $excel_file->store('excels');
             Excel::import(new RestaurantMenuImport, $excel_file);
             return response()->json(['message' => '식단표 저장 완료'], 200);
         }catch (\Exception $exception) {
@@ -56,16 +56,16 @@ class RestaurantMenusController extends Controller
      * tags={"식단표"},
      * summary="년도 전부 가져오기",
      * description="년도 전부 가져오기",
-     *    
+     *
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
     public function getyears()
-    { 
+    {
         try {
             $years = RestaurantMenuDate::distinct()->pluck('year');
-                
+
             return response()->json(['years' => $years]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
@@ -105,7 +105,7 @@ class RestaurantMenusController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
-        
+
         try {
             $weekMenus = $weekdata->flatMap(function ($date) {
                 return RestaurantMenu::where('date_id', $date->id)->get();
@@ -148,7 +148,7 @@ class RestaurantMenusController extends Controller
         }
     }
 
-    
+
  /**
      * @OA\Delete (
      *     path="/api/restaurant/menu/d/{id}",

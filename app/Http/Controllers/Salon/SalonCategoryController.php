@@ -6,13 +6,15 @@ use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\SalonCategory;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class SalonCategoryController extends Controller
 {
-    public function authorize($ability, $arguments = [SalonCategory::class])
+    public function authorize($ability, $arguments = [SalonCategory::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -26,7 +28,7 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): JsonResponse
     {
         return response()->json(['categories' => SalonCategory::all()]);
     }
@@ -52,7 +54,7 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -100,7 +102,7 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -152,7 +154,7 @@ class SalonCategoryController extends Controller
      * )
      * @throws DestroyException
      */
-    public function destroy(String $id): \Illuminate\Http\JsonResponse
+    public function destroy(String $id): JsonResponse
     {
         try {
             $this->authorize('salon');

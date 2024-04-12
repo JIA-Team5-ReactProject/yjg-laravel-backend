@@ -7,14 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Models\SalonCategory;
 use App\Models\SalonService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class SalonServiceController extends Controller
 {
-    public function authorize($ability, $arguments = [SalonService::class])
+    public function authorize($ability, $arguments = [SalonService::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -42,7 +44,7 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function show(Request $request): \Illuminate\Http\JsonResponse
+    public function show(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -97,7 +99,7 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -162,7 +164,7 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -213,7 +215,7 @@ class SalonServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         try {
             $this->authorize('salon');

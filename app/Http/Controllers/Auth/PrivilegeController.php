@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Privilege;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class PrivilegeController extends Controller
 {
@@ -18,7 +18,7 @@ class PrivilegeController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function __invoke(): \Illuminate\Http\JsonResponse
+    public function __invoke(): JsonResponse
     {
         $privileges = Privilege::where('privilege', '<>', 'master')->get();
 

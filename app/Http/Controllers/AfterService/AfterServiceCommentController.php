@@ -6,14 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceComment;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AfterServiceCommentController extends Controller
 {
-    public function authorize($ability, $arguments = [AfterServiceComment::class])
+    public function authorize($ability, $arguments = [AfterServiceComment::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -35,7 +37,7 @@ class AfterServiceCommentController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function show(string $id): \Illuminate\Http\JsonResponse
+    public function show(string $id): JsonResponse
     {
         try {
             $afterService = AfterService::findOrFail($id);
@@ -76,7 +78,7 @@ class AfterServiceCommentController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function store(Request $request, string $id): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -139,7 +141,7 @@ class AfterServiceCommentController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -159,7 +161,7 @@ class AfterServiceCommentController extends Controller
 
         try {
             $asComment = AfterServiceComment::findOrFail($id);
-        } catch (ModelNotFoundException $modelException) {
+        } catch (ModelNotFoundException) {
             return response()->json(['error' => '해당하는 댓글이 존재하지 않습니다.'], 404);
         }
 
@@ -189,7 +191,7 @@ class AfterServiceCommentController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         try {
             $this->authorize('admin');

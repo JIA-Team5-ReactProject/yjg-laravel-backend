@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Salon;
 use App\Http\Controllers\Controller;
 use App\Models\SalonBreakTime;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -15,16 +18,16 @@ class SalonBreakTimeController extends Controller
         'date'   => 'required|date',
     ];
 
-    public function authorize($ability, $arguments = [SalonBreakTime::class])
+    public function authorize($ability, $arguments = [SalonBreakTime::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
 
     /**
      * 해당 메서드는 미용실 예약에서 사용됩니다.
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function index(): \Illuminate\Database\Eloquent\Collection
+    public function index(): Collection
     {
         $dayList = $this->dayList;
 
@@ -67,7 +70,7 @@ class SalonBreakTimeController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -121,7 +124,7 @@ class SalonBreakTimeController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(Request $request): \Illuminate\Http\JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
