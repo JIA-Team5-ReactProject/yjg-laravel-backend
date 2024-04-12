@@ -7,14 +7,16 @@ use App\Models\MeetingRoom;
 use App\Models\MeetingRoomReservation;
 use App\Services\ReservedTimeService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class MeetingRoomReservationController extends Controller
 {
-    public function authorize($ability, $arguments = [MeetingRoomReservation::class])
+    public function authorize($ability, $arguments = [MeetingRoomReservation::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -43,7 +45,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -85,7 +87,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function userIndex(Request $request): \Illuminate\Http\JsonResponse
+    public function userIndex(): JsonResponse
     {
         // 날짜와 시간이 빠른 순으로 정렬
         return response()->json(['meeting_room_reservations' => MeetingRoomReservation::with('user')
@@ -117,7 +119,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -178,7 +180,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function show(string $id): \Illuminate\Http\JsonResponse
+    public function show(string $id): JsonResponse
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'
@@ -214,7 +216,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function reject(string $id): \Illuminate\Http\JsonResponse
+    public function reject(string $id): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -264,7 +266,7 @@ class MeetingRoomReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_room_reservations,id|numeric'

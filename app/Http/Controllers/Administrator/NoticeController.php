@@ -16,7 +16,7 @@ class NoticeController extends Controller
 {
     private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
 
-    public function authorize($ability, $arguments = [Notice::class])
+    public function authorize($ability, $arguments = [Notice::class]): \Illuminate\Auth\Access\Response
     {
         return Parent::authorize($ability, $arguments);
     }

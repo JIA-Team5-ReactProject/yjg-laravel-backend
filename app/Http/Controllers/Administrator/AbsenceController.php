@@ -7,13 +7,14 @@ use App\Models\AbsenceList;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AbsenceController extends Controller
 {
-    public function authorize($ability, $arguments = [AbsenceList::class])
+    public function authorize($ability, $arguments = [AbsenceList::class]): \Illuminate\Auth\Access\Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -35,7 +36,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function absenceCount(Request $request): \Illuminate\Http\JsonResponse
+    public function absenceCount(Request $request): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -95,7 +96,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -145,7 +146,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function userIndex(Request $request): \Illuminate\Http\JsonResponse
+    public function userIndex(): JsonResponse
     {
         $userId = auth('users')->id();
 
@@ -179,7 +180,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -229,7 +230,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function show(string $id): \Illuminate\Http\JsonResponse
+    public function show(string $id): JsonResponse
     {
         try {
             // 외출/외박 기록과 함께 유저의 아이디, 학번, 이름을 함께 불러옴
@@ -272,7 +273,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         // 유저
         // 외박, 외출 수정 (내용)
@@ -326,7 +327,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function reject(string $id): \Illuminate\Http\JsonResponse
+    public function reject(string $id): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -365,7 +366,7 @@ class AbsenceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         try {
             $stayOut = AbsenceList::findOrFail($id);

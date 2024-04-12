@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Salon;
 use App\Http\Controllers\Controller;
 use App\Models\SalonReservation;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class SalonReservationController extends Controller
 {
-    public function authorize($ability, $arguments = [SalonReservation::class])
+    public function authorize($ability, $arguments = [SalonReservation::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -26,7 +28,7 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): JsonResponse
     {
         return response()->json(['reservations' => SalonReservation::with(['salonService'])->where('user_id', auth('users')->id())->get()]);
     }
@@ -54,7 +56,7 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function show(Request $request): \Illuminate\Http\JsonResponse
+    public function show(Request $request): JsonResponse
     {
         $statusRule = ['submit', 'confirm', 'reject'];
         try {
@@ -123,7 +125,7 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -169,7 +171,7 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request): JsonResponse
     {
         try {
             $this->authorize('salon');
@@ -220,7 +222,7 @@ class SalonReservationController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         if(!SalonReservation::destroy($id)) return response()->json(['error' => '미용실 예약 취소에 실패하였습니다.'], 500);
 

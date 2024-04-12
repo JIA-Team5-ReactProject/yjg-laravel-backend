@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\TokenService;
 use Google_Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +30,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function user(): \Illuminate\Http\JsonResponse
+    public function user(): JsonResponse
     {
         $user = auth()->user();
 
@@ -61,7 +62,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function register(Request $request): \Illuminate\Http\JsonResponse
+    public function register(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -98,11 +99,11 @@ class UserController extends Controller
      * )
      * @throws destroyexception
      */
-    public function unregister(): \Illuminate\Http\JsonResponse
+    public function unregister(): JsonResponse
     {
         $userId = auth()->id();
         if (!User::destroy($userId)) {
-            throw new destroyException('회원탈퇴에 실패하였습니다.', 500);
+            throw new destroyException('회원탈퇴에 실패하였습니다.');
         }
 
         return response()->json(['message' => '회원탈퇴 되었습니다.']);
@@ -130,7 +131,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function googleRegisterOrLogin(Request $request): \Illuminate\Http\JsonResponse
+    public function googleRegisterOrLogin(Request $request): JsonResponse
     {
         try {
             $credentials = $request->validate([
@@ -195,7 +196,7 @@ class UserController extends Controller
      * )
      * @throws ValidationException
      */
-    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
 
@@ -222,7 +223,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function logout(): \Illuminate\Http\JsonResponse
+    public function logout(): JsonResponse
     {
         auth()->logout();
         return response()->json(['message' => '로그아웃 되었습니다.']);
@@ -254,7 +255,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function update(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request): JsonResponse
     {
         $rulesForApproved = [
             'student_id'       => 'numeric',
@@ -318,7 +319,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function approveRegistration(): \Illuminate\Http\JsonResponse
+    public function approveRegistration(): JsonResponse
     {
         $userId = auth()->id();
 
@@ -354,7 +355,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function verifyUniqueUserEmail(string $email): \Illuminate\Http\JsonResponse
+    public function verifyUniqueUserEmail(string $email): JsonResponse
     {
         $rules = [
             'email' => 'required|email|unique:users,email'
@@ -395,7 +396,7 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function findEmail(Request $request): \Illuminate\Http\JsonResponse
+    public function findEmail(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -437,10 +438,10 @@ class UserController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function verifyPassword(Request $request): \Illuminate\Http\JsonResponse
+    public function verifyPassword(Request $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
+            $request->validate([
                 'password' => 'required|string|current_password',
             ]);
         } catch (ValidationException $validationException) {
