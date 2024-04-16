@@ -9,6 +9,7 @@ use App\Services\ResetPasswordService;
 use App\Services\TokenService;
 use DateTime;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -92,7 +93,7 @@ class PasswordResetCodeController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function verifyPasswordResetCode(Request $request): \Illuminate\Http\JsonResponse
+    public function verifyPasswordResetCode(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -157,7 +158,7 @@ class PasswordResetCodeController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
+    public function resetPassword(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([

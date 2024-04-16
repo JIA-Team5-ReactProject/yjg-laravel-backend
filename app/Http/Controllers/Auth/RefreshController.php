@@ -27,7 +27,6 @@ class RefreshController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $model = null;
 
         try {
             $model = User::findOrFail(auth('users')->id());

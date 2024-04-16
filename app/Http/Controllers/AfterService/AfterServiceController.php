@@ -7,11 +7,11 @@ use App\Models\AfterService;
 use App\Models\AfterServiceImage;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use PHPUnit\Metadata\After;
 
 class AfterServiceController extends Controller
 {
@@ -53,7 +53,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -103,7 +103,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function userIndex(): \Illuminate\Http\JsonResponse
+    public function userIndex(): JsonResponse
     {
         $userId = auth('users')->id();
 
@@ -141,7 +141,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -198,7 +198,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="Server Error"),
      * )
      */
-    public function show(string $id): \Illuminate\Http\JsonResponse
+    public function show(string $id): JsonResponse
     {
         try {
             $afterService = AfterService::with($this->relations)->findOrFail($id);
@@ -228,7 +228,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function updateStatus(string $id): \Illuminate\Http\JsonResponse
+    public function updateStatus(string $id): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -305,7 +305,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -377,7 +377,7 @@ class AfterServiceController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         if(!AfterService::destroy($id)) {
             return response()->json(['error' => 'AS 요청을 삭제하는데 실패하였습니다.'], 500);

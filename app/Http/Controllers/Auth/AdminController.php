@@ -8,7 +8,9 @@ use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -20,7 +22,7 @@ class AdminController extends Controller
     {
     }
 
-    public function authorize($ability, $arguments = [User::class])
+    public function authorize($ability, $arguments = [User::class]): Response
     {
         return Parent::authorize($ability, $arguments);
     }
@@ -49,7 +51,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function register(Request $request): \Illuminate\Http\JsonResponse
+    public function register(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
@@ -101,7 +103,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function unregisterMaster(string $id): \Illuminate\Http\JsonResponse
+    public function unregisterMaster(string $id): JsonResponse
     {
         try {
             $this->authorize('master');
@@ -138,7 +140,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
 
@@ -176,7 +178,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function webLogin(LoginRequest $request): \Illuminate\Http\JsonResponse
+    public function webLogin(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
 
@@ -216,7 +218,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function privilege(Request $request): \Illuminate\Http\JsonResponse
+    public function privilege(Request $request): JsonResponse
     {
         try {
             $this->authorize('master');
@@ -273,7 +275,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function approveRegistration(Request $request): \Illuminate\Http\JsonResponse
+    public function approveRegistration(Request $request): JsonResponse
     {
         try {
             $this->authorize('master');
@@ -330,7 +332,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function update(Request $request): \Illuminate\Http\JsonResponse
+    public function update(Request $request): JsonResponse
     {
         try {
             $this->authorize('admin');
@@ -395,7 +397,7 @@ class AdminController extends Controller
      *     @OA\Response(response="500", description="ServerError"),
      * )
      */
-    public function adminList(Request $request): \Illuminate\Http\JsonResponse
+    public function adminList(Request $request): JsonResponse
     {
         $typeRule = ['approved', 'unapproved'];
 
