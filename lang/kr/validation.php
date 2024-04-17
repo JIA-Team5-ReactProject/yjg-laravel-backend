@@ -5,6 +5,7 @@
 return [
     'attributes' => [
         'name' => '이름',
+        'student_id' => '학번',
         'phone_number' => '휴대폰 번호',
         'email' => '이메일',
         'password' => '비밀번호',
