@@ -67,8 +67,8 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string',
-                'student_id' => 'required|string',
-                'phone_number' => 'required|string',
+                'student_id' => 'required|string|unique:users,student_id',
+                'phone_number' => 'required|string|unique:users,phone_number',
                 'email' => 'required|string|unique:users',
                 'password' => 'required|string',
             ]);
@@ -150,8 +150,7 @@ class UserController extends Controller
             env('IOS_GOOGLE_CLIENT_ID') : env('AND_GOOGLE_CLIENT_ID')]);
         $payload = $client->verifyIdToken($credentials['id_token']);
 
-
-        if ($payload['email'] != $credentials['email'] || $payload['hd'] != 'g.yju.ac.kr') {
+        if (!$payload || $payload['email'] != $credentials['email'] || $payload['hd'] != 'g.yju.ac.kr') {
             return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);
         }
 
@@ -258,7 +257,7 @@ class UserController extends Controller
     public function update(Request $request): JsonResponse
     {
         $rulesForApproved = [
-            'student_id'       => 'numeric',
+            'student_id'       => 'numeric|unique:users,student_id',
             'name'             => 'string',
             'phone_number'     => 'string|unique:users,phone_number',
             'current_password' => 'current_password',
@@ -266,7 +265,7 @@ class UserController extends Controller
         ];
 
         $rulesForNotApproved = [
-            'student_id'       => 'required|numeric',
+            'student_id'       => 'required|numeric|unique:users,student_id',
             'phone_number'     => 'required|string|unique:users,phone_number',
         ];
 
@@ -282,7 +281,7 @@ class UserController extends Controller
 
         try {
             $user = User::findOrFail($user['id']);
-        } catch(modelNotFoundException) {
+        } catch(ModelNotFoundException) {
             return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
         }
 
