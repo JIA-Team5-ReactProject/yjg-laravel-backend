@@ -150,7 +150,7 @@ class AfterServiceController extends Controller
                 'visit_place' => 'required|string',
                 'visit_date' => 'date',
                 'images' => 'array',
-                'images.*' => 'image|mimes:jpg,jpeg,png',
+                'images.*' => 'file',
             ]);
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
