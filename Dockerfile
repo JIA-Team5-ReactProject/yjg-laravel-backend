@@ -5,10 +5,11 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 RUN cd && \
-    sed -i 's/post_max_size = 8M/post_max_size = 128MB/' ../../usr/local/etc/php/php.ini-production && \
-    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 128MB/' ../../usr/local/etc/php/php.ini-production && \
-    sed -i 's/post_max_size = 8M/post_max_size = 128MB/' ../../usr/local/etc/php/php.ini-development && \
-    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 128MB/' ../../usr/local/etc/php/php.ini-development
+    sed -i 's/post_max_size = 8M/post_max_size = 128M/' /usr/local/etc/php/php.ini-production && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 128M/' /usr/local/etc/php/php.ini-production && \
+    sed -i 's/post_max_size = 8M/post_max_size = 128M/' /usr/local/etc/php/php.ini-development && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 128M/' /usr/local/etc/php/php.ini-development && \
+    mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 ## nginx(www-data)로 소유자 변경
 RUN chown -R www-data:www-data /var/www/html/storage
