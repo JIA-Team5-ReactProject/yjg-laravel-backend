@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 */
 // Server Health Check
 Route::get('/healthy', function () {
-    return response()->json(['message' => 'HELLO WORLD ^_^']);
+    return phpinfo();
 });
 
 /** 비밀번호 초기화 관련 */
@@ -200,8 +200,8 @@ Route::middleware(['auth:users', 'approve:users'])->group(function () {
 
     Route::post('/restaurant/semester', [RestaurantSemesterController::class, 'store']);
     Route::post('/restaurant/weekend', [RestaurantWeekendController::class, 'store']);
-   
-    
+
+
     Route::post('/semester/meal-type', [SemesterMealTypeController::class, 'store']);
     Route::post('/weekend/meal-type', [WeekendMealTypeController::class, 'store']);
 });
