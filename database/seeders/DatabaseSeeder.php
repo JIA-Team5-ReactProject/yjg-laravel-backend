@@ -18,14 +18,10 @@ class DatabaseSeeder extends Seeder
             SalonBusinessHourSeeder::class,
             MeetingRoomSeeder::class,
             UserSeeder::class,
-            MeetingRoomReservationSeeder::class,
             NoticeSeeder::class,
-            AfterServiceSeeder::class,
             BusRouteSeeder::class,
             BusRoundSeeder::class,
             BusScheduleSeeder::class,
-            SalonReservationSeeder::class,
-            AbsenceListSeeder::class,
         ]);
     }
 }
