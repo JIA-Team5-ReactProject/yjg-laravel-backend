@@ -85,6 +85,7 @@ Route::middleware(['auth:users', 'approve:users'])->group(function () {
     Route::delete('/unregister',[UserController::class, 'unregister'])->name('unregister'); // 수정
     Route::post('/logout', [UserController::class, 'logout'])  ->name('logout'); // 수정
     Route::post('/verify-password', [UserController::class, 'verifyPassword'])->name('verify.pw'); // 수정
+    Route::patch('/fcm-token', [UserController::class, 'fcmToken'])->name('fcm.token');
 
     /** 관리자용 */
     Route::prefix('admin')->group(function() {
