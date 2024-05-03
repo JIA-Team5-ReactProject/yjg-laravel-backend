@@ -191,25 +191,27 @@ class AfterServiceController extends Controller
 
         $users = User::where('push_enabled', true)->where('admin', true)->whereHas('privileges', function (Builder $query) {
             $query->whereIn('privilege', ['master', 'admin']);
-        })->get();
+        })->whereNot('fcm_token', null)->get();
 
-        foreach ($users as $user) {
-            $tokens[] = $user->fcm_token;
-        }
+        // 유저 컬렉션이 비지 않았을 때 수행
+        if($users->isNotEmpty()) {
+            foreach ($users as $user) {
+                $tokens[] = $user->fcm_token;
+            }
 
-        $notificationBody = '신청 내용: '.$validated['title'];
+            $notificationBody = '신청 내용: '.$validated['title'];
 
-        // 알림 전송
-        try {
-            $notification = $this->service->postNotificationMulticast('새로운 AS 신청이 등록되었습니다.', $notificationBody, $tokens, 'as', $afterService->id);
-        } catch (MessagingException $e) {
-            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            // 알림 전송
+            try {
+                $this->service->postNotificationMulticast('새로운 AS 신청이 등록되었습니다.', $notificationBody, $tokens, 'as', $afterService->id);
+            } catch (MessagingException $e) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
         }
 
         return response()->json([
             'afterService' => $afterService,
             'images' => $afterService->afterServiceImages(),
-            'notification' => $notification,
         ], 201);
     }
 
@@ -294,17 +296,16 @@ class AfterServiceController extends Controller
 
         $token = $afterService->user['fcm_token'];
 
-        // 알림 전송
-        try {
-            $notification = $this->service->postNotification('AS가 완료되었습니다.', 'AS 내용: '.$afterService->title, $token, 'as', $afterService->id);
-        } catch (MessagingException) {
-            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+        if($afterService->user['push_enabled']) {
+            // 알림 전송
+            try {
+                $this->service->postNotification('AS가 완료되었습니다.', 'AS 내용: '.$afterService->title, $token, 'as', $afterService->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
         }
 
-        return response()->json([
-            'message' => 'AS가 완료되었습니다.',
-            'notification' => $notification,
-        ]);
+        return response()->json(['message' => 'AS가 완료되었습니다.']);
     }
 
     /**

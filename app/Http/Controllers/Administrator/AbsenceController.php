@@ -358,19 +358,15 @@ class AbsenceController extends Controller
 
             $notificationBody = '날짜: '.($absence['type'] == 'go' ? $absence['start_date'] : $absence['start_date'].'~'.$absence['end_date']);
 
-
             // 알림 전송
             try {
-                $notification = $this->service->postNotification($notificationTitle, $notificationBody, $token, 'absence', $absence->id);
+                $this->service->postNotification($notificationTitle, $notificationBody, $token, 'absence', $absence->id);
             } catch (MessagingException) {
                 return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
             }
         }
 
-        return response()->json([
-            'success' => '외출/외박 상태 수정에 성공하였습니다.',
-            'notification' => $notification,
-        ]);
+        return response()->json(['success' => '외출/외박 상태 수정에 성공하였습니다.']);
     }
 
     /**

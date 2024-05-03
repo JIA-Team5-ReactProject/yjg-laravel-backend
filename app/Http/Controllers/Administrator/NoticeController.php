@@ -234,14 +234,12 @@ class NoticeController extends Controller
             }
         }
 
-        $notification = null;
+        $users = User::where('push_enabled', true)->where('admin', false)->whereNot('fcm_token', null)->get();
 
         // 긴급 공지일 경우, 알림 전송
-        if($validated['urgent']) {
+        if($validated['urgent'] && $users->isNotEmpty()) {
             // 마스터 및 행정 관리자의 토큰을 $tokens 배열에 담음
             $tokens = [];
-
-            $users = User::where('push_enabled', true)->where('admin', false)->get();
 
             foreach ($users as $user) {
                 $tokens[] = $user->fcm_token;
@@ -249,7 +247,7 @@ class NoticeController extends Controller
 
             // 알림 전송
             try {
-                $notification = $this->service->postNotificationMulticast('🚨긴급 공지🚨', $notice->title, $tokens, 'as', $notice->id);
+                $this->service->postNotificationMulticast('🚨긴급 공지🚨', $notice->title, $tokens, 'notice', $notice->id);
             } catch (MessagingException) {
                 return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
             }
@@ -258,7 +256,6 @@ class NoticeController extends Controller
         return response()->json([
             'notice' => $notice,
             'images' => $notice->noticeImages(),
-            'notification' => $notification,
         ], 201);
     }
 

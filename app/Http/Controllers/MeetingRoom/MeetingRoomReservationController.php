@@ -260,7 +260,7 @@ class MeetingRoomReservationController extends Controller
 
             // 알림 전송
             try {
-                $notification = $this->service->postNotification('회의실 예약이 거절되었습니다.', $notificationBody, $token, 'meeting', $reservation->id);
+                $this->service->postNotification('회의실 예약이 거절되었습니다.', $notificationBody, $token, 'meeting', $reservation->id);
             } catch (MessagingException) {
                 return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
             }
@@ -268,7 +268,6 @@ class MeetingRoomReservationController extends Controller
 
         return response()->json([
             'message' => '예약 상태 변경에 성공하였습니다.',
-            'notification' => $notification,
         ]);
     }
 
