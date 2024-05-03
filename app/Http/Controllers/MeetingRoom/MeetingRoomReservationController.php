@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MeetingRoom;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingRoom;
 use App\Models\MeetingRoomReservation;
+use App\Services\NotificationService;
 use App\Services\ReservedTimeService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\Response;
@@ -13,9 +14,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class MeetingRoomReservationController extends Controller
 {
+    public function __construct(protected NotificationService $service)
+    {
+    }
+
     public function authorize($ability, $arguments = [MeetingRoomReservation::class]): Response
     {
         return Parent::authorize($ability, $arguments);
@@ -246,7 +252,24 @@ class MeetingRoomReservationController extends Controller
 
         if(!$reservation->save()) return response()->json(['error' => '예약 상태 변경에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => '예약 상태 변경에 성공하였습니다.']);
+        if($reservation->user['push_enabled']) {
+            $token = $reservation->user['fcm_token'];
+
+            $notificationBody = '예약 날짜: ' . $reservation['reservation_date'] . ' ' . $reservation['reservation_s_time'] . '~' . $reservation['reservation_e_time'] .
+                '예약 호실: ' . $reservation['meeting_room_number'];
+
+            // 알림 전송
+            try {
+                $notification = $this->service->postNotification('회의실 예약이 거절되었습니다.', $notificationBody, $token, 'meeting', $reservation->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
+        }
+
+        return response()->json([
+            'message' => '예약 상태 변경에 성공하였습니다.',
+            'notification' => $notification,
+        ]);
     }
 
     /**

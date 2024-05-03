@@ -5,16 +5,24 @@ namespace App\Http\Controllers\Administrator;
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use App\Models\NoticeImage;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class NoticeController extends Controller
 {
     private array $tagRules = ['admin', 'salon', 'restaurant', 'bus'];
+
+    public function __construct(protected NotificationService $service)
+    {
+    }
 
     public function authorize($ability, $arguments = [Notice::class]): \Illuminate\Auth\Access\Response
     {
@@ -210,8 +218,6 @@ class NoticeController extends Controller
 
         $validated['user_id'] = auth()->id();
 
-        // 불필요하다고 판단되어 모델에서 현재 인증된 사용자를 찾는 로직은 삭제함
-
         // 공지사항 생성
         $notice = Notice::create($validated);
 
@@ -228,7 +234,32 @@ class NoticeController extends Controller
             }
         }
 
-        return response()->json(['notice' => $notice, 'images' => $notice->noticeImages()], 201);
+        $notification = null;
+
+        // 긴급 공지일 경우, 알림 전송
+        if($validated['urgent']) {
+            // 마스터 및 행정 관리자의 토큰을 $tokens 배열에 담음
+            $tokens = [];
+
+            $users = User::where('push_enabled', true)->where('admin', false)->get();
+
+            foreach ($users as $user) {
+                $tokens[] = $user->fcm_token;
+            }
+
+            // 알림 전송
+            try {
+                $notification = $this->service->postNotificationMulticast('🚨긴급 공지🚨', $notice->title, $tokens, 'as', $notice->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
+        }
+
+        return response()->json([
+            'notice' => $notice,
+            'images' => $notice->noticeImages(),
+            'notification' => $notification,
+        ], 201);
     }
 
     /**

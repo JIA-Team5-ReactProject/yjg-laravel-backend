@@ -5,17 +5,25 @@ namespace App\Http\Controllers\AfterService;
 use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceImage;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class AfterServiceController extends Controller
 {
     protected array $relations = ['user:id,name,created_at,phone_number', 'afterServiceComments', 'afterServiceImages'];
+
+    public function __construct(protected NotificationService $service)
+    {
+    }
 
     public function authorize($ability, $arguments = [AfterService::class])
     {
@@ -178,7 +186,31 @@ class AfterServiceController extends Controller
             }
         }
 
-        return response()->json(['afterService' => $afterService, 'images' => $afterService->afterServiceImages()], 201);
+        // 마스터 및 행정 관리자의 토큰을 $tokens 배열에 담음
+        $tokens = [];
+
+        $users = User::where('push_enabled', true)->where('admin', true)->whereHas('privileges', function (Builder $query) {
+            $query->whereIn('privilege', ['master', 'admin']);
+        })->get();
+
+        foreach ($users as $user) {
+            $tokens[] = $user->fcm_token;
+        }
+
+        $notificationBody = '신청 내용: '.$validated['title'];
+
+        // 알림 전송
+        try {
+            $notification = $this->service->postNotificationMulticast('새로운 AS 신청이 등록되었습니다.', $notificationBody, $tokens, 'as', $afterService->id);
+        } catch (MessagingException $e) {
+            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+        }
+
+        return response()->json([
+            'afterService' => $afterService,
+            'images' => $afterService->afterServiceImages(),
+            'notification' => $notification,
+        ], 201);
     }
 
     /**
@@ -260,7 +292,19 @@ class AfterServiceController extends Controller
             return response()->json(['error' => 'AS 상태 변경에 실패하였습니다.'], 500);
         }
 
-        return response()->json(['message' => 'AS가 완료되었습니다.']);
+        $token = $afterService->user['fcm_token'];
+
+        // 알림 전송
+        try {
+            $notification = $this->service->postNotification('AS가 완료되었습니다.', 'AS 내용: '.$afterService->title, $token, 'as', $afterService->id);
+        } catch (MessagingException) {
+            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+        }
+
+        return response()->json([
+            'message' => 'AS가 완료되었습니다.',
+            'notification' => $notification,
+        ]);
     }
 
     /**
