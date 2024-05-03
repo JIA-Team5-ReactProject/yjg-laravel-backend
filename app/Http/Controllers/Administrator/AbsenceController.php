@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\AbsenceList;
+use App\Services\NotificationService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,9 +12,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class AbsenceController extends Controller
 {
+    public function __construct(protected NotificationService $service)
+    {
+    }
+
     public function authorize($ability, $arguments = [AbsenceList::class]): \Illuminate\Auth\Access\Response
     {
         return Parent::authorize($ability, $arguments);
@@ -336,16 +342,35 @@ class AbsenceController extends Controller
         }
 
         try {
-            $stayOut = AbsenceList::findOrFail($id);
+            $absence = AbsenceList::findOrFail($id);
         } catch (ModelNotFoundException) {
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
-        $stayOut->status = false;
+        $absence->status = false;
 
-        if(!$stayOut->save()) return response()->json(['error' => '외출/외박 상태 수정에 실패하였습니다.'], 500);
+        if(!$absence->save()) return response()->json(['error' => '외출/외박 상태 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['success' => '외출/외박 상태 수정에 성공하였습니다.']);
+        if($absence->user['push_enabled']) {
+            $token = $absence->user['fcm_token'];
+
+            $notificationTitle = ($absence['type'] == 'go' ? '외출' : '외박').'이 거절되었습니다.';
+
+            $notificationBody = '날짜: '.($absence['type'] == 'go' ? $absence['start_date'] : $absence['start_date'].'~'.$absence['end_date']);
+
+
+            // 알림 전송
+            try {
+                $notification = $this->service->postNotification($notificationTitle, $notificationBody, $token, 'absence', $absence->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
+        }
+
+        return response()->json([
+            'success' => '외출/외박 상태 수정에 성공하였습니다.',
+            'notification' => $notification,
+        ]);
     }
 
     /**
