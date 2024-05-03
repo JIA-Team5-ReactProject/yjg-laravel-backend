@@ -158,25 +158,24 @@ class SalonReservationController extends Controller
 
         $users = User::where('admin', true)->whereHas('privileges', function (Builder $query) {
             $query->whereIn('privilege', ['master', 'salon']);
-        })->get();
+        })->whereNot('fcm_token', null)->get();
 
-        foreach ($users as $user) {
-            $tokens[] = $user->fcm_token;
+        if($users->isNotEmpty()) {
+            foreach ($users as $user) {
+                $tokens[] = $user->fcm_token;
+            }
+
+            $notificationBody = '예약 날짜: '.$validated['reservation_date'].' '.$reservation['reservation_time'];
+
+            // 알림 전송
+            try {
+                $this->service->postNotificationMulticast('새로운 미용실 예약이 있습니다.', $notificationBody, $tokens, 'admin_salon', $reservation->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
         }
 
-        $notificationBody = '예약 날짜: '.$validated['reservation_date'].' '.$reservation['reservation_time'];
-
-        // 알림 전송
-        try {
-            $notification = $this->service->postNotificationMulticast('새로운 미용실 예약이 있습니다.', $notificationBody, $tokens, 'admin_salon', $reservation->id);
-        } catch (MessagingException) {
-            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
-        }
-
-        return response()->json([
-            'reservation' => $reservation,
-            'notification' => $notification,
-        ], 201);
+        return response()->json(['reservation' => $reservation], 201);
     }
 
     /**

@@ -28,7 +28,7 @@ class NotificationService
      * @throws FirebaseException
      * @throws MessagingException
      */
-    public function postNotification(string $title, string $body, string $token, string $page, int $id): array
+    public function postNotification(string $title, string $body, string $token, string $page, int $id = null): array
     {
         $message = CloudMessage::withTarget('token', $token)
             ->withNotification(Notification::create($title, $body))
@@ -49,7 +49,7 @@ class NotificationService
      * @throws FirebaseException
      * @throws MessagingException
      */
-    public function postNotificationMulticast(string $title, string $body, array $tokens, string $page, int $id): \Kreait\Firebase\Messaging\MulticastSendReport
+    public function postNotificationMulticast(string $title, string $body, array $tokens, string $page, int $id = null): \Kreait\Firebase\Messaging\MulticastSendReport
     {
         $message = CloudMessage::new()
             ->withNotification(Notification::create($title, $body))
