@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AfterService;
 use App\Http\Controllers\Controller;
 use App\Models\AfterService;
 use App\Models\AfterServiceComment;
+use App\Services\NotificationService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -12,9 +13,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class AfterServiceCommentController extends Controller
 {
+    public function __construct(protected NotificationService $service)
+    {
+    }
+
     public function authorize($ability, $arguments = [AfterServiceComment::class]): Response
     {
         return Parent::authorize($ability, $arguments);
@@ -108,9 +114,24 @@ class AfterServiceCommentController extends Controller
             'comment'  => $validated['comment'],
         ]);
 
+
         if(!$comment) return response()->json(['error' => '댓글 작성에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => '성공적으로 댓글이 작성되었습니다.'], 201);
+        // 알림 전송
+        if($afterService->user['push_enabled']) {
+            $token = $afterService->user['fcm_token'];
+
+            try {
+                $notification = $this->service->postNotification('AS 신청에 댓글이 작성되었습니다.', $validated['comment'], $token, 'as', $afterService->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
+        }
+
+        return response()->json([
+            'message' => '성공적으로 댓글이 작성되었습니다.',
+            'notification' => $notification
+        ], 201);
     }
 
     /**
