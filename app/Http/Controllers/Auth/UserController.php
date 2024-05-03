@@ -360,7 +360,7 @@ class UserController extends Controller
      */
     public function fcmToken(Request $request): JsonResponse
     {
-//        $userId = auth()->id();
+        $userId = auth()->id();
 
         try {
             $validated = $request->validate([
@@ -371,7 +371,7 @@ class UserController extends Controller
         }
 
         try {
-            $user = User::findOrFail(32);
+            $user = User::findOrFail($userId);
         } catch (ModelNotFoundException) {
             return response()->json(['error'=>$this->modelExceptionMessage], 404);
         }
