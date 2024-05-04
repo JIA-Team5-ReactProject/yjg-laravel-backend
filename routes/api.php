@@ -48,7 +48,7 @@ Route::get('/healthy', function () {
 Route::post('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
 Route::post('/reset-password', [PasswordResetCodeController::class, 'sendPasswordResetCode'])->name('pw.reset.send');
 Route::patch('/reset-password' , [PasswordResetCodeController::class, 'resetPassword'])
-    ->name('pw.reset')->middleware(['auth:users', 'token.type:email']);// 이메일 타입의 토큰도 허용함
+    ->name('pw.reset')->middleware(['auth.email']);// 이메일 타입의 토큰도 허용함
 
 /** 메일 찾기 */
 Route::post('/find-email', [UserController::class, 'findEmail'])->name('find.email');
@@ -80,7 +80,7 @@ Route::prefix('admin')->group(function () {
 });
 
 /** 토큰이 필요한 기능 */
-Route::middleware(['auth:users', 'approve:users'])->group(function () {
+Route::middleware(['auth', 'approve:users'])->group(function () {
     /** 학생 및 관리자 공용 */
     Route::delete('/unregister',[UserController::class, 'unregister'])->name('unregister'); // 수정
     Route::post('/logout', [UserController::class, 'logout'])  ->name('logout'); // 수정

@@ -18,11 +18,9 @@ class Authenticate extends Middleware
      */
     public function handle($request, $next, ...$guards): mixed
     {
-        foreach ($guards as $guard) {
-            if ($this->auth->guard($guard)->check() &&
-                auth()->payload()->get('typ') == 'access') {
-                return $next($request);
-            }
+        if ($this->auth->guard()->check() &&
+            auth()->payload()->get('typ') == 'access') {
+            return $next($request);
         }
 
         return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);

@@ -43,7 +43,7 @@ class Kernel extends HttpKernel
 //            \Illuminate\Session\Middleware\StartSession::class, // sanctum Middleware
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            
+
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             'cors', // CORS 미들웨어를 API 그룹에 추가
@@ -60,6 +60,7 @@ class Kernel extends HttpKernel
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.refresh' => \App\Http\Middleware\AuthenticateRefresh::class,
+        'auth.email' => \App\Http\Middleware\AuthenticateEmail::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
