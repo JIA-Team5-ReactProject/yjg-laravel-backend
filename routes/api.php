@@ -45,7 +45,7 @@ Route::get('/healthy', function () {
 });
 
 /** 비밀번호 초기화 관련 */
-Route::get('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
+Route::post('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
 Route::post('/reset-password', [PasswordResetCodeController::class, 'sendPasswordResetCode'])->name('pw.reset.send');
 Route::patch('/reset-password' , [PasswordResetCodeController::class, 'resetPassword'])
     ->name('pw.reset')->middleware(['auth:users', 'token.type:email']);// 이메일 타입의 토큰도 허용함
