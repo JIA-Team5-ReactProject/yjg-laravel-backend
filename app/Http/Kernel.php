@@ -44,9 +44,9 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
-            'throttle:api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            'cors', // CORS 미들웨어를 API 그룹에 추가
+//            'throttle:api',
+//            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+//            'cors', // CORS 미들웨어를 API 그룹에 추가
         ],
     ];
 
@@ -87,9 +87,9 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \App\Http\Middleware\Authenticate::class,
     ];
-    protected $routeMiddleware = [
-        // 기존 미들웨어들...
-        'cors' => \App\Http\Middleware\Cors::class, // 새로운 CORS 미들웨어 등록
-    ];
+//    protected $routeMiddleware = [
+//        // 기존 미들웨어들...
+//        'cors' => \App\Http\Middleware\Cors::class, // 새로운 CORS 미들웨어 등록
+//    ];
 
 }
