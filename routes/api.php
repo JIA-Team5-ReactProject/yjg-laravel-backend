@@ -44,6 +44,8 @@ Route::get('/healthy', function () {
     return phpinfo();
 });
 
+Route::get('/sse/{id}', [\App\Http\Controllers\SSEController::class, 'callSSE']);
+
 /** 비밀번호 초기화 관련 */
 Route::post('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
 Route::post('/reset-password', [PasswordResetCodeController::class, 'sendPasswordResetCode'])->name('pw.reset.send');
@@ -86,6 +88,7 @@ Route::middleware(['auth', 'approve:users'])->group(function () {
     Route::post('/logout', [UserController::class, 'logout'])  ->name('logout'); // 수정
     Route::post('/verify-password', [UserController::class, 'verifyPassword'])->name('verify.pw'); // 수정
     Route::patch('/fcm-token', [UserController::class, 'fcmToken'])->name('fcm.token');
+    Route::patch('/push', [UserController::class, 'pushNotification'])->name('push.notification');
 
     /** 관리자용 */
     Route::prefix('admin')->group(function() {
