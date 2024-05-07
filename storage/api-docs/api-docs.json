@@ -2270,6 +2270,90 @@
                 }
             }
         },
+        "/api/fcm-token": {
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "FCM 토큰",
+                "description": "유저의 FCM 토큰 수정 시 사용합니다.",
+                "operationId": "1c1c8c5c5790c34aca05f94c91efe559",
+                "requestBody": {
+                    "description": "FCM 토큰",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "fcm_token": {
+                                        "description": "fcm 토큰",
+                                        "type": "string",
+                                        "example": "aehtwesgaahsaaghearg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/push": {
+            "patch": {
+                "tags": [
+                    "학생"
+                ],
+                "summary": "푸시 알림 수신 여부",
+                "description": "사용자의 푸시 알림 수신 여부 설정 시 사용합니다.",
+                "operationId": "fe60d8ab33923df2d83793e05ea60ade",
+                "requestBody": {
+                    "description": "수신 여부",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "push": {
+                                        "description": "수신 여부",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "ValidationException"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
         "/api/user/verify-email/{id}": {
             "get": {
                 "tags": [
