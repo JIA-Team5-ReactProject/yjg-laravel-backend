@@ -238,7 +238,7 @@ class SalonReservationController extends Controller
 
         if(!$reservation->save()) return response()->json(['error' => '미용실 예약 상태 수정에 실패하였습니다.'], 500);
 
-        $token = $reservation->user['id'];
+        $token = $reservation->user['fcm_token'];
 
 
         // 알림 전송
