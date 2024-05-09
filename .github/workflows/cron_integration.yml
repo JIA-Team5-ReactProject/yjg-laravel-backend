@@ -20,6 +20,6 @@ jobs:
 
       - name: Push to Docker Hub
         env:
-          REPO: yeungjin-global-test
+          REPO: yeungjin-global-cron
         run:
           docker push ${{secrets.DOCKER_HUB_USERNAME}}/$REPO
