@@ -12,11 +12,9 @@ use Kreait\Firebase\Messaging\Notification;
 class NotificationService
 {
     // Services..
-    public function __construct(Messaging $messaging)
+    public function __construct(protected Messaging $messaging)
     {
-        $this->messaging = $messaging;
     }
-
 
     /**
      * @param string $title

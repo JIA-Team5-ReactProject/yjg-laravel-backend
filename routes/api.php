@@ -44,8 +44,6 @@ Route::get('/healthy', function () {
     return phpinfo();
 });
 
-Route::get('/sse/{id}', [\App\Http\Controllers\SSEController::class, 'callSSE']);
-
 /** 비밀번호 초기화 관련 */
 Route::post('/reset-password/verify', [PasswordResetCodeController::class, 'verifyPasswordResetCode'])->name('pw.reset.verify');
 Route::post('/reset-password', [PasswordResetCodeController::class, 'sendPasswordResetCode'])->name('pw.reset.send');
