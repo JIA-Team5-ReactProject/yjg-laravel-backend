@@ -70,3 +70,6 @@ RUN php artisan l5-swagger:generate
 
 ## run php-fpm
 CMD ["php-fpm"]
+
+## run crontab
+CMD ["crontab", "./crontab"]
