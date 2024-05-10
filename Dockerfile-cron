@@ -66,4 +66,4 @@ RUN php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
 RUN php artisan l5-swagger:generate
 
 # run cron
-CMD ["crontab", "./crontab"]
+CMD php artisan schedule:work
