@@ -8,18 +8,21 @@ jobs:
   laravel_build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build the Docker image
+      - name: Checkout code
         uses: actions/checkout@v3
+      - name: Build Docker image
         run: docker buildx build --tag ${{secrets.DOCKER_HUB_USERNAME}}/yeungjin-global-test .
 
   cron_build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build the Docker image
+      - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Build Docker image
         run: docker buildx build --tag ${{secrets.DOCKER_HUB_USERNAME}}/yeungjin-global-cron -f Dockerfile-cron .
 
   push_to_docker_hub:
+    needs: [laravel_build, cron_build]
     runs-on: ubuntu-latest
     steps:
       - name: Docker login
@@ -29,7 +32,6 @@ jobs:
           password: ${{secrets.DOCKER_HUB_TOKEN}}
 
       - name: Push to Docker Hub
-        env:
-          REPO: yeungjin-global-test
         run:
-          docker push ${{secrets.DOCKER_HUB_USERNAME}}/$REPO
+          docker push ${{secrets.DOCKER_HUB_USERNAME}}/yeungjin-global-test &&
+          docker push ${{secrets.DOCKER_HUB_USERNAME}}/yeungjin-global-cron
