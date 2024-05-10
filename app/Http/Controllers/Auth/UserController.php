@@ -337,6 +337,99 @@ class UserController extends Controller
     }
 
     /**
+     * @OA\Patch (
+     *     path="/api/fcm-token",
+     *     tags={"학생"},
+     *     summary="FCM 토큰",
+     *     description="유저의 FCM 토큰 수정 시 사용합니다.",
+     *     @OA\Requestbody(
+     *         description="FCM 토큰",
+     *         required=true,
+     *         @OA\Mediatype(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="fcm_token", type="string", description="fcm 토큰", example="aehtwesgaahsaaghearg"),
+     *             )
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function fcmToken(Request $request): JsonResponse
+    {
+        $userId = auth()->id();
+
+        try {
+            $validated = $request->validate([
+                'fcm_token' => 'required|string',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
+        try {
+            $user = User::findOrFail($userId);
+        } catch (ModelNotFoundException) {
+            return response()->json(['error'=>$this->modelExceptionMessage], 404);
+        }
+
+        $user->fcm_token = $validated['fcm_token'];
+
+        if(!$user->save()) {
+            return response()->json(['error' => 'FCM 토큰 업데이트에 실패하였습니다.'], 500);
+        }
+
+        return response()->json(['message' => '성공적으로 토큰이 업데이트 되었습니다.']);
+    }
+
+    /**
+     * @OA\Patch (
+     *     path="/api/push",
+     *     tags={"학생"},
+     *     summary="푸시 알림 수신 여부",
+     *     description="사용자의 푸시 알림 수신 여부 설정 시 사용합니다.",
+     *     @OA\Requestbody(
+     *         description="수신 여부",
+     *         required=true,
+     *         @OA\Mediatype(
+     *             mediaType="application/json",
+     *             @OA\Schema (
+     *                  @OA\Property (property="push", type="boolean", description="수신 여부", example=true),
+     *             )
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="404", description="ModelNotFoundException"),
+     *     @OA\Response(response="422", description="ValidationException"),
+     *     @OA\Response(response="500", description="Server Error"),
+     * )
+     */
+    public function pushNotification(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'enable' => 'required|boolean',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json($exception->getMessage(), 422);
+        }
+
+        try {
+            $user = User::findOrFail(auth()->id());
+        } catch (ModelNotFoundException) {
+            return response()->json(['error'=>$this->modelExceptionMessage], 404);
+        }
+
+        $user->push_enabled = $validated['enable'];
+        if(!$user->save()) return response()->json(['error' => '푸시 알림 수신여부 수정에 실패하였습니다.'], 500);
+
+        return response()->json(['message' => '푸시 알림 수신여부가 업데이트 되었습니다.']);
+    }
+
+    /**
      * @OA\Get (
      *     path="/api/user/verify-email/{id}",
      *     tags={"학생"},

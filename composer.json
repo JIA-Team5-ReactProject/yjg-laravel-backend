@@ -1,5 +1,6 @@
 {
     "name": "laravel/laravel",
+    "version": "10",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
@@ -10,6 +11,7 @@
         "darkaonline/l5-swagger": "^8.5",
         "google/apiclient": "^2.15",
         "guzzlehttp/guzzle": "^7.2",
+        "kreait/laravel-firebase": "^5.8",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",

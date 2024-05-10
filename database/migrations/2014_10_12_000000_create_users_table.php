@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('email', 50)->unique();
             $table->string('password')->nullable();
             $table->boolean('approved')->default(false);
+            $table->boolean('admin')->default(false);
+            $table->string('fcm_token')->nullable();
+            $table->boolean('push_enabled')->default(true);
             $table->timestamps();
         });
     }

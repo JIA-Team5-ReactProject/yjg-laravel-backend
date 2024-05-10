@@ -428,7 +428,7 @@ class RestaurantApplyDivisionController extends Controller
                     } else {
                         return response()->json(['auto' => 0]);
                     }
-                }return response()->json(['error']);
+                }
             }catch (ValidationException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 422);
             }

@@ -4,16 +4,24 @@ namespace App\Http\Controllers\Salon;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalonReservation;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class SalonReservationController extends Controller
 {
+    public function __construct(protected NotificationService $service)
+    {
+    }
+
     public function authorize($ability, $arguments = [SalonReservation::class]): Response
     {
         return Parent::authorize($ability, $arguments);
@@ -145,6 +153,28 @@ class SalonReservationController extends Controller
 
         if(!$reservation) return response()->json(['error' => '미용실 예약에 실패하였습니다.'], 500);
 
+        // 마스터 및 행정 관리자의 토큰을 $tokens 배열에 담음
+        $tokens = [];
+
+        $users = User::where('admin', true)->whereHas('privileges', function (Builder $query) {
+            $query->whereIn('privilege', ['master', 'salon']);
+        })->whereNot('fcm_token', null)->get();
+
+        if($users->isNotEmpty()) {
+            foreach ($users as $user) {
+                $tokens[] = $user->fcm_token;
+            }
+
+            $notificationBody = '예약 날짜: '.$validated['reservation_date'].' '.$reservation['reservation_time'];
+
+            // 알림 전송
+            try {
+                $this->service->postNotificationMulticast('새로운 미용실 예약이 있습니다.', $notificationBody, $tokens, 'admin_salon', $reservation->id);
+            } catch (MessagingException) {
+                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            }
+        }
+
         return response()->json(['reservation' => $reservation], 201);
     }
 
@@ -196,12 +226,34 @@ class SalonReservationController extends Controller
             return response()->json(['error' => $this->modelExceptionMessage], 404);
         }
 
-        if($validated['status']) $reservation->status = 'confirm';
-        else $reservation->status = 'reject';
+
+        if($validated['status']) {
+            $reservation->status = 'confirm';
+            $notificationTitle = '승인';
+        }
+        else {
+            $reservation->status = 'reject';
+            $notificationTitle = '거절';
+        }
 
         if(!$reservation->save()) return response()->json(['error' => '미용실 예약 상태 수정에 실패하였습니다.'], 500);
 
-        return response()->json(['message' => '미용실 예약 상태를 성공적으로 수정하였습니다.']);
+        $token = $reservation->user['fcm_token'];
+
+
+        // 알림 전송
+        $notificationBody = '예약 일자: '.$reservation->reservation_date.' '. $reservation->reservation_time;
+
+        try {
+            $notification = $this->service->postNotification('미용실 예약이 '.$notificationTitle.'되었습니다.', $notificationBody, $token, 'user_salon', $reservation->id);
+        } catch (MessagingException) {
+            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+        }
+
+        return response()->json([
+            'message' => '미용실 예약 상태를 성공적으로 수정하였습니다.',
+            'notification' => $notification,
+        ]);
     }
 
     /**
