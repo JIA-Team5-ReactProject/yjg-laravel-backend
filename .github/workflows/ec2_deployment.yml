@@ -5,8 +5,7 @@ name: EC2 Deployment
 on:
   workflow_run:
     workflows:
-      - Laravel Docker image integration
-      - Cron Docker image integration
+      - Docker image integration
     types:
       - completed
 
