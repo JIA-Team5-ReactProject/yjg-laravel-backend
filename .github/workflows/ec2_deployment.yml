@@ -1,0 +1,24 @@
+# 해당 이벤트는 Default 브랜치에 존재해야 함
+
+name: EC2 Deployment
+
+on:
+  workflow_run:
+    workflows:
+      - Laravel Docker image integration
+      - Cron Docker image integration
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker compose up in EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USERNAME}}
+          key: ${{secrets.EC2_KEY}}
+          script_stop: true
+          script: sh docker.sh
