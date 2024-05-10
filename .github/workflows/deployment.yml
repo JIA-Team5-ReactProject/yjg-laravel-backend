@@ -2,7 +2,9 @@ name: Deployment
 
 on:
   workflow_run:
-    workflows: ["Laravel Docker image integration", "Cron Docker image integration"]
+    workflows:
+    - Laravel Docker image integration
+    - Cron Docker image integration
     types:
       - completed
 
