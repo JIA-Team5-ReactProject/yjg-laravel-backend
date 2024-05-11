@@ -6,6 +6,7 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - echo ADD $FIREBASE_CREDENTIALS /var/www/html >> Dockerfile
+      - RUN chmod a+r /var/www/html/firebase.json
   build:
     commands:
       - echo Build started on `date`
