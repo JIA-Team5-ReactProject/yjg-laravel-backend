@@ -116,7 +116,6 @@ class RestaurantMenusController extends Controller
                                           return RestaurantMenu::where('date_id', $date->id)->get();
                                       });
                                   });
-    
             // 반환되는 JSON 구조를 좀 더 명확하게 처리합니다.
             return response()->json(['week_menus' => $weekMenus]);
         } catch (\Exception $exception) {
