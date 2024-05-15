@@ -109,13 +109,16 @@ class RestaurantMenusController extends Controller
 
         try {
             // 주차별로 데이터를 그룹화합니다.
-            $weekMenus = $weekdata->groupBy('week')
-                                  ->map(function ($datesInWeek) {
-                                      // 각 주차의 날짜들에 대해 메뉴 데이터를 가져옵니다.
-                                      return $datesInWeek->flatMap(function ($date) {
-                                          return RestaurantMenu::where('date_id', $date->id)->get();
-                                      });
-                                  });
+            $weekMenus = [];
+            foreach ($weekdata->groupBy('week') as $datesInWeek) {
+                // 각 주차의 날짜들에 대해 메뉴 데이터를 가져옵니다.
+                $menusInWeek = [];
+                foreach ($datesInWeek as $date) {
+                    $menusInWeek = array_merge($menusInWeek, RestaurantMenu::where('date_id', $date->id)->get()->toArray());
+                }
+                $weekMenus[] = $menusInWeek;
+            }
+            
             // 반환되는 JSON 구조를 좀 더 명확하게 처리합니다.
             return response()->json(['week_menus' => $weekMenus]);
         } catch (\Exception $exception) {

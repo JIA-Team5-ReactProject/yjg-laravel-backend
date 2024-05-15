@@ -26,32 +26,12 @@ class QRController extends Controller
         $userData = User::select('id', 'email')->where('id', $user_id)->first();
 
         // 사용자 정보를 문자열로 변환하여 QR 코드에 사용합니다.
-       
-        
-        
         //QR생성  웹에서 볼려면'svg'
         return QrCode::format('svg')->size(300)->encoding('UTF-8')->generate($userData);
     }
 
     public function check(Request $request)
     {
-        $user_id = auth('users')->id();
-        $userData = User::select('id', 'name', 'email')->where('id', $user_id)->first();
-
-        // 사용자 정보를 문자열로 변환하여 QR 코드에 사용합니다.
-        $userInfoString = "Name: " . $userData->name;
-
-        // QR 코드 생성
-        $qrCode = QrCode::format('svg')->size(300)->encoding('UTF-8')->generate($userInfoString);
-
-        // 사용된 QR 코드 저장
-        $usedQRCode = new UsedQRCode();
-        $usedQRCode->user_id = $user_id;
-        $usedQRCode->qr_code = $qrCode;
-        $usedQRCode->save();
-
-        return response()->json([
-            'qr_code' => $qrCode
-        ]);
+        
     }
 }
