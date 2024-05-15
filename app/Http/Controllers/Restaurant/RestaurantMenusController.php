@@ -42,7 +42,7 @@ class RestaurantMenusController extends Controller
         Log::info('엑셀: '. $request->file('excel_file'));
         try{
             $excel_file = $request->file('excel_file');
-            //$excel_file->store('excels');
+            $excel_file->store('excels');
             Excel::import(new RestaurantMenuImport, $excel_file);
             return response()->json(['message' => '식단표 저장 완료'], 200);
         }catch (\Exception $exception) {
@@ -101,8 +101,8 @@ class RestaurantMenusController extends Controller
         try {
             $weekdata = RestaurantMenuDate::where('year', $request->year)
                                         ->where('month', $request->month)
-                                        ->where('week', $request->week)
                                         ->get();
+            Log::info('날짜 ID모음 : ' . $weekdata);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
