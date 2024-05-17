@@ -2866,6 +2866,42 @@
                 }
             }
         },
+        "/api/qr/check": {
+            "post": {
+                "tags": [
+                    "QR코드"
+                ],
+                "summary": "QR코드체크",
+                "description": "QR코드로 사용자를 확인합니다.",
+                "operationId": "2e2bf3eb51164b88faeeeb93c4afb016",
+                "requestBody": {
+                    "description": "QR코드로 받은 사용자 id",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "user_id",
+                                        "type": "string",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/restaurant/account": {
             "post": {
                 "tags": [

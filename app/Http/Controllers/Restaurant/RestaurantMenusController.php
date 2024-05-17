@@ -114,9 +114,16 @@ class RestaurantMenusController extends Controller
                 // 각 주차의 날짜들에 대해 메뉴 데이터를 가져옵니다.
                 $menusInWeek = [];
                 foreach ($datesInWeek as $date) {
-                    $menusInWeek = array_merge($menusInWeek, RestaurantMenu::where('date_id', $date->id)->get()->toArray());
+                    $menus = RestaurantMenu::where('date_id', $date->id)->get()->toArray();
+                    // 해당 주의 메뉴가 없으면 생략합니다.
+                    if (!empty($menus)) {
+                        $menusInWeek = array_merge($menusInWeek, $menus);
+                    }
                 }
-                $weekMenus[] = $menusInWeek;
+                // 해당 주의 메뉴가 있을 때만 추가합니다.
+                if (!empty($menusInWeek)) {
+                    $weekMenus[] = $menusInWeek;
+                }
             }
             
             // 반환되는 JSON 구조를 좀 더 명확하게 처리합니다.
