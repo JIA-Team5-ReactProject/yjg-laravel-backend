@@ -290,4 +290,8 @@ Route::prefix('bus')->group(function () {
     });
 });
 
+Route::post('/qr/check', [QRController::class, 'check']);
+
+
+
 
