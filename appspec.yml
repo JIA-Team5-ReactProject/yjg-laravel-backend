@@ -10,7 +10,7 @@ Resources:
           # 로드밸런서가 연결될 컨테이너 명
           ContainerName: "nginx"
           # 컨테이너가 리스닝할 포트
-          ContainerPort: 80
+          ContainerPort: 443
         # Optional properties
         # 플랫폼의 버전 같은데 여기서 말하는 어떤 것을 지칭하는지 모르겠음
         PlatformVersion: "LATEST"
