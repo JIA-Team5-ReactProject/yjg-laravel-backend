@@ -104,7 +104,7 @@ Route::middleware(['auth', 'approve:users'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::patch('/', [UserController::class, 'update'])->name('user.update')->withoutMiddleware('approve:users');
         Route::get('/', [UserController::class, 'user'])->name('user.info');
-        Route::get('/qr', [QRController::class, 'generator'])->name('qr');
+        Route::post('/qr', [QRController::class, 'generator'])->name('qr');
         Route::patch('/approve', [UserController::class, 'approveRegistration'])->name('user.approve')->withoutMiddleware('approve:users'); // 서비스 2
     });
 
@@ -289,5 +289,9 @@ Route::prefix('bus')->group(function () {
         Route::get('/appSchedule', [BusScheduleController::class, 'getRoundAndSchedule']);
     });
 });
+
+Route::post('/qr/check', [QRController::class, 'check']);
+
+
 
 

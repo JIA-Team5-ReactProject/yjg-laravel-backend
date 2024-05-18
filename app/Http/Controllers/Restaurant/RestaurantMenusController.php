@@ -42,7 +42,7 @@ class RestaurantMenusController extends Controller
         Log::info('엑셀: '. $request->file('excel_file'));
         try{
             $excel_file = $request->file('excel_file');
-            //$excel_file->store('excels');
+            $excel_file->store('excels');
             Excel::import(new RestaurantMenuImport, $excel_file);
             return response()->json(['message' => '식단표 저장 완료'], 200);
         }catch (\Exception $exception) {
@@ -101,16 +101,32 @@ class RestaurantMenusController extends Controller
         try {
             $weekdata = RestaurantMenuDate::where('year', $request->year)
                                         ->where('month', $request->month)
-                                        ->where('week', $request->week)
                                         ->get();
+            Log::info('날짜 ID모음 : ' . $weekdata);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
 
         try {
-            $weekMenus = $weekdata->flatMap(function ($date) {
-                return RestaurantMenu::where('date_id', $date->id)->get();
-            });
+            // 주차별로 데이터를 그룹화합니다.
+            $weekMenus = [];
+            foreach ($weekdata->groupBy('week') as $datesInWeek) {
+                // 각 주차의 날짜들에 대해 메뉴 데이터를 가져옵니다.
+                $menusInWeek = [];
+                foreach ($datesInWeek as $date) {
+                    $menus = RestaurantMenu::where('date_id', $date->id)->get()->toArray();
+                    // 해당 주의 메뉴가 없으면 생략합니다.
+                    if (!empty($menus)) {
+                        $menusInWeek = array_merge($menusInWeek, $menus);
+                    }
+                }
+                // 해당 주의 메뉴가 있을 때만 추가합니다.
+                if (!empty($menusInWeek)) {
+                    $weekMenus[] = $menusInWeek;
+                }
+            }
+            
+            // 반환되는 JSON 구조를 좀 더 명확하게 처리합니다.
             return response()->json(['week_menus' => $weekMenus]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
