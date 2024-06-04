@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RestaurantSemester;
+use App\Models\RestaurantWeekend;
 use Illuminate\Http\Request;
 use App\Models\User;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\UsedQRCode;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class QRController extends Controller
@@ -54,10 +57,24 @@ class QRController extends Controller
     public function check(Request $request)
     {
         $checkId = User::where('id', $request->id)->first();
-        if ($checkId) {
-            return response()->json(['message' => '인증된 사용자 입니다'], 200);
-        } else {
-            return response()->json(['message' => '인증되지 않은 사용자 입니다.'], 200);
+
+        $currentDate = Carbon::now();
+        $dayOfWeek = $currentDate->dayOfWeek;
+
+        if($dayOfWeek == 0 || $dayOfWeek == 6){
+            $RestaurantCheck = RestaurantWeekend::where('user_id', $request->id)->first();
+            if($RestaurantCheck){
+                return response()->json(['message' => '주말식수 확인되었습니다'], 200);
+            }
+        }elseif($dayOfWeek >= 1 && $dayOfWeek <= 5){
+            $RestaurantCheck = RestaurantSemester::where('user_id', $request->id)->first();
+            if($RestaurantCheck){
+                return response()->json(['message' => '평일식수 확인되었습니다'], 200);
+            }
+        }
+
+        if (!$checkId) {
+            return response()->json(['message' => '인증되지 않은 사용자 입니다'], 200);
         }
     }
 }
