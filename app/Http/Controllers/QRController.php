@@ -54,7 +54,7 @@ class QRController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function check(Request $request)
+    public function check(Request $request): \Illuminate\Http\JsonResponse
     {
         $checkId = User::where('id', $request->id)->first();
 
@@ -73,8 +73,6 @@ class QRController extends Controller
             }
         }
 
-        if (!$checkId) {
-            return response()->json(['message' => '인증되지 않은 사용자 입니다'], 200);
-        }
+        return response()->json(['message' => '인증되지 않은 사용자 입니다'], 200);
     }
 }
