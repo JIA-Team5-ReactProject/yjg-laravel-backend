@@ -36,7 +36,7 @@ class RestaurantWeekendController extends Controller
      *         @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             // 유효성 검사
@@ -63,12 +63,12 @@ class RestaurantWeekendController extends Controller
                 'sat' => $validatedData['sat'],
                 'sun' => $validatedData['sun'],
             ]);
-            return response()->json(['message' => '주말 식수 신청이 완료되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' =>  $exception->getMessage()], 500);
         }
-    }   
-        
+    }
+
        /**
      * @OA\get (
      *     path="/api/restaurant/weekend/g/payment/{id}",
@@ -86,16 +86,16 @@ class RestaurantWeekendController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getPayment($id)
+    public function getPayment($id): \Illuminate\Http\JsonResponse
     {
         try {
             $paymentData = RestaurantWeekend::where('id', $id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
-            return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
     }
-    
+
 /**
      * @OA\Post (
      *     path="/api/restaurant/weekend/p/payment/{id}",
@@ -124,7 +124,7 @@ class RestaurantWeekendController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function setPayment(Request $request, $id)
+    public function setPayment(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         try {
             // 유효성 검사
@@ -136,13 +136,13 @@ class RestaurantWeekendController extends Controller
         }
 
         try {
-                $apply_id = RestaurantWeekend::findOrFail($id);
-                $apply_id->payment = $validatedData['payment'];
-                $apply_id->save();
-            } catch (\Exception $exception) {
-                return response()->json(['error' => $exception->getMessage()], 500);
-            }
-            return response()->json(['message' => '입금이 확인 되었습니다.']);
+            $apply_id = RestaurantWeekend::findOrFail($id);
+            $apply_id->payment = $validatedData['payment'];
+            $apply_id->save();
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -162,13 +162,13 @@ class RestaurantWeekendController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function delete($id)
+    public function delete($id): \Illuminate\Http\JsonResponse
     {
         try {
             $RestaurantWeekend = RestaurantWeekend::findOrFail($id);
             $RestaurantWeekend->delete();
 
-            return response()->json(['message' => '주말 식수 신청이 삭제되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -195,12 +195,12 @@ class RestaurantWeekendController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function show(Request $request)
+    public function show(Request $request): \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Http\JsonResponse
     {
         try {
             $name = $request->input('name');
             $allData = RestaurantWeekend::with('weekendMealType:id,meal_type', 'user:id,phone_number,name,student_id');
-            
+
             if ($name === null || $name === '') {
                 $applyData = $allData->paginate(5);
             } else {
@@ -208,8 +208,7 @@ class RestaurantWeekendController extends Controller
                     $allData->where('name', 'like', '%' . $name . '%');
                 })->paginate(5);
             }
-            
-    
+
             return $applyData;
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
@@ -236,7 +235,7 @@ class RestaurantWeekendController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function sumApplyApp(Request $request)
+    public function sumApplyApp(Request $request): \Illuminate\Http\JsonResponse
     {
         try{
             $validatedData = $request->validate([
@@ -282,12 +281,12 @@ class RestaurantWeekendController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function sumApplyWeb(Request $request)
+    public function sumApplyWeb(Request $request): \Illuminate\Http\JsonResponse
     {
         $mealTypes = weekendMealType::all(['id','meal_type']);
         $applyData = []; // 결과를 저장할 배열 초기화
 
-        if ($request->date == 'sat') {
+        if($request->date == 'sat') {
             foreach ($mealTypes as $mealType) {
                 // 각 식수 유형별로 해당하는 레코드 수를 조회
                 $count = RestaurantWeekend::where('sat', 1)
@@ -297,7 +296,7 @@ class RestaurantWeekendController extends Controller
                 $applyData[$mealType->meal_type] = $count;
             }
 
-        }elseif($request->date == 'sun'){
+        } else if($request->date == 'sun') {
             foreach ($mealTypes as $mealType) {
                 // 각 식수 유형별로 해당하는 레코드 수를 조회
                 $count = RestaurantWeekend::where('sun', 1)
@@ -306,13 +305,13 @@ class RestaurantWeekendController extends Controller
                 // 조회한 갯수를 식수 유형 ID를 키로 하여 배열에 저장
                 $applyData[$mealType->meal_type] = $count;
             }
-        }else{
-            return response()->json(['error' => 'sat or sun을 입력해주세요.']);
+        } else {
+            return response()->json(['error' => __('messages.500')], 500);
         }
         return response()->json(['applyData' => $applyData]);
     }
-    
-    
+
+
 
     /**
      * @OA\Get (
@@ -320,19 +319,20 @@ class RestaurantWeekendController extends Controller
      * tags={"식수 신청 주말"},
      * summary="주말 식수 신청자 유저 정보",
      * description="주말 식수 유저 정보 확인",
-     *    
+     *
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function showUserTable(){
+    public function showUserTable(): \Illuminate\Http\JsonResponse
+    {
         try{
             $user_id = auth('users')->id();
             $allData = RestaurantWeekend::with('weekendMealType:id,meal_type', 'user:id,phone_number,name,student_id');
             $applyData = $allData->where('user_id', $user_id)->paginate(5);
-            
+
             return response()->json(['userData' => $applyData ]);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()]);
         }
     }

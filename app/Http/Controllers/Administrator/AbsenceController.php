@@ -47,7 +47,7 @@ class AbsenceController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
         $validated = $request->validate([
             'date' => 'required|date-format:Y-m-d',
@@ -210,7 +210,7 @@ class AbsenceController extends Controller
             })->exists();
 
         if($absenceList) {
-            return response()->json(['error' => '신청 날짜와 중복되는 외박/외출이 있습니다.'], 409);
+            return response()->json(['error' => __('messages.409')], 409);
         }
 
         $absence = AbsenceList::create($validated);
@@ -242,7 +242,7 @@ class AbsenceController extends Controller
             // 외출/외박 기록과 함께 유저의 아이디, 학번, 이름을 함께 불러옴
             $stayOut = AbsenceList::with('user:id,student_id,name')->findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
         // TODO: 반횐되는 키값 변경하기
         return response()->json(['stay_out' => $stayOut]);
@@ -299,7 +299,7 @@ class AbsenceController extends Controller
         try {
             $absenceList = AbsenceList::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         foreach ($validated as $key => $value) {
@@ -310,7 +310,7 @@ class AbsenceController extends Controller
 
         $absenceList->save();
 
-        if(!$absenceList->save()) return response()->json(['error' => '외출/외박 내용 수정에 실패하였습니다.'], 500);
+        if(!$absenceList->save()) return response()->json(['error' => __('messages.500')], 500);
 
         return response()->json(['success' => '외출/외박 내용이 수정되었습니다.', 'stay_out' => $absenceList]);
     }
@@ -338,35 +338,33 @@ class AbsenceController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied('auth.denied');
         }
 
         try {
             $absence = AbsenceList::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $absence->status = false;
 
-        if(!$absence->save()) return response()->json(['error' => '외출/외박 상태 수정에 실패하였습니다.'], 500);
+        if(!$absence->save()) return response()->json(['error' => __('messages.500')], 500);
 
         if($absence->user['push_enabled']) {
             $token = $absence->user['fcm_token'];
-
             $notificationTitle = ($absence['type'] == 'go' ? '외출' : '외박').'이 거절되었습니다.';
-
             $notificationBody = '날짜: '.($absence['type'] == 'go' ? $absence['start_date'] : $absence['start_date'].'~'.$absence['end_date']);
 
             // 알림 전송
             try {
                 $this->service->postNotification($notificationTitle, $notificationBody, $token, 'absence', $absence->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500')], 500);
             }
         }
 
-        return response()->json(['success' => '외출/외박 상태 수정에 성공하였습니다.']);
+        return response()->json(['success' => __('messages.200')]);
     }
 
     /**
@@ -392,11 +390,11 @@ class AbsenceController extends Controller
         try {
             $stayOut = AbsenceList::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
-        if(!$stayOut->delete()) return response()->json(['error' => '외출/외박 기록 삭제에 실패하였습니다.'], 500);
+        if(!$stayOut->delete()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '외출/외박 기록이 삭제되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

@@ -59,7 +59,7 @@ class PasswordResetCodeController extends Controller
         try {
             User::where('email', $validated['email'])->where('name', $validated['name'])->firstOrFail();
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $resetPasswordService = new ResetPasswordService($validated['email']);
@@ -111,7 +111,7 @@ class PasswordResetCodeController extends Controller
             $secret = PasswordResetCode::where('email', $validated['email'])
                 ->where('code', $validated['code'])->firstOrFail();
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '인증코드가 일치하지 않습니다.'], 401);
+            return response()->json(['error' => __('auth.code.diff')], 401);
         }
 
         // 현재 시간
@@ -120,20 +120,20 @@ class PasswordResetCodeController extends Controller
 
         // 만료 여부 확인
         if($secret->expires_at < $currentTime) {
-            return response()->json(['error' => '만료된 인증코드입니다.'], 401);
+            return response()->json(['error' => __('auth.code.expired')], 401);
         }
 
         // 이메일을 토대로 모델을 검색하고, 모델을 통해 토큰 생성
         try {
             $user = User::where('email', $validated['email'])->firstOrFail();
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '이메일과 일치하는 유저를 찾을 수 없습니다.'], 404);
+            return response()->json(['error' => 'messages.404'], 404);
         }
 
         // email 타입 5분짜리 토큰
         $emailToken = $this->tokenService->generateTokenByModel($user, 'email');
 
-        return response()->json(['message' => '코드가 인증되었습니다.', 'email_token' => $emailToken]);
+        return response()->json(['message' => __('auth.code'), 'email_token' => $emailToken]);
     }
 
     /**
@@ -173,8 +173,8 @@ class PasswordResetCodeController extends Controller
         $user = auth()->user();
         $user->password = Hash::make($validated['password']);
 
-        if(!$user->save()) return response()->json(['error' => '비밀번호 변경에 실패하였습니다.'], 500);
+        if(!$user->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '비밀번호가 변경되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

@@ -75,7 +75,7 @@ class SalonBreakTimeController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -91,10 +91,10 @@ class SalonBreakTimeController extends Controller
             $salonBreakTime = new SalonBreakTime();
             $salonBreakTime->break_time = $breakTime;
             $salonBreakTime->date = $validated['date'];
-            if(!$salonBreakTime->save()) return response()->json(['error' => '예약불가 시간 추가에 실패하였습니다.'], 500);
+            if(!$salonBreakTime->save()) return response()->json(['error' => __('messages.500')], 500);
         }
 
-        return response()->json(['message' => '예약불가 시간을 성공적으로 추가하였습니다.'], 201);
+        return response()->json(['message' => __('messages.200')], 201);
     }
 
     /**
@@ -129,7 +129,7 @@ class SalonBreakTimeController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -143,8 +143,8 @@ class SalonBreakTimeController extends Controller
         $salonBreakTime = SalonBreakTime::where('break_time', $validated['break_time'])
             ->where('date', $validated['date'])->delete();
 
-        if(!$salonBreakTime) return response()->json(['error' => $this->modelExceptionMessage], 404);
+        if(!$salonBreakTime) return response()->json(['error' => __('messages.404')], 404);
 
-        return response()->json(['message' => '예약불가 시간을 성공적으로 삭제하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

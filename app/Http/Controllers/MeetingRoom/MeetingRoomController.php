@@ -15,10 +15,6 @@ use Illuminate\Validation\ValidationException;
 
 class MeetingRoomController extends Controller
 {
-    private array $messages = [
-        'exists' => '해당하는 회의실이 존재하지 않습니다.',
-    ];
-
     public function authorize($ability, $arguments = [MeetingRoom::class]): Response
     {
         return Parent::authorize($ability, $arguments);
@@ -64,7 +60,7 @@ class MeetingRoomController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -81,9 +77,9 @@ class MeetingRoomController extends Controller
             'room_number' => $validated['room_number'],
         ]);
 
-        if(!$meetingRoom) return response()->json(['error' => '회의실 추가에 실패하였습니다.'], 500);
+        if(!$meetingRoom) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '회의실이 추가되었습니다.', 'meeting_room' => $meetingRoom], 201);
+        return response()->json(['message' => __('messages.200'), 'meeting_room' => $meetingRoom], 201);
     }
 
     /**
@@ -161,7 +157,7 @@ class MeetingRoomController extends Controller
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_rooms,room_number|string'
-        ], $this->messages);
+        ]);
 
         try {
             $validator->validate();
@@ -175,14 +171,14 @@ class MeetingRoomController extends Controller
         try {
             $meetingRoom = MeetingRoom::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->messages], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $meetingRoom->open = $validated['open'];
 
-        if(!$meetingRoom->save()) return response()->json(['error' => '회의실 상태 변경에 실패하였습니다.'], 500);
+        if(!$meetingRoom->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '회의실 상태 변경에 성공하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -208,29 +204,29 @@ class MeetingRoomController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:meeting_rooms,room_number|string'
-        ], $this->messages);
+        ]);
 
         try {
             $validator->validate();
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
         try {
             $meetingRoom = MeetingRoom::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage]);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
-        if(!$meetingRoom->delete()) return response()->json(['error' => '회의실 삭제에 실패하였습니다.'], 500);
+        if(!$meetingRoom->delete()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['success' => '회의실이 삭제되었습니다.']);
+        return response()->json(['success' => __('messages.200')]);
     }
 }

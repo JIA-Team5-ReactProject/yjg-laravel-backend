@@ -151,7 +151,7 @@ class SalonReservationController extends Controller
 
         $reservation = SalonReservation::create($validated);
 
-        if(!$reservation) return response()->json(['error' => '미용실 예약에 실패하였습니다.'], 500);
+        if(!$reservation) return response()->json(['error' => __('messages.500')], 500);
 
         // 마스터 및 행정 관리자의 토큰을 $tokens 배열에 담음
         $tokens = [];
@@ -171,7 +171,7 @@ class SalonReservationController extends Controller
             try {
                 $this->service->postNotificationMulticast('새로운 미용실 예약이 있습니다.', $notificationBody, $tokens, 'admin_salon', $reservation->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
 
@@ -223,7 +223,7 @@ class SalonReservationController extends Controller
         try {
             $reservation = SalonReservation::findOrFail($validated['id']);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
 
@@ -236,7 +236,7 @@ class SalonReservationController extends Controller
             $notificationTitle = '거절';
         }
 
-        if(!$reservation->save()) return response()->json(['error' => '미용실 예약 상태 수정에 실패하였습니다.'], 500);
+        if(!$reservation->save()) return response()->json(['error' => __('messages.500')], 500);
 
         $token = $reservation->user['fcm_token'];
 
@@ -247,11 +247,11 @@ class SalonReservationController extends Controller
         try {
             $notification = $this->service->postNotification('미용실 예약이 '.$notificationTitle.'되었습니다.', $notificationBody, $token, 'user_salon', $reservation->id);
         } catch (MessagingException) {
-            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500.push')], 500);
         }
 
         return response()->json([
-            'message' => '미용실 예약 상태를 성공적으로 수정하였습니다.',
+            'message' => __('messages.200'),
             'notification' => $notification,
         ]);
     }
@@ -276,8 +276,8 @@ class SalonReservationController extends Controller
      */
     public function destroy(string $id): JsonResponse
     {
-        if(!SalonReservation::destroy($id)) return response()->json(['error' => '미용실 예약 취소에 실패하였습니다.'], 500);
+        if(!SalonReservation::destroy($id)) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '미용실 예약이 취소되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

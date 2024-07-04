@@ -64,15 +64,15 @@ class QRController extends Controller
         if($dayOfWeek == 0 || $dayOfWeek == 6){
             $RestaurantCheck = RestaurantWeekend::where('user_id', $request->id)->first();
             if($RestaurantCheck){
-                return response()->json(['message' => '주말식수 확인되었습니다'], 200);
+                return response()->json(['message' => __('auth.weekend')]);
             }
-        }elseif($dayOfWeek >= 1 && $dayOfWeek <= 5){
+        } else if($dayOfWeek >= 1 && $dayOfWeek <= 5){
             $RestaurantCheck = RestaurantSemester::where('user_id', $request->id)->first();
             if($RestaurantCheck){
-                return response()->json(['message' => '평일식수 확인되었습니다'], 200);
+                return response()->json(['message' => __('auth.weekday')]);
             }
         }
 
-        return response()->json(['message' => '인증되지 않은 사용자 입니다'], 200);
+        return response()->json(['message' => __('auth.error')], 401);
     }
 }

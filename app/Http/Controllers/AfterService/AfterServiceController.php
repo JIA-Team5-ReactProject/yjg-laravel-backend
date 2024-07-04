@@ -172,17 +172,15 @@ class AfterServiceController extends Controller
         $afterService = AfterService::create($validated);
 
         if(!$afterService->save()) {
-            return response()->json(['error' => 'A/S 신청에 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
         // 연관관계를 이용하여 이미지 저장
         if(isset($validated['images'])) {
             foreach ($validated['images'] as $image) {
                 $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
-
                 $saveImage = $afterService->afterServiceImages()->save(new AfterServiceImage(['image' => $url]));
-
-                if(!$saveImage) return response()->json(['A/S 관련 이미지 저장에 실패하였습니다.'], 500);
+                if(!$saveImage) return response()->json(['error' => __('messages.500')], 500);
             }
         }
 
@@ -204,8 +202,8 @@ class AfterServiceController extends Controller
             // 알림 전송
             try {
                 $this->service->postNotificationMulticast('새로운 AS 신청이 등록되었습니다.', $notificationBody, $tokens, 'as', $afterService->id);
-            } catch (MessagingException $e) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            } catch (MessagingException) {
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
 
@@ -237,7 +235,7 @@ class AfterServiceController extends Controller
         try {
             $afterService = AfterService::with($this->relations)->findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 AS 정보가 없습니다.'], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         return response()->json(['afterService' => $afterService]);
@@ -267,7 +265,7 @@ class AfterServiceController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         $validator = Validator::make(['id' => $id], [
@@ -285,13 +283,13 @@ class AfterServiceController extends Controller
         try {
             $afterService = AfterService::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $afterService->status = true;
 
         if(!$afterService->save()) {
-            return response()->json(['error' => 'AS 상태 변경에 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
         $token = $afterService->user['fcm_token'];
@@ -301,11 +299,11 @@ class AfterServiceController extends Controller
             try {
                 $this->service->postNotification('AS가 완료되었습니다.', 'AS 내용: '.$afterService->title, $token, 'as', $afterService->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
 
-        return response()->json(['message' => 'AS가 완료되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -372,7 +370,7 @@ class AfterServiceController extends Controller
         try {
             $afterService = AfterService::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         // TODO: 효율적으로 삭제 가능한지 좀 생각해봐야 함
@@ -382,7 +380,7 @@ class AfterServiceController extends Controller
                 $imageURL = $afterService->afterServiceImages()->where('id', $deleteImage)->get('image');
                 $deleteDb = $afterService->afterServiceImages()->where('id', $deleteImage)->delete();
                 $deleteS3 = Storage::delete('images/'.$imageURL);
-                if(!$deleteS3 || !$deleteDb) return response()->json(['error' => '이미지 삭제에 실패하였습니다.'], 500);
+                if(!$deleteS3 || !$deleteDb) return response()->json(['error' => __('messages.500')], 500);
             }
             unset($validated['delete_images']);
         }
@@ -391,7 +389,7 @@ class AfterServiceController extends Controller
             foreach ($validated['images'] as $image) {
                 $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
                 $saveImage = $afterService->afterServiceImages()->save(new AfterServiceImage(['image' => $url]));
-                if(!$saveImage) return response()->json(['이미지를 저장하는데 실패하였습니다.'], 500);
+                if(!$saveImage) return response()->json(['error' => __('messages.500')], 500);
             }
             unset($validated['images']);
         }
@@ -400,7 +398,7 @@ class AfterServiceController extends Controller
             $afterService->$key = $value;
         }
 
-        if(!$afterService->save()) return response()->json(['error' => 'AS 요청을 수정하는데 실패하였습니다.'], 500);
+        if(!$afterService->save()) return response()->json(['error' => __('messages.500')], 500);
 
         return response()->json(['afterService' => $afterService, 'images' => $afterService->afterServiceImages()]);
     }
@@ -425,9 +423,9 @@ class AfterServiceController extends Controller
     public function destroy(string $id): JsonResponse
     {
         if(!AfterService::destroy($id)) {
-            return response()->json(['error' => 'AS 요청을 삭제하는데 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
-        return response()->json(['message' => 'AS 요청이 성공적으로 삭제되었습니다']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

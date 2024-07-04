@@ -157,7 +157,7 @@ class NoticeController extends Controller
         try {
             $notice = Notice::with(['noticeImages', 'user'])->findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         return response()->json(['notice' => $notice]);
@@ -197,7 +197,7 @@ class NoticeController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         // 태그를 가지고 있는 테이블을 생성해서 그에 맞는 테이블을 참조하게 하기
@@ -221,7 +221,7 @@ class NoticeController extends Controller
         // 공지사항 생성
         $notice = Notice::create($validated);
 
-        if(!$notice) return response()->json(['error' => '공지사항을 작성하는 데 실패하였습니다.'], 500);
+        if(!$notice) return response()->json(['error' => __('messages.500')], 500);
 
         // 생성된 공지사항의 연관관계 메서드를 이용하여 이미지를 하나씩 저장
         if(isset($validated['images'])) {
@@ -230,7 +230,7 @@ class NoticeController extends Controller
 
                 $saveImage = $notice->noticeImages()->save(new NoticeImage(['image' => $url]));
 
-                if(!$saveImage) return response()->json(['공지사항의 이미지를 저장하는 데 실패하였습니다.'], 500);
+                if(!$saveImage) return response()->json(['error' => __('messages.500')], 500);
             }
         }
 
@@ -249,7 +249,7 @@ class NoticeController extends Controller
             try {
                 $this->service->postNotificationMulticast('🚨긴급 공지🚨', $notice->title, $tokens, 'notice', $notice->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
 
@@ -308,7 +308,7 @@ class NoticeController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
         // 태그를 가지고 있는 테이블을 생성해서 그에 맞는 테이블을 참조하게 하기
         try {
@@ -332,7 +332,7 @@ class NoticeController extends Controller
         try {
             $notice = Notice::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         // delete_images 배열을 확인하여, 해당하는 이미지의 아이디로 삭제
@@ -342,7 +342,7 @@ class NoticeController extends Controller
                 $deleteDb = $notice->noticeImages()->where('id', $deleteImage)->delete();
                 $fileName = basename($imageURL);
                 $deleteS3 = Storage::delete('images/'.$fileName);
-                if(!$deleteS3 || !$deleteDb) return response()->json(['error' => '이미지 삭제에 실패하였습니다.'], 500);
+                if(!$deleteS3 || !$deleteDb) return response()->json(['error' => __('messages.500')], 500);
             }
             unset($validated['delete_images']);
         }
@@ -351,7 +351,7 @@ class NoticeController extends Controller
             foreach ($validated['images'] as $image) {
                 $url = env('AWS_CLOUDFRONT_URL').Storage::put('images', $image);
                 $saveImage = $notice->noticeImages()->save(new NoticeImage(['image' => $url]));
-                if(!$saveImage) return response()->json(['이미지 저장에 실패하였습니다.'], 500);
+                if(!$saveImage) return response()->json(['error' => __('messages.500')], 500);
             }
             unset($validated['images']);
         }
@@ -361,7 +361,7 @@ class NoticeController extends Controller
             $notice->$key = $value;
         }
 
-        if(!$notice->save()) return response()->json(['error' => '공지사항 수정에 실패하였습니다.'], 500);
+        if(!$notice->save()) return response()->json(['error' => __('messages.500')], 500);
 
         return response()->json(['notice' => $notice, 'images' => $notice->noticeImages()]);
     }
@@ -388,12 +388,12 @@ class NoticeController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
         $notice = Notice::destroy($id);
 
-        if(!$notice) return response()->json(['error' => '삭제에 실패하였습니다.'], 500);
+        if(!$notice) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '공지사항이 성공적으로 삭제되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

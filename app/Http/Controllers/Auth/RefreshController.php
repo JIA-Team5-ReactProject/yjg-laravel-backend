@@ -31,7 +31,7 @@ class RefreshController extends Controller
         try {
             $model = User::findOrFail(auth('users')->id());
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         return response()->json(['access_token' => $this->tokenService->generateTokenByModel($model, 'access')]);

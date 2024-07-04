@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
@@ -83,7 +82,7 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        if(!$user) return response()->json(['error' => '회원가입에 실패하였습니다.'],500);
+        if(!$user) return response()->json(['error' => __('messages.500')],500);
 
         return response()->json(['user' => $user], 201);
     }
@@ -97,16 +96,15 @@ class UserController extends Controller
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="ServerError"),
      * )
-     * @throws destroyexception
      */
     public function unregister(): JsonResponse
     {
         $userId = auth()->id();
         if (!User::destroy($userId)) {
-            throw new destroyException('회원탈퇴에 실패하였습니다.');
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
-        return response()->json(['message' => '회원탈퇴 되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -151,7 +149,7 @@ class UserController extends Controller
         $payload = $client->verifyIdToken($credentials['id_token']);
 
         if (!$payload || $payload['email'] != $credentials['email'] || $payload['hd'] != 'g.yju.ac.kr') {
-            return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);
+            return response()->json(['error' => __('auth.error')], 401);
         }
 
         $user = User::updateOrCreate([
@@ -161,7 +159,7 @@ class UserController extends Controller
         ]);
 
         if (!$user || !$token = $this->tokenService->generateToken($credentials, 'access')) {
-            return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
+            return response()->json(['error' => __('auth.error.token.generate')], 401);
         }
         $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
@@ -200,7 +198,7 @@ class UserController extends Controller
         $credentials = $request->validated();
 
         if (! $token = $this->tokenService->generateToken($credentials, 'access')) {
-            return response()->json(['error' => '토큰 생성에 실패하였습니다.'], 401);
+            return response()->json(['error' => __('auth.error.token.generate')], 401);
         }
 
         $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
@@ -225,7 +223,7 @@ class UserController extends Controller
     public function logout(): JsonResponse
     {
         auth()->logout();
-        return response()->json(['message' => '로그아웃 되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -282,7 +280,7 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($user['id']);
         } catch(ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 유저가 존재하지 않습니다.'], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         if(!$user['approved']) {
@@ -302,9 +300,9 @@ class UserController extends Controller
             }
         }
 
-        if(!$user->save()) return response()->json(['error' => '회원정보 수정에 실패하였습니다.'], 500);
+        if(!$user->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '회원정보가 수정되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -325,15 +323,15 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($userId);
         } catch(ModelNotFoundException) {
-            return response()->json(['error'=>$this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $user->approved = true;
 
         if(!$user->save()) {
-            return response()->json(['error' => '유저를 승인하는 데 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
-        return response()->json(['message' => '유저가 승인되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -373,16 +371,16 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($userId);
         } catch (ModelNotFoundException) {
-            return response()->json(['error'=>$this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $user->fcm_token = $validated['fcm_token'];
 
         if(!$user->save()) {
-            return response()->json(['error' => 'FCM 토큰 업데이트에 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
-        return response()->json(['message' => '성공적으로 토큰이 업데이트 되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -420,13 +418,13 @@ class UserController extends Controller
         try {
             $user = User::findOrFail(auth()->id());
         } catch (ModelNotFoundException) {
-            return response()->json(['error'=>$this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $user->push_enabled = $validated['enable'];
-        if(!$user->save()) return response()->json(['error' => '푸시 알림 수신여부 수정에 실패하였습니다.'], 500);
+        if(!$user->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '푸시 알림 수신여부가 업데이트 되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -504,7 +502,7 @@ class UserController extends Controller
         try {
             $admin = User::where('phone_number', $validated['phone_number'])->where('name', $validated['name'])->firstOrFail();
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
         return response()->json(['admin' => $admin]);
     }
@@ -542,6 +540,6 @@ class UserController extends Controller
             return response()->json(['error'=>$errorMessage], $errorStatus);
         }
 
-        return response()->json(['success' => '비밀번호가 일치합니다.']);
+        return response()->json(['success' => __('messages.200')]);
     }
 }

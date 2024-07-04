@@ -24,9 +24,9 @@ class WeekendMealTypeController extends Controller
      *                 mediaType="application/json",
      *                 @OA\Schema (
      *                     @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
-     *                     @OA\Property (property="content", type="string", description="내용", example="아침"), 
+     *                     @OA\Property (property="content", type="string", description="내용", example="아침"),
      *                     @OA\Property (property="price", type="string", description="가격", example="750,000"),
-     *                     
+     *
      *                 )
      *             )
      *         ),
@@ -34,14 +34,14 @@ class WeekendMealTypeController extends Controller
      *         @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validatedData = $request->validate([
                 'meal_type' => 'required|string',
                 'content' => 'required|string',
                 'price' => 'required|string',
-                
+
             ]);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
@@ -54,11 +54,11 @@ class WeekendMealTypeController extends Controller
                 'price' =>$validatedData['price'],
             ]);
         } catch (\Exception $exception) {//Exception는 부모 예외 클래스임
-            return response()->json(['error' => '데이터베이스에 저장하는 중에 오류가 발생했습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
         // 성공 메시지
-        return response()->json(['message' => '주말 식사 유형 저장 완료']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
 
@@ -79,13 +79,13 @@ class WeekendMealTypeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function delete($id)
+    public function delete($id): \Illuminate\Http\JsonResponse
     {
         try {
             $RestaurantWeekend = WeekendMealType::findOrFail($id);
             $RestaurantWeekend->delete();
 
-            return response()->json(['message' => '주말 식수 유형이 삭제되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -98,17 +98,17 @@ class WeekendMealTypeController extends Controller
      *     tags={"식수 유형"},
      *     summary="주말 식수 유형 가져오기",
      *     description="주말 식수 유형 가져오기",
-     *     
+     *
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getMealType()
+    public function getMealType(): \Illuminate\Http\JsonResponse
     {
-        try{
+        try {
             $mealType = weekendMealType::all();
             return response()->json(['semester_meal_type' => $mealType]);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
@@ -133,7 +133,7 @@ class WeekendMealTypeController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema (
      *                 @OA\Property (property="meal_type", type="string", description="식사유형", example="A"),
-     *                 @OA\Property (property="content", type="string", description="내용", example="아침"), 
+     *                 @OA\Property (property="content", type="string", description="내용", example="아침"),
      *                 @OA\Property (property="price", type="string", description="가격", example="750,000"),
      *             )
      *         )
@@ -142,7 +142,7 @@ class WeekendMealTypeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         try {
             $validatedData = $request->validate([
@@ -165,6 +165,6 @@ class WeekendMealTypeController extends Controller
             return response()->json(['error' => $exception->getMessage()], 500);
         }
 
-        return response()->json(['message' => '주말 식사 유형 수정 완료']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }
