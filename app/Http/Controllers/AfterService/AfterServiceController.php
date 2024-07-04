@@ -197,11 +197,9 @@ class AfterServiceController extends Controller
                 $tokens[] = $user->fcm_token;
             }
 
-            $notificationBody = '신청 내용: '.$validated['title'];
-
             // 알림 전송
             try {
-                $this->service->postNotificationMulticast('새로운 AS 신청이 등록되었습니다.', $notificationBody, $tokens, 'as', $afterService->id);
+                $this->service->postNotificationMulticast(__('notification.new_as'), $validated['title'], $tokens, 'as', $afterService->id);
             } catch (MessagingException) {
                 return response()->json(['error' => __('messages.500.push')], 500);
             }
@@ -297,7 +295,7 @@ class AfterServiceController extends Controller
         if($afterService->user['push_enabled']) {
             // 알림 전송
             try {
-                $this->service->postNotification('AS가 완료되었습니다.', 'AS 내용: '.$afterService->title, $token, 'as', $afterService->id);
+                $this->service->postNotification(__('notification.complete_as'), $afterService->title, $token, 'as', $afterService->id);
             } catch (MessagingException) {
                 return response()->json(['error' => __('messages.500.push')], 500);
             }

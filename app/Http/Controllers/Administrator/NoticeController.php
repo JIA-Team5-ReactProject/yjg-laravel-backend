@@ -247,7 +247,7 @@ class NoticeController extends Controller
 
             // 알림 전송
             try {
-                $this->service->postNotificationMulticast('🚨긴급 공지🚨', $notice->title, $tokens, 'notice', $notice->id);
+                $this->service->postNotificationMulticast(__('notification.urgent'), $notice->title, $tokens, 'notice', $notice->id);
             } catch (MessagingException) {
                 return response()->json(['error' => __('messages.500.push')], 500);
             }

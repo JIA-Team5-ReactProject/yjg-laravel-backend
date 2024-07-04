@@ -255,12 +255,12 @@ class MeetingRoomReservationController extends Controller
         if($reservation->user['push_enabled']) {
             $token = $reservation->user['fcm_token'];
 
-            $notificationBody = '예약 날짜: ' . $reservation['reservation_date'] . ' ' . $reservation['reservation_s_time'] . '~' . $reservation['reservation_e_time'] .
-                '예약 호실: ' . $reservation['meeting_room_number'];
+            $notificationBody = __('notification.reserved_date') . $reservation['reservation_date'] . ' ' . $reservation['reservation_s_time'] . '~' . $reservation['reservation_e_time'] .
+                __('notification.room_number') . ': ' . $reservation['meeting_room_number'];
 
             // 알림 전송
             try {
-                $this->service->postNotification('회의실 예약이 거절되었습니다.', $notificationBody, $token, 'meeting', $reservation->id);
+                $this->service->postNotification(__('notification.meeting_room_reject'), $notificationBody, $token, 'meeting', $reservation->id);
             } catch (MessagingException) {
                 return response()->json(['error' => __('messages.500.push')], 500);
             }

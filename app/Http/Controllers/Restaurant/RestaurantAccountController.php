@@ -20,7 +20,7 @@ class RestaurantAccountController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store()
+    public function store(): \Illuminate\Http\JsonResponse
     {
         try {
             RestaurantAccount::create([

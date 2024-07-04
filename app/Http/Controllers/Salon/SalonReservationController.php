@@ -165,11 +165,11 @@ class SalonReservationController extends Controller
                 $tokens[] = $user->fcm_token;
             }
 
-            $notificationBody = '예약 날짜: '.$validated['reservation_date'].' '.$reservation['reservation_time'];
+            $notificationBody = __('notification.reserved_date').': '.$validated['reservation_date'].' '.$reservation['reservation_time'];
 
             // 알림 전송
             try {
-                $this->service->postNotificationMulticast('새로운 미용실 예약이 있습니다.', $notificationBody, $tokens, 'admin_salon', $reservation->id);
+                $this->service->postNotificationMulticast(__('notification.new_salon'), $notificationBody, $tokens, 'admin_salon', $reservation->id);
             } catch (MessagingException) {
                 return response()->json(['error' => __('messages.500.push')], 500);
             }
@@ -229,11 +229,11 @@ class SalonReservationController extends Controller
 
         if($validated['status']) {
             $reservation->status = 'confirm';
-            $notificationTitle = '승인';
+            $notificationTitle = __('notification.salon_confirm');
         }
         else {
             $reservation->status = 'reject';
-            $notificationTitle = '거절';
+            $notificationTitle = __('notification.salon_reject');
         }
 
         if(!$reservation->save()) return response()->json(['error' => __('messages.500')], 500);
@@ -242,10 +242,12 @@ class SalonReservationController extends Controller
 
 
         // 알림 전송
-        $notificationBody = '예약 일자: '.$reservation->reservation_date.' '. $reservation->reservation_time;
+        $notificationBody = __('notification.reserved_date') . ': '.$reservation->reservation_date . ' ' . $reservation->reservation_time;
 
         try {
-            $notification = $this->service->postNotification('미용실 예약이 '.$notificationTitle.'되었습니다.', $notificationBody, $token, 'user_salon', $reservation->id);
+            $notification = $this->service->postNotification(
+                __('notification.salon_reservation_msg') . $notificationTitle,
+                $notificationBody, $token, 'user_salon', $reservation->id);
         } catch (MessagingException) {
             return response()->json(['error' => __('messages.500.push')], 500);
         }

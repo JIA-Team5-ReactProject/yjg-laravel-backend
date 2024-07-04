@@ -353,8 +353,8 @@ class AbsenceController extends Controller
 
         if($absence->user['push_enabled']) {
             $token = $absence->user['fcm_token'];
-            $notificationTitle = ($absence['type'] == 'go' ? '외출' : '외박').'이 거절되었습니다.';
-            $notificationBody = '날짜: '.($absence['type'] == 'go' ? $absence['start_date'] : $absence['start_date'].'~'.$absence['end_date']);
+            $notificationTitle = ($absence['type'] == 'go' ? __('notification.go_out') : __('notification.stay_out')).__('notification.absence_reject');
+            $notificationBody = __('notification.date').': '.($absence['type'] == 'go' ? $absence['start_date'] : $absence['start_date'].'~'.$absence['end_date']);
 
             // 알림 전송
             try {

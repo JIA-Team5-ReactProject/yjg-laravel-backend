@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Salon;
 
-use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\SalonCategory;
 use Illuminate\Auth\Access\AuthorizationException;

@@ -122,7 +122,7 @@ class AfterServiceCommentController extends Controller
             $token = $afterService->user['fcm_token'];
 
             try {
-                $this->service->postNotification('AS 신청에 댓글이 작성되었습니다.', $validated['comment'], $token, 'as', $afterService->id);
+                $this->service->postNotification(__('notification.as_comment'), $validated['comment'], $token, 'as', $afterService->id);
             } catch (MessagingException) {
                 return response()->json(['error' => __('messages.500.push')], 500);
             }
