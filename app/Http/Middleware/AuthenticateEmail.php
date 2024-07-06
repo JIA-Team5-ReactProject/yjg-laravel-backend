@@ -20,6 +20,6 @@ class AuthenticateEmail
             return $next($request);
         }
 
-        return response()->json(['error' => '인증되지 않은 유저입니다.'], 401);
+        return response()->json(['error' => __('auth.error')], 401);
     }
 }

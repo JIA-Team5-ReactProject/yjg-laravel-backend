@@ -19,7 +19,7 @@ class ApproveCheck
     {
         foreach ($guards as $guard) {
             if (auth($guard)->check() && !auth($guard)->user()->approved) {
-                return response()->json(['error' => '승인되지 않은 유저입니다.'], 403);
+                return response()->json(['error' => __('auth.approve')], 403);
             }
         }
 

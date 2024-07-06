@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Salon;
 
-use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Models\SalonCategory;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -59,7 +58,7 @@ class SalonCategoryController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -74,7 +73,7 @@ class SalonCategoryController extends Controller
 
         $salonCategory = SalonCategory::create($validated);
 
-        if(!$salonCategory) return response()->json(['error' => '카테고리 생성에 실패하였습니다.'], 500);
+        if(!$salonCategory) return response()->json(['error' => __('messages.500')], 500);
 
         return response()->json(['salon_category' => $salonCategory], 201);
     }
@@ -107,7 +106,7 @@ class SalonCategoryController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -130,9 +129,9 @@ class SalonCategoryController extends Controller
 
         $category->category = $validated['category'];
 
-        if(!$category->save()) return response()->json(['error' => '카테고리명 수정에 실패하였습니다.'], 500);
+        if(!$category->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '카테고리명 수정에 성공하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
 
     }
 
@@ -152,20 +151,19 @@ class SalonCategoryController extends Controller
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="ServerError"),
      * )
-     * @throws DestroyException
      */
     public function destroy(String $id): JsonResponse
     {
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         if (!SalonCategory::destroy($id)) {
-            throw new DestroyException('카테고리 삭제에 실패하였습니다.');
+            return response()->json(['error' => __('messages.500')]);
         }
 
-        return response()->json(['message'=>'카테고리 삭제에 성공하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

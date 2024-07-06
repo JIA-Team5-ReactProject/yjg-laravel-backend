@@ -147,7 +147,7 @@ class SalonBusinessHourController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -164,7 +164,7 @@ class SalonBusinessHourController extends Controller
 
         $businessHour = SalonBusinessHour::create($validated);
 
-        if(!$businessHour) return response()->json(['error' => '미용실 영업시간 설정에 실패하였습니다.'], 500);
+        if(!$businessHour) return response()->json(['error' => __('messages.500')], 500);
 
         return response()->json(['reservation' => $businessHour], 201);
     }
@@ -199,7 +199,7 @@ class SalonBusinessHourController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -218,7 +218,7 @@ class SalonBusinessHourController extends Controller
         try {
             $bHour = SalonBusinessHour::findOrFail($validated['b_hour_id']);
         } catch(ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $bHour->s_time = $validated['s_time'];
@@ -226,9 +226,9 @@ class SalonBusinessHourController extends Controller
         $bHour->open   = $validated['open'];
 
 
-        if(!$bHour->save()) return response()->json(['error' => '미용실 영업시간 수정에 실패하였습니다.'], 500);
+        if(!$bHour->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '미용실 영업시간 수정에 성공하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
 //    /**

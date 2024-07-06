@@ -37,14 +37,13 @@ class RestaurantMenusController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function import(Request $request)
+    public function import(Request $request): \Illuminate\Http\JsonResponse
     {
-        Log::info('엑셀: '. $request->file('excel_file'));
         try{
             $excel_file = $request->file('excel_file');
             $excel_file->store('excels');
             Excel::import(new RestaurantMenuImport, $excel_file);
-            return response()->json(['message' => '식단표 저장 완료'], 200);
+            return response()->json(['message' => __('messages.200')]);
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -62,7 +61,7 @@ class RestaurantMenusController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getyears()
+    public function getyears(): \Illuminate\Http\JsonResponse
     {
         try {
             $years = RestaurantMenuDate::distinct()->pluck('year');
@@ -96,13 +95,12 @@ class RestaurantMenusController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getWeekMenu(Request $request)
+    public function getWeekMenu(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $weekdata = RestaurantMenuDate::where('year', $request->year)
                                         ->where('month', $request->month)
                                         ->get();
-            Log::info('날짜 ID모음 : ' . $weekdata);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -125,7 +123,7 @@ class RestaurantMenusController extends Controller
                     $weekMenus[] = $menusInWeek;
                 }
             }
-            
+
             // 반환되는 JSON 구조를 좀 더 명확하게 처리합니다.
             return response()->json(['week_menus' => $weekMenus]);
         } catch (\Exception $exception) {
@@ -155,7 +153,7 @@ class RestaurantMenusController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getDayMenu(Request $request)
+    public function getDayMenu(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $monthDay = RestaurantMenu::where('date', $request->date)->get();
@@ -183,11 +181,11 @@ class RestaurantMenusController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function deleteMenu($id)//삭제할 date_id
+    public function deleteMenu($id): \Illuminate\Http\JsonResponse//삭제할 date_id
     {
         try {
             RestaurantMenu::where('date_id',$id)->delete();
-            return response()->json(['message' => '식단표가 삭제되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }

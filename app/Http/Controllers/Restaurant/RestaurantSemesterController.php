@@ -36,7 +36,7 @@ class RestaurantSemesterController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validatedData = $request->validate([
@@ -49,19 +49,19 @@ class RestaurantSemesterController extends Controller
         try {
 
             $mealTypeId = SemesterMealType::where("meal_type", $validatedData["meal_type"])
-                                        ->first();                            
+                                        ->first();
             $user_id = auth('users')->id();
             RestaurantSemester::create([
                 'user_id' => $user_id,
                 'semester_meal_type_id' => $mealTypeId->id
             ]);
-            return response()->json(['message' => '식수 학기 신청이 완료되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
 
-    
+
 
 
 
@@ -82,18 +82,18 @@ class RestaurantSemesterController extends Controller
          *  @OA\Response(response="500", description="Fail"),
          * )
          */
-    public function getPayment($id)
+    public function getPayment($id): \Illuminate\Http\JsonResponse
     {
         try {
             $paymentData = RestaurantSemester::where('id', $id)->pluck('payment');
             return response()->json(['payment_data' => $paymentData]);
         } catch (\Exception $exception) {
-            return response()->json(['error' => '페이먼트 데이터 조회 중 오류가 발생했습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
     }
 
 
-    
+
 
 
        /**
@@ -124,7 +124,7 @@ class RestaurantSemesterController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function setPayment(Request $request, $id)
+    public function setPayment(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         try {
             // 유효성 검사
@@ -139,13 +139,11 @@ class RestaurantSemesterController extends Controller
             $apply_id = RestaurantSemester::findOrFail($id);
                 $apply_id->payment = $validatedData['payment'];
                 $apply_id->save();
-            } catch (\Exception $exception) {
-                return response()->json(['error' => $exception->getMessage()], 500);
-            }
-            if($validatedData['payment'] == true)
-                return response()->json(['message' => '입금 확인 수정완료.']);
-            else
-            return response()->json(['message' => 'false값이 확인됨']);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -165,13 +163,13 @@ class RestaurantSemesterController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function delete($id)
+    public function delete($id): \Illuminate\Http\JsonResponse
     {
         try {
             $RestaurantSemester = RestaurantSemester::findOrFail($id);
             $RestaurantSemester->delete();
 
-            return response()->json(['message' => '학기 식수 신청이 삭제되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -198,12 +196,12 @@ class RestaurantSemesterController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function show(Request $request)
+    public function show(Request $request): \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Http\JsonResponse
     {
         try {
             $name = $request->input('name');
             $allData = RestaurantSemester::with('semesterMealType:id,meal_type', 'user:id,phone_number,name,student_id');
-            
+
             if ($name === null || $name === '') {
                 $applyData = $allData->paginate(5);
             } else {
@@ -211,30 +209,31 @@ class RestaurantSemesterController extends Controller
                     $allData->where('name', 'like', '%' . $name . '%');
                 })->paginate(5);
             }
-    
+
             return $applyData;
         } catch (\Exception $exception) {
             return response()->json(['applyData' => []]);
         }
     }
 
-    
+
     /**
      * @OA\Get (
      * path="/api/restaurant/semester/show/user",
      * tags={"식수 신청 학기"},
      * summary="학기 식수 유저 정보",
      * description="학기 식수 유조 정보 확인",
-     *    
+     *
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function showUser(){
+    public function showUser(): \Illuminate\Http\JsonResponse
+    {
         try{
             $user_id = auth('users')->id();
             $userData = User::select('id', 'phone_number', 'name', 'student_id')->where('id', $user_id)->first();
-            
+
             return response()->json(['userData' => $userData]);
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()]);
@@ -247,20 +246,21 @@ class RestaurantSemesterController extends Controller
      * tags={"식수 신청 학기"},
      * summary="학기 식수 유저 정보(신청 후)",
      * description="학기 식수 유조 정보 확인(신청 후)",
-     *    
+     *
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function showUserAfter(){
+    public function showUserAfter(): \Illuminate\Http\JsonResponse
+    {
         try{
             $user_id = auth('users')->id();
             $allData = RestaurantSemester::with('semesterMealType:id,meal_type', 'user:id,phone_number,name,student_id');
-    
-    
+
+
             $applyData = $allData->where('user_id', $user_id)->paginate(5);
-            
-            return response()->json(['userData' => $applyData ]);
+
+            return response()->json(['userData' => $applyData]);
         }catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()]);
         }
