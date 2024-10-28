@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MeetingRoom;
 
+use App\Events\ServerSideEvent;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingRoom;
 use App\Models\MeetingRoomReservation;
@@ -165,6 +166,9 @@ class MeetingRoomReservationController extends Controller
         $reservation = MeetingRoomReservation::create($validated);
 
         if(!$reservation) return response()->json(['error' => __('messages.500')], 500);
+
+        // 예약 데이터 SSE 전송
+        event(new ServerSideEvent('events.meeting_room', $reservation));
 
         return response()->json(['message' => __('messages.200'), 'reservation' => $reservation], 201);
     }

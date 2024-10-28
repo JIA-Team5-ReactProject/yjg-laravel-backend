@@ -27,7 +27,6 @@ use App\Http\Controllers\Salon\SalonReservationController;
 use App\Http\Controllers\Salon\SalonServiceController;
 use App\Http\Middleware\LoginApproveCheck;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\App;
 
 /*
 |--------------------------------------------------------------------------
