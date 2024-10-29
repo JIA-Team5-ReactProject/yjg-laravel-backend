@@ -38,6 +38,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::post('/test/sse', function () {
+    event(new App\Events\ServerSideEvent('test.sse', 'SSE TEST MESSAGE'));
+    return response()->json(['message' => 'test']);
+});
+
 // Server Health Check
 Route::get('/healthy', function () {
     return phpinfo();
