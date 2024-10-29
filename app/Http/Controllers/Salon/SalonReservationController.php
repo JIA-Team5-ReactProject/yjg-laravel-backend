@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Salon;
 
+use App\Events\ServerSideEvent;
 use App\Http\Controllers\Controller;
 use App\Models\SalonReservation;
 use App\Models\User;
@@ -151,7 +152,7 @@ class SalonReservationController extends Controller
 
         $reservation = SalonReservation::create($validated);
 
-        if(!$reservation) return response()->json(['error' => '미용실 예약에 실패하였습니다.'], 500);
+        if(!$reservation) return response()->json(['error' => __('messages.500')], 500);
 
         // 마스터 및 행정 관리자의 토큰을 $tokens 배열에 담음
         $tokens = [];
@@ -165,15 +166,18 @@ class SalonReservationController extends Controller
                 $tokens[] = $user->fcm_token;
             }
 
-            $notificationBody = '예약 날짜: '.$validated['reservation_date'].' '.$reservation['reservation_time'];
+            $notificationBody = __('notification.reserved_date').': '.$validated['reservation_date'].' '.$reservation['reservation_time'];
 
             // 알림 전송
             try {
-                $this->service->postNotificationMulticast('새로운 미용실 예약이 있습니다.', $notificationBody, $tokens, 'admin_salon', $reservation->id);
+                $this->service->postNotificationMulticast(__('notification.new_salon'), $notificationBody, $tokens, 'admin_salon', $reservation->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
+
+        // 예약 데이터 SSE 전송
+        event(new ServerSideEvent('events.salon', $reservation));
 
         return response()->json(['reservation' => $reservation], 201);
     }
@@ -223,35 +227,37 @@ class SalonReservationController extends Controller
         try {
             $reservation = SalonReservation::findOrFail($validated['id']);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
 
         if($validated['status']) {
             $reservation->status = 'confirm';
-            $notificationTitle = '승인';
+            $notificationTitle = __('notification.salon_confirm');
         }
         else {
             $reservation->status = 'reject';
-            $notificationTitle = '거절';
+            $notificationTitle = __('notification.salon_reject');
         }
 
-        if(!$reservation->save()) return response()->json(['error' => '미용실 예약 상태 수정에 실패하였습니다.'], 500);
+        if(!$reservation->save()) return response()->json(['error' => __('messages.500')], 500);
 
         $token = $reservation->user['fcm_token'];
 
 
         // 알림 전송
-        $notificationBody = '예약 일자: '.$reservation->reservation_date.' '. $reservation->reservation_time;
+        $notificationBody = __('notification.reserved_date') . ': '.$reservation->reservation_date . ' ' . $reservation->reservation_time;
 
         try {
-            $notification = $this->service->postNotification('미용실 예약이 '.$notificationTitle.'되었습니다.', $notificationBody, $token, 'user_salon', $reservation->id);
+            $notification = $this->service->postNotification(
+                __('notification.salon_reservation_msg') . $notificationTitle,
+                $notificationBody, $token, 'user_salon', $reservation->id);
         } catch (MessagingException) {
-            return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500.push')], 500);
         }
 
         return response()->json([
-            'message' => '미용실 예약 상태를 성공적으로 수정하였습니다.',
+            'message' => __('messages.200'),
             'notification' => $notification,
         ]);
     }
@@ -276,8 +282,8 @@ class SalonReservationController extends Controller
      */
     public function destroy(string $id): JsonResponse
     {
-        if(!SalonReservation::destroy($id)) return response()->json(['error' => '미용실 예약 취소에 실패하였습니다.'], 500);
+        if(!SalonReservation::destroy($id)) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '미용실 예약이 취소되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

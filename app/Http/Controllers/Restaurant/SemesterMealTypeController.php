@@ -32,7 +32,7 @@ class SemesterMealTypeController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             // 유효성 검사
@@ -58,7 +58,7 @@ class SemesterMealTypeController extends Controller
         }
 
         // 성공 메시지
-        return response()->json(['message' => '학기 식사 유형 저장 완료']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
 
@@ -79,14 +79,14 @@ class SemesterMealTypeController extends Controller
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function delete($id)
+    public function delete($id): \Illuminate\Http\JsonResponse
     {
         try {
             $SemesterMealType = SemesterMealType::findOrFail($id);
 
             $SemesterMealType->delete();
 
-            return response()->json(['message' => '학기 식수 유형이 삭제되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -100,12 +100,12 @@ class SemesterMealTypeController extends Controller
      *     tags={"식수 유형"},
      *     summary="학기 식수 유형 가져오기",
      *     description="학기 식수 유형 가져오기",
-     *     
+     *
      *     @OA\Response(response="200", description="Success"),
      *     @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function getMealType()
+    public function getMealType(): \Illuminate\Http\JsonResponse
     {
         try{
             $mealType = SemesterMealType::all();
@@ -146,7 +146,7 @@ class SemesterMealTypeController extends Controller
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         try {
             $validatedData = $request->validate([
@@ -167,7 +167,7 @@ class SemesterMealTypeController extends Controller
                 'price' =>$validatedData['price'],
             ]);
 
-            return response()->json(['message' => '학기 식수 유형이 수정되었습니다.']);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }

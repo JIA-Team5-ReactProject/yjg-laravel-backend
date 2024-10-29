@@ -123,7 +123,7 @@ class SalonServiceController extends Controller
         try {
             $salonCategory = SalonCategory::findOrFail($validated['category_id']);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         unset($validated['category_id']);
@@ -169,7 +169,7 @@ class SalonServiceController extends Controller
         try {
             $this->authorize('salon');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -186,16 +186,16 @@ class SalonServiceController extends Controller
         try {
             $salonService = SalonService::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         foreach ($validated as $key => $value) {
             $salonService->$key = $value;
         }
 
-        if (!$salonService->save()) return response()->json(['error' => '미용실 서비스 수정에 실패하였습니다.'], 500);
+        if (!$salonService->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '미용실 서비스 수정에 성공하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -224,8 +224,8 @@ class SalonServiceController extends Controller
         }
 
         if (!SalonService::destroy($id)) {
-            throw new DestroyException('미용실 서비스 삭제에 실패하였습니다.');
+            return response()->json(['error' => __('messages.500')]);
         }
-        return response()->json(['message' => '미용실 서비스 삭제에 성공하였습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

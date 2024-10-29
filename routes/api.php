@@ -28,7 +28,6 @@ use App\Http\Controllers\Salon\SalonServiceController;
 use App\Http\Middleware\LoginApproveCheck;
 use Illuminate\Support\Facades\Route;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,6 +41,10 @@ use Illuminate\Support\Facades\Route;
 // Server Health Check
 Route::get('/healthy', function () {
     return phpinfo();
+});
+
+Route::get('/locale', function () {
+    return response()->json(['message' => __('auth.test')]);
 });
 
 /** 비밀번호 초기화 관련 */

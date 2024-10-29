@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\DestroyException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
@@ -78,7 +77,7 @@ class AdminController extends Controller
             $admin->$key = $value;
         }
 
-        if(!$admin->save()) return response()->json(['error' => '관리자 회원가입에 실패하였습니다.'],500);
+        if(!$admin->save()) return response()->json(['error' => __('messages.500')], 500);
 
         $admin['admin_id'] = $admin['id'];
         unset($admin['id']);
@@ -108,14 +107,14 @@ class AdminController extends Controller
         try {
             $this->authorize('master');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         if (!User::destroy($id)) {
-            throw new DestroyException('회원탈퇴에 실패하였습니다.');
+            return response()->json(['error' => __('messages.500')], 500);
         }
 
-        return response()->json(['message' => '회원탈퇴 되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -145,7 +144,7 @@ class AdminController extends Controller
         $credentials = $request->validated();
 
         if (!$token = $this->tokenService->generateToken($credentials, 'access')) {
-            return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
+            return response()->json(['error' => __('auth.error')], 401);
         }
         $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
@@ -183,7 +182,7 @@ class AdminController extends Controller
         $credentials = $request->validated();
 
         if (!$token = $this->tokenService->generateToken($credentials, 'access')) {
-            return response()->json(['error' => '관리자의 이메일 혹은 비밀번호가 올바르지 않습니다.'], 401);
+            return response()->json(['error' => __('auth.error')], 401);
         }
         $refreshToken = $this->tokenService->generateToken($credentials, 'refresh');
 
@@ -223,7 +222,7 @@ class AdminController extends Controller
         try {
             $this->authorize('master');
         } catch (AuthorizationException) {
-            return $this->denied('마스터 관리자 권한이 없습니다.');
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -241,7 +240,7 @@ class AdminController extends Controller
         try {
             $admin = User::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         unset($validated['admin_id']);
@@ -250,7 +249,7 @@ class AdminController extends Controller
 
         $admin->privileges()->attach($validated['privileges']);
 
-        return response()->json(['message' => '관리자 권한이 변경되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -280,7 +279,7 @@ class AdminController extends Controller
         try {
             $this->authorize('master');
         } catch (AuthorizationException) {
-            return $this->denied('마스터 관리자 권한이 없습니다.');
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -290,21 +289,21 @@ class AdminController extends Controller
         } catch(ValidationException $validationException) {
                 $errorStatus = $validationException->status;
                 $errorMessage = $validationException->getMessage();
-                return response()->json(['error'=>$errorMessage], $errorStatus);
+                return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
         try {
             $admin = User::findOrFail($validated['admin_id']);
         } catch(ModelNotFoundException) {
-            return response()->json(['error'=> $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $admin->approved = true;
 
         if(!$admin->save()) {
-            return response()->json(['error' => '관리자 승인에 실패하였습니다.'], 500);
+            return response()->json(['error' => __('messages.500')], 500);
         }
-        return response()->json(['message' => '관리자가 승인되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -337,7 +336,7 @@ class AdminController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -358,7 +357,7 @@ class AdminController extends Controller
         try {
             $admin = User::findOrFail($adminId);
         } catch(ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         unset($validated['current_password']);
@@ -371,9 +370,9 @@ class AdminController extends Controller
             }
         }
 
-        if(!$admin->save()) return response()->json(['error' => '관리자 정보 수정에 실패하였습니다.'], 500);
+        if(!$admin->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '관리자 정보가 수정되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -404,7 +403,7 @@ class AdminController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied('관리자 권한이 없습니다.');
+            return $this->denied(__('auth.denied'));
         }
 
         try {

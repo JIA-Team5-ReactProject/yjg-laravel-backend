@@ -20,10 +20,10 @@ class ResetPasswordService
             ['code' => $secret, 'updated_at' => now()],
         );
 
-        if(!$updateOrInsert) return response()->json(['error' => '코드 저장에 실패하였습니다.'], 500);
+        if(!$updateOrInsert) return response()->json(['error' => __('messages.500')], 500);
 
         Mail::to($this->email)->send(new ResetPassword($secret));
 
-        return response()->json(['message' => '이메일이 발송되었습니다.']);
+        return response()->json(['message' => 'E-mail '.__('messages.200')]);
     }
 }

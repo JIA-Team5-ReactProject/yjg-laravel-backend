@@ -20,11 +20,11 @@ class LoginApproveCheck
         try {
             $admin = User::where('email', $request->email)->firstOrFail();
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 관리자가 없습니다.'], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         if(!$admin->approved) {
-            return response()->json(['error' => '승인되지 않은 관리자입니다.'], 403);
+            return response()->json(['error' => __('auth.approve')], 403);
         }
 
         return $next($request);

@@ -48,7 +48,7 @@ class AfterServiceCommentController extends Controller
         try {
             $afterService = AfterService::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 AS 정보가 없습니다.'], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         return response()->json(['after_service_comments' => $afterService->afterServiceComments()->get()]);
@@ -89,7 +89,7 @@ class AfterServiceCommentController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -105,7 +105,7 @@ class AfterServiceCommentController extends Controller
         try {
             $afterService = AfterService::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         // 위에서 찾은 모델의 연관관계를 이용하여 새 댓글을 작성
@@ -115,20 +115,20 @@ class AfterServiceCommentController extends Controller
         ]);
 
 
-        if(!$comment) return response()->json(['error' => '댓글 작성에 실패하였습니다.'], 500);
+        if(!$comment) return response()->json(['error' => __('messages.500')], 500);
 
         // 알림 전송
         if($afterService->user['push_enabled']) {
             $token = $afterService->user['fcm_token'];
 
             try {
-                $this->service->postNotification('AS 신청에 댓글이 작성되었습니다.', $validated['comment'], $token, 'as', $afterService->id);
+                $this->service->postNotification(__('notification.as_comment'), $validated['comment'], $token, 'as', $afterService->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
 
-        return response()->json(['message' => '성공적으로 댓글이 작성되었습니다.'], 201);
+        return response()->json(['comment' => $comment], 201);
     }
 
     /**
@@ -164,7 +164,7 @@ class AfterServiceCommentController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         try {
@@ -180,15 +180,15 @@ class AfterServiceCommentController extends Controller
         try {
             $asComment = AfterServiceComment::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => '해당하는 댓글이 존재하지 않습니다.'], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         // 위 모델의 연관관계를 이용하여 수정
         $asComment->comment = $validated['comment'];
 
-        if(!$asComment->save()) return response()->json(['error' => '댓글을 수정하는데 실패하였습니다.'], 500);
+        if(!$asComment->save()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '댓글이 성공적으로 수정되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -214,7 +214,7 @@ class AfterServiceCommentController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         $validator = Validator::make(['id' => $id], [
@@ -232,11 +232,11 @@ class AfterServiceCommentController extends Controller
         try {
             $asComment = AfterServiceComment::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
-        if(!$asComment->delete()) return response()->json(['error' => '댓글 삭제에 실패하였습니다.'], 500);
+        if(!$asComment->delete()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '댓글이 삭제되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

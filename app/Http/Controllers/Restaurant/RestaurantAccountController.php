@@ -15,12 +15,12 @@ class RestaurantAccountController extends Controller
      * tags={"식당 계좌"},
      * summary="식당 계좌 저장",
      * description="식당 계좌 저장을 처리합니다",
-     *    
+     *
      *  @OA\Response(response="200", description="Success"),
      *  @OA\Response(response="500", description="Fail"),
      * )
      */
-    public function store()
+    public function store(): \Illuminate\Http\JsonResponse
     {
         try {
             RestaurantAccount::create([
@@ -28,7 +28,7 @@ class RestaurantAccountController extends Controller
                 'bank_name' => '은행명',
                 'name' => '예금주명',
             ]);
-            return response()->json(['message' => '식당 계좌 저장 완료'], 200);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -77,7 +77,7 @@ class RestaurantAccountController extends Controller
                 'bank_name' => $validatedData['bank_name'],
                 'name' => $validatedData['name'],
             ]);
-            return response()->json(['message' => '식당 계좌 수정 완료'], 200);
+            return response()->json(['message' => __('messages.200')]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
@@ -99,7 +99,7 @@ class RestaurantAccountController extends Controller
     {
         try {
             $restaurantAccount = RestaurantAccount::first();
-            return response()->json(['data' => $restaurantAccount], 200);
+            return response()->json(['data' => $restaurantAccount]);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }

@@ -27,7 +27,7 @@ class ResetPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[영진전문대학교 글로벌캠퍼스] 비밀번호 초기화',
+            subject: __('mail.subject'),
         );
     }
 

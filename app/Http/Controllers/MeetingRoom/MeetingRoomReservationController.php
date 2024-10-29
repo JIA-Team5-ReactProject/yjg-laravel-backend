@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MeetingRoom;
 
+use App\Events\ServerSideEvent;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingRoom;
 use App\Models\MeetingRoomReservation;
@@ -61,7 +62,7 @@ class MeetingRoomReservationController extends Controller
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
         // reservation_date는 필수 값
@@ -137,17 +138,17 @@ class MeetingRoomReservationController extends Controller
         } catch (ValidationException $exception) {
             $errorStatus = $exception->status;
             $errorMessage = $exception->getMessage();
-            return response()->json(['error'=>$errorMessage], $errorStatus);
+            return response()->json(['error' => $errorMessage], $errorStatus);
         }
 
         // 회의실의 예약 가능 여부 체크
         try {
             $meetingRoom = MeetingRoom::findOrFail($validated['meeting_room_number']);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
-        if(!$meetingRoom->open) return response()->json(['error' => '예약 불가한 회의실입니다.'], 403);
+        if(!$meetingRoom->open) return response()->json(['error' => __('messages.403')], 403);
 
         // 유저 아이디를 받아옴
         $validated['user_id'] = auth('users')->id();
@@ -158,15 +159,18 @@ class MeetingRoomReservationController extends Controller
         foreach ($reservedTimes() as $reservedTime) {
             if($reservedTime == $validated['reservation_s_time'] ||
                 $reservedTime == $validated['reservation_e_time']) {
-                return response()->json(['error' => '이미 예약된 시간입니다.'], 409); // conflict 에러
+                return response()->json(['error' => __('messages.409')], 409); // conflict 에러
             }
         }
 
         $reservation = MeetingRoomReservation::create($validated);
 
-        if(!$reservation) return response()->json(['error' => '예약에 실패하였습니다.'], 500);
+        if(!$reservation) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '성공적으로 예약되었습니다.', 'reservation' => $reservation], 201);
+        // 예약 데이터 SSE 전송
+        event(new ServerSideEvent('events.meeting_room', $reservation));
+
+        return response()->json(['message' => __('messages.200'), 'reservation' => $reservation], 201);
     }
 
     /**
@@ -227,7 +231,7 @@ class MeetingRoomReservationController extends Controller
         try {
             $this->authorize('admin');
         } catch (AuthorizationException) {
-            return $this->denied();
+            return $this->denied(__('auth.denied'));
         }
 
         $validator = Validator::make(['id'=> $id], [
@@ -245,30 +249,28 @@ class MeetingRoomReservationController extends Controller
         try {
             $reservation = MeetingRoomReservation::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
         $reservation->status = false;
 
-        if(!$reservation->save()) return response()->json(['error' => '예약 상태 변경에 실패하였습니다.'], 500);
+        if(!$reservation->save()) return response()->json(['error' => __('messages.500')], 500);
 
         if($reservation->user['push_enabled']) {
             $token = $reservation->user['fcm_token'];
 
-            $notificationBody = '예약 날짜: ' . $reservation['reservation_date'] . ' ' . $reservation['reservation_s_time'] . '~' . $reservation['reservation_e_time'] .
-                '예약 호실: ' . $reservation['meeting_room_number'];
+            $notificationBody = __('notification.reserved_date') . $reservation['reservation_date'] . ' ' . $reservation['reservation_s_time'] . '~' . $reservation['reservation_e_time'] .
+                __('notification.room_number') . ': ' . $reservation['meeting_room_number'];
 
             // 알림 전송
             try {
-                $this->service->postNotification('회의실 예약이 거절되었습니다.', $notificationBody, $token, 'meeting', $reservation->id);
+                $this->service->postNotification(__('notification.meeting_room_reject'), $notificationBody, $token, 'meeting', $reservation->id);
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('messages.500.push')], 500);
             }
         }
 
-        return response()->json([
-            'message' => '예약 상태 변경에 성공하였습니다.',
-        ]);
+        return response()->json(['message' => __('messages.200')]);
     }
 
     /**
@@ -305,11 +307,11 @@ class MeetingRoomReservationController extends Controller
         try {
             $reservation = MeetingRoomReservation::findOrFail($id);
         } catch (ModelNotFoundException) {
-            return response()->json(['error' => $this->modelExceptionMessage], 404);
+            return response()->json(['error' => __('messages.404')], 404);
         }
 
-        if(!$reservation->delete()) return response()->json(['error' => '예약 삭제에 실패하였습니다.'], 500);
+        if(!$reservation->delete()) return response()->json(['error' => __('messages.500')], 500);
 
-        return response()->json(['message' => '예약이 삭제되었습니다.']);
+        return response()->json(['message' => __('messages.200')]);
     }
 }

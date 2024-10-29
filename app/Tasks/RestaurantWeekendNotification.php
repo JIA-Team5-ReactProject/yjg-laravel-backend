@@ -26,9 +26,9 @@ class RestaurantWeekendNotification
                     $service->postNotificationMulticast('식사 신청 오픈', '주말 식사 신청이 오픈되었습니다.', $tokens, 'restaurant');
                 });
             } catch (MessagingException) {
-                return response()->json(['error' => '알림 전송에 실패하였습니다.'], 500);
+                return response()->json(['error' => __('message.500')], 500);
             }
         }
-        return response()->json(['message' => '알림이 발송되었습니다.']);
+        return response()->json(['message' => __('message.200')]);
     }
 }
