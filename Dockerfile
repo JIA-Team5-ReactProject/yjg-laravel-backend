@@ -40,6 +40,13 @@ RUN apk add --no-cache \
 RUN apk add --no-cache libzip-dev \
     && docker-php-ext-install zip
 
+# 필요한 라이브러리 설치 및 phpredis 설치
+RUN apk add --no-cache libressl-dev && \
+    apk add --no-cache $PHPIZE_DEPS && \
+    pecl install redis && \
+    docker-php-ext-enable redis && \
+    apk del $PHPIZE_DEPS
+
 ## install composer
 RUN curl -sS https://getcomposer.org/installer | php
 
