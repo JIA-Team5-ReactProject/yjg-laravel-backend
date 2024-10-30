@@ -63,7 +63,7 @@ return [
     | Wave connection, storing presence channel users, and handling simple whisper events.
     |
     */
-    'path' => 'wave',
+    'path' => 'api/wave',
 
     /*
      |--------------------------------------------------------------------------
