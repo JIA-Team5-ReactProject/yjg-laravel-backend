@@ -39,9 +39,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/test/sse', function () {
-    event(new App\Events\ServerSideEvent('test.sse', 'SSE TEST MESSAGE'));
-    return response()->json(['message' => 'test']);
+// SSE Connection Health Check
+Route::post('/healthy/sse', function () {
+    event(new App\Events\SalonEvent('SALON_TEST'));
+    event(new App\Events\MtgRoomEvent('MTG_TEST'));
+    return response()->json(['message' => 'TEST EVENTS ARE SEND']);
 });
 
 // Server Health Check

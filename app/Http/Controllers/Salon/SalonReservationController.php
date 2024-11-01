@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Salon;
 
-use App\Events\ServerSideEvent;
+use App\Events\SalonEvent;
 use App\Http\Controllers\Controller;
 use App\Models\SalonReservation;
 use App\Models\User;
@@ -177,7 +177,7 @@ class SalonReservationController extends Controller
         }
 
         // 예약 데이터 SSE 전송
-        event(new ServerSideEvent('events.salon', $reservation));
+        event(new SalonEvent($reservation));
 
         return response()->json(['reservation' => $reservation], 201);
     }

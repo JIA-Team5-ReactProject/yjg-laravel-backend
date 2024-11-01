@@ -10,19 +10,15 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ServerSideEvent implements ShouldBroadcast
+class SalonEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public string $message, $channel;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(string $channel, string $message)
+    public function __construct(public $data)
     {
-        $this->message = $message;
-        $this->channel = $channel;
     }
 
     /**
@@ -33,7 +29,7 @@ class ServerSideEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel($this->channel),
+            new Channel('salon'),
         ];
     }
 }
